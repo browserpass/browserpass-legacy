@@ -21,22 +21,25 @@ func main() {
 func getPasswordHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("%s: %s\n", r.Method, r.URL.RequestURI())
 
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
 	domain := r.URL.Query().Get("domain")
 	matches, _ := filepath.Glob(os.Getenv("HOME") + "/.password-store/" + domain + "/*.gpg")
+	results := make([]map[string]string, 0)
 
-	if len(matches) == 1 {
-		_, file := filepath.Split(matches[0])
-		username := strings.TrimSuffix(file, filepath.Ext(file))
+	for _, file := range matches {
+		_, filename := filepath.Split(file)
+		username := strings.TrimSuffix(filename, filepath.Ext(filename))
 		password, err := getPassword(domain, username)
 		checkError(err)
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		json.NewEncoder(w).Encode(map[string]string{
-			"p": password,
+		results = append(results, map[string]string{
 			"u": username,
+			"p": password,
 		})
 	}
+
+	json.NewEncoder(w).Encode(results)
 }
 
 // run pass to get decrypted file content

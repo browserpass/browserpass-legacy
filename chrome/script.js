@@ -6,15 +6,27 @@ function init(tab) {
 
   fetch("http://localhost:3131/password?domain="+domain)
     .then(function(response) { return response.json(); })
-    .then(function(json) {
-      var code = '';
-      code += 'document.querySelector(\'input[type=\"text\"], input[type=\"email\"]\').value = "' +json.u+'";';
-      code += 'document.querySelector(\'input[type=\"password\"]\').value = "'+ json. p +'";';
+    .then(function(results) {
+        // if just 1 result, fill & close
+        if(results.length === 1 ) {
+          fill(results[0]);
+          window.close();
+        }
 
-      chrome.tabs.executeScript({
-        code: code
-      })
+        // if multiple: offer choice
+
+        // if none: show sad thing
     });
+}
+
+function fill(creds) {
+  var code = '';
+  code += 'document.querySelector(\'input[type=\"text\"], input[type=\"email\"]\').value = "'+ creds.u +'";';
+  code += 'document.querySelector(\'input[type=\"password\"]\').value = "'+ creds.p +'";';
+
+  chrome.tabs.executeScript({
+    code: code
+  })
 }
 
 function parseDomainFromUrl(url) {
