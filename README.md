@@ -12,11 +12,11 @@ It uses a native binary written in Golang to do the interfacing with your passwo
 1. Download the [latest release package](https://github.com/dannyvankooten/gopass/releases).
 1. Extract to where you would like to install the binary.
 1. Run `./install.sh` to install the native messaging host. This is required to allow the Chrome extension to communicate with the binary. Run with `sudo` for a system-wide installation.
-1. Install the extension in Chrome by dragging the `gopass.crx` into the [Chrome Extensions](chrome://extensions) page.
+1. Install the extension in Chrome by dragging the `gopass.crx` into the [Chrome Extensions](chrome://extensions) (`chrome://extensions`) page.
 
 # Usage
 
-Click the lock icon or use **Ctrl + M** (or **Cmd + M**) to fill & submit your login info for the current site. If you have multiple logins for the current site, the extension shows you a list to choose from.
+Click the lock icon or use **Ctrl + M** to fill & submit your login info for the current site. If you have multiple logins for the current site, the extension shows you a list to choose from.
 
 # License
 
