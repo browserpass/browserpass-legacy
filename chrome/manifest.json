@@ -10,6 +10,17 @@
     "default_popup": "content.html"
   },
   "permissions": [
-    "activeTab"
-  ]
+    "activeTab",
+    "nativeMessaging"
+  ],
+  "commands": {
+   "_execute_browser_action": {
+     "suggested_key": {
+       "windows": "Ctrl+M",
+       "mac": "Cmd+M",
+       "chromeos": "Ctrl+M",
+       "linux": "Ctrl+M"
+     }
+   }
+ },
 }
