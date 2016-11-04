@@ -3,7 +3,7 @@ chrome-gopass
 
 chrome-gopass is a Chrome extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager.
 
-![Gopass in the Chrome menu](https://github.com/dannyvankooten/gopass/raw/master/assets/menu.png) ![Gopass in the Chrome menu (expanded)](https://github.com/dannyvankooten/gopass/raw/master/assets/menu-expanded.png)
+![Gopass in the Chrome menu](https://github.com/dannyvankooten/gopass/raw/master/assets/menu-expanded.png)
 
 
 It uses a native binary written in Golang to do the interfacing with your password store. Communication between the binary and the Chrome extension is done through [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
