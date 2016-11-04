@@ -9,7 +9,7 @@ It uses a native binary written in Golang to do the interfacing with your passwo
 
 # Install
 
-1. Download the [latest release package](https://github.com/dannyvankooten/chrome-gopass/releases).
+1. Download the [latest release package](https://github.com/dannyvankooten/chrome-gopass/releases) for your operating system.
 1. Extract to where you would like to install the binary.
 1. Run `./install.sh` to install the native messaging host. This is required to allow the Chrome extension to communicate with the binary. Run with `sudo` for a system-wide installation.
 1. Install the extension in Chrome by dragging the `chrome-gopass.crx` file into the [Chrome Extensions](chrome://extensions) (`chrome://extensions`) page.
