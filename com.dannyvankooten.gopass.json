@@ -1,0 +1,9 @@
+{
+  "name": "com.dannyvankooten.gopass",
+  "description": "Gopass binary for the Chrome extension",
+  "path": "%%replace%%",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://eejkfjhdchjefipegiollegbnipohjgi/"
+  ]
+}
