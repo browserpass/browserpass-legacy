@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "gopass",
   "description": "Chrome extension for zx2c4's pass",
-  "version": "0.0.1",
+  "version": "1.0",
   "author": "Danny van Kooten",
   "homepage_url": "https://github.com/dannyvankooten/gopass",
   "browser_action": {
@@ -17,10 +17,10 @@
    "_execute_browser_action": {
      "suggested_key": {
        "windows": "Ctrl+M",
-       "mac": "Cmd+M",
+       "mac": "Ctrl+M",
        "chromeos": "Ctrl+M",
        "linux": "Ctrl+M"
      }
    }
- },
+ }
 }
