@@ -55,15 +55,17 @@ function handleResponse(response) {
 
 // fill login form & submit
 function fillLoginForm() {
-  var code = 'console.log("Filling login form.");';
+  var code = '(function() { ';
   code += 'var passwordInput = document.querySelector(\'input[type="password"]\');';
+  code += 'if( ! passwordInput ) { return; }';
   code += 'var origForm = passwordInput.form; var newForm = origForm.cloneNode(true);';
   code += 'var passwordInput = newForm.querySelector(\'input[type="password"]\');'
   code += "var usernameInput = newForm.querySelector('input[type=email], input[type=text]');";
   code += 'passwordInput.value = '+ JSON.stringify(this.p) +';';
-  code += 'usernameInput.value = '+ JSON.stringify(this.u) +';';
+  code += 'usernameInput && usernameInput.value = '+ JSON.stringify(this.u) +';';
   code += 'origForm.parentNode.replaceChild(newForm, origForm);';
   code += 'newForm.submit();';
+  code += '})();';
 
   chrome.tabs.executeScript({ code: code });
   window.close();
