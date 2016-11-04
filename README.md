@@ -14,8 +14,6 @@ It uses a native binary written in Golang to do the interfacing with your passwo
 1. Run `./install.sh` to install the native messaging host. This is required to allow the Chrome extension to communicate with the binary. Run with `sudo` for a system-wide installation.
 1. Install the extension in Chrome by dragging the `chrome-gopass.crx` file into the [Chrome Extensions](chrome://extensions) (`chrome://extensions`) page.
 
-**Note for Windows users:** please [follow these instructions for installing the native messaging host](https://developer.chrome.com/extensions/nativeMessaging#native-messaging-host-location).
-
 # Usage
 
 Click the lock icon or use **Ctrl + M** to fill & submit your login info for the current site. If you have multiple logins for the current site, the extension shows you a list to choose from.
