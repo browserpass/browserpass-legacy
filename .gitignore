@@ -1,3 +1,8 @@
+gopass
+gopass-*
+*.crx
+*.exe
 *.log
 *.zip
-gopass
+*.pem
+release
