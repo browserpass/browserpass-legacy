@@ -35,11 +35,6 @@ function handleResponse(response) {
     return;
   }
 
-// if just 1, fill right away
-  if( response.length === 1 ) {
-    return fillLoginForm.call(response[0]);
-  }
-
   var list = document.createElement('div');
   list.className = 'usernames';
   content.appendChild(list);
