@@ -12,6 +12,10 @@ chrome.tabs.getSelected(null, init);
 function init(tab) {
   favicon = tab.favIconUrl;
   domain = parseDomainFromUrl(tab.url);
+  searchPassword(domain);
+}
+
+function searchPassword(domain) {
   chrome.runtime.sendNativeMessage(app, { "domain": domain }, handleResponse);
 }
 
@@ -55,17 +59,17 @@ function handleResponse(response) {
 
 // fill login form & submit
 function fillLoginForm() {
-  var code = '(function() { ';
-  code += 'var passwordInput = document.querySelector(\'input[type="password"]\');';
-  code += 'if( ! passwordInput ) { return; }';
-  code += 'var origForm = passwordInput.form; var newForm = origForm.cloneNode(true);';
-  code += 'var passwordInput = newForm.querySelector(\'input[type="password"]\');'
-  code += "var usernameInput = newForm.querySelector('input[type=email], input[type=text]');";
-  code += 'passwordInput.value = '+ JSON.stringify(this.p) +';';
-  code += 'usernameInput && usernameInput.value = '+ JSON.stringify(this.u) +';';
-  code += 'origForm.parentNode.replaceChild(newForm, origForm);';
-  code += 'newForm.submit();';
-  code += '})();';
+  var code = '(function() { ' + "\n";
+  code += 'var passwordInput = document.querySelector(\'input[type="password"]\');' + "\n";
+  code += 'if( ! passwordInput ) { return; }' + "\n";
+  code += 'var origForm = passwordInput.form; var newForm = origForm.cloneNode(true);' + "\n";
+  code += 'var passwordInput = newForm.querySelector(\'input[type="password"]\');' + "\n";
+  code += "var usernameInput = newForm.querySelector('input[type=email], input[type=text]');" + "\n";
+  code += 'passwordInput.value = '+ JSON.stringify(this.p) +';' + "\n";
+  code += 'if( usernameInput ) { usernameInput.value = '+ JSON.stringify(this.u) +'; }' + "\n";
+  code += 'origForm.parentNode.replaceChild(newForm, origForm);' + "\n";
+  code += 'newForm.submit();' + "\n";
+  code += '})();' + "\n";
 
   chrome.tabs.executeScript({ code: code });
   window.close();
