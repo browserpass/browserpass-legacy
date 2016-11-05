@@ -27,17 +27,26 @@ body{
 }
 
 .username {
+  width: 100%;
+  background:white;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   display: block;
   padding: 6px;
   cursor: pointer;
+  border: 0;
   border-bottom: 1px dotted #ccc;
+  text-align: left;
 }
 
 .username:last-of-type{
   border-bottom: 0;
 }
 
-.username:hover {
+.username:hover,
+.username:focus {
+  outline: 0;
   background: #eee;
 }
 

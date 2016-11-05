@@ -40,7 +40,8 @@ function handleResponse(response) {
   content.appendChild(list);
 
   for( var i=0; i<response.length; i++ ) {
-    var el = document.createElement('div');
+    var el = document.createElement('button');
+    el.tabindex = i+1;
     el.className = 'username';
     el.onclick = fillLoginForm.bind(response[i]);
 
