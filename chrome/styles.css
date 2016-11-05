@@ -3,6 +3,7 @@ body{
   padding: 0;
   margin: 0;
   font-family: sans-serif;
+  text-align: center;
 }
 
 #content{
@@ -30,8 +31,6 @@ body{
   width: 100%;
   background:white;
   -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
   display: block;
   padding: 6px;
   cursor: pointer;
@@ -51,30 +50,25 @@ body{
 }
 
 .loader {
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
+  margin: 3px auto;
   display: block;
   text-indent: -9999999px;
   border: 3px solid rgba(0, 0, 0, 0.2);
   border-left-color: #000000;
-  transform: translateZ(0);
-  animation: load8 1.1s infinite linear;
+  -webkit-transform: translateZ(0);
+  -webkit-animation: load8 1.1s infinite linear;
   overflow: hidden;
   border-radius: 50%;
   vertical-align: middle;
   width: 12px;
   height: 12px;
-  margin-bottom: 3px;
 }
 
 @keyframes load8 {
   0% {
     -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
   }
   100% {
     -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
   }
 }
