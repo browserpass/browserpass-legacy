@@ -1,4 +1,4 @@
-all:
+extension: 
 	mv chrome.crx chrome-gopass.crx
 
 gopass: gopass.go
