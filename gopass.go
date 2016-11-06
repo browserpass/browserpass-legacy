@@ -14,6 +14,11 @@ import (
 
 var PwStoreDir string
 
+type Login struct {
+	Username string `json:"u"`
+	Password string `json:"p"`
+}
+
 func main() {
 	// Find dir to password store
 	PwStoreDir = os.Getenv("PASSWORD_STORE_DIR")
@@ -46,54 +51,53 @@ func main() {
 		err = json.Unmarshal(input, &data)
 		checkError(err)
 
-		usernames := getUsernames(data["domain"])
-		results := make([]map[string]string, 0)
-
-		for _, username := range usernames {
-			password, _ := getPassword(data["domain"], username)
-			results = append(results, map[string]string{
-				"u": username,
-				"p": password,
-			})
-		}
-
-		jsonResponse, err := json.Marshal(results)
+		logins := getLogins(data["domain"])
+		jsonResponse, err := json.Marshal(logins)
 		checkError(err)
+
 		binary.Write(os.Stdout, binary.LittleEndian, uint32(len(jsonResponse)))
 		_, err = os.Stdout.Write(jsonResponse)
 		checkError(err)
 	}
 }
 
-// get list of usernames for the domain
-func getUsernames(domain string) []string {
+func getLogins(domain string) []Login {
 	matches, _ := filepath.Glob(PwStoreDir + domain + "*/*.gpg")
-	usernames := make([]string, 0)
+	logins := make([]Login, 0)
 
 	for _, file := range matches {
-		_, filename := filepath.Split(file)
+		dir, filename := filepath.Split(file)
+		dir = filepath.Base(dir)
+
 		username := strings.TrimSuffix(filename, filepath.Ext(filename))
-		usernames = append(usernames, username)
+		password := getPassword(dir + "/" + username)
+
+		login := Login{
+			Username: username,
+			Password: password,
+		}
+
+		logins = append(logins, login)
 	}
 
-	return usernames
+	return logins
 }
 
 // runs pass to get decrypted file content
-func getPassword(domain string, username string) (string, error) {
+func getPassword(file string) string {
 	var out bytes.Buffer
-	cmd := exec.Command("pass", domain+"/"+username)
+	cmd := exec.Command("pass", file)
 	cmd.Stdout = &out
 	err := cmd.Run()
 	if err != nil {
-		return "", err
+		return ""
 	}
 
 	// read first line (the password)
 	scanner := bufio.NewScanner(&out)
 	scanner.Scan()
 	password := scanner.Text()
-	return password, nil
+	return password
 }
 
 func checkError(err error) {
