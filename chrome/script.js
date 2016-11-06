@@ -88,9 +88,9 @@ function fillLoginForm() {
   code += 'var passwordInput = document.querySelector(\'input[type="password"]\');' + "\n";
   code += 'if( ! passwordInput ) { return; }' + "\n";
   code += 'var origForm = passwordInput.form; var newForm = origForm.cloneNode(true);' + "\n";
-  code += 'var passwordInput = newForm.querySelector(\'input[type="password"]\');' + "\n";
-  code += "var usernameInput = newForm.querySelector('input[type=email], input[type=text]');" + "\n";
+  code += 'passwordInput = newForm.querySelector(\'input[type="password"]\');' + "\n";
   code += 'passwordInput.value = '+ JSON.stringify(this.p) +';' + "\n";
+  code += "var usernameInput = newForm.querySelector('input[type=email], input[type=text]');" + "\n";
   code += 'if( usernameInput ) { usernameInput.value = '+ JSON.stringify(this.u) +'; }' + "\n";
   code += 'origForm.parentNode.replaceChild(newForm, origForm);' + "\n";
   code += 'newForm.submit();' + "\n";
