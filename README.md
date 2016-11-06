@@ -3,7 +3,7 @@ chrome-gopass
 
 chrome-gopass is a Chrome extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
 
-![Gopass in the Chrome menu](https://github.com/dannyvankooten/chrome-gopass/raw/master/assets/menu-expanded.png)
+![Gopass in the Chrome menu](https://github.com/dannyvankooten/chrome-gopass/raw/master/assets/example.gif)
 
 It uses a [native binary written in Golang](https://github.com/dannyvankooten/chrome-gopass/blob/master/gopass.go) to do the interfacing with your password store. Secure communication between the binary and the Chrome extension is handled through [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
 
@@ -21,7 +21,7 @@ It uses a [native binary written in Golang](https://github.com/dannyvankooten/ch
 
 ## Usage
 
-Click the lock icon or use **Ctrl + M** to fill & submit your login info for the current site. 
+Click the lock icon or use **Ctrl + M** to fill & submit your login info for the current site.
 
 ## License
 
