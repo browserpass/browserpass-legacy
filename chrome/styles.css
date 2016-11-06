@@ -3,14 +3,18 @@ body{
   padding: 0;
   margin: 0;
   font-family: sans-serif;
-  width: 220px;
+  width: 280px;
 }
 
 .search input {
+  box-sizing: border-box;
   width: 100%;
   padding: 6px;
   border: 0;
   border-bottom: 1px solid #bbb;
+  background: url( "icon-search.png") center right 6px no-repeat;
+  background-size: 16px 16px;
+  padding-right: 20px;
 }
 
 .search input:focus {
@@ -35,6 +39,7 @@ body{
 }
 
 .username {
+  box-sizing: border-box;
   width: 100%;
   background:white;
   -webkit-appearance: none;

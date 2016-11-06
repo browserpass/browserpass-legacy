@@ -7,7 +7,7 @@ var resultsElement = document.getElementById('results-container');
 var activeTab;
 
 resultsElement.innerHTML = '<span class="loader"></span>';
-chrome.browserAction.setIcon({ path: 'icon.svg' });
+chrome.browserAction.setIcon({ path: 'icon-lock.svg' });
 chrome.tabs.getSelected(null, init);
 
 searchForm.addEventListener('submit', function(e) {
@@ -79,7 +79,7 @@ function getFaviconUrl(domain){
     return 'http://' + domain + '/favicon.ico';
   }
 
-  return '';
+  return 'icon-key.png';
 }
 
 // fill login form & submit
