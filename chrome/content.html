@@ -5,7 +5,15 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div id="content"></div>
+    <div class="container">
+      <div class="search">
+        <form id="search-form">
+          <input type="text" id="search-input" placeholder="Search password.." autocomplete="off" autofocus="on">
+          <input type="submit" value="Search" style="display: none;" />
+        </form>
+      </div>
+      <div id="results-container"></div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>

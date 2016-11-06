@@ -59,7 +59,7 @@ func main() {
 
 // get list of usernames for the domain
 func getUsernames(domain string) []string {
-	matches, _ := filepath.Glob(os.Getenv("HOME") + "/.password-store/" + domain + "/*.gpg")
+	matches, _ := filepath.Glob(os.Getenv("HOME") + "/.password-store/" + domain + "*/*.gpg")
 	usernames := make([]string, 0)
 
 	for _, file := range matches {

@@ -3,20 +3,27 @@ body{
   padding: 0;
   margin: 0;
   font-family: sans-serif;
-  text-align: center;
+  width: 220px;
 }
 
-#content{
-  display: block;
+.search input {
+  width: 100%;
+  padding: 6px;
+  border: 0;
+  border-bottom: 1px solid #bbb;
+}
+
+.search input:focus {
+  outline: 0;
 }
 
 .status-text {
-  width: 320px;
   padding: 6px;
 }
 
 .usernames {
-  width: 160px;
+  width: 100%;
+  min-width: 160px;
 }
 
 .favicon {

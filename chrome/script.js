@@ -1,56 +1,85 @@
 'use strict';
 
 var app = 'com.dannyvankooten.gopass';
-var content = document.getElementById('content');
-var domain = '';
-var favicon = '';
+var searchForm = document.getElementById('search-form');
+var searchInput = document.getElementById('search-input');
+var resultsElement = document.getElementById('results-container');
+var activeTab;
 
-content.innerHTML = '<span class="loader"></span>';
+resultsElement.innerHTML = '<span class="loader"></span>';
 chrome.browserAction.setIcon({ path: 'icon.svg' });
 chrome.tabs.getSelected(null, init);
 
+searchForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  // don't search without input.
+  if( ! searchInput.value.length ) {
+      return;
+  }
+
+  searchPassword(searchInput.value);
+});
+
 function init(tab) {
-  favicon = tab.favIconUrl;
-  domain = parseDomainFromUrl(tab.url);
+  activeTab = tab;
+  var domain = parseDomainFromUrl(tab.url);
   searchPassword(domain);
 }
 
 function searchPassword(domain) {
-  chrome.runtime.sendNativeMessage(app, { "domain": domain }, handleResponse);
+  resultsElement.innerHTML = '<div class="status-text">Searching..</div>';
+  chrome.runtime.sendNativeMessage(app, { "domain": domain }, function(response) {
+    return handleSearchResponse(domain, response);
+  });
 }
 
 // handle response received from native binary
-function handleResponse(response) {
-  content.innerHTML = '';
-
+function handleSearchResponse(domain, results) {
   // check for communication error
-  if( response === undefined ) {
-    content.innerHTML = '<div class="status-text">Error talking to pass.</div>';
+  if( results === undefined ) {
+    resultsElement.innerHTML = '<div class="status-text">Error talking to pass.</div>';
     return;
   }
 
-  if( response.length === 0 ) {
+  if( results.length === 0 ) {
     // no results
-    content.innerHTML = '<div class="status-text">No passwords found for <strong>' + domain + "</strong>.</div>";
+    resultsElement.innerHTML = '<div class="status-text">No passwords found for <strong>' + domain + "</strong>.</div>";
     return;
   }
 
+  resultsElement.innerHTML = '';
   var list = document.createElement('div');
   list.className = 'usernames';
-  content.appendChild(list);
+  resultsElement.appendChild(list);
 
-  for( var i=0; i<response.length; i++ ) {
+  for( var i=0; i<results.length; i++ ) {
     var el = document.createElement('button');
-    el.tabindex = i+1;
     el.className = 'username';
-    el.onclick = fillLoginForm.bind(response[i]);
+    el.onclick = fillLoginForm.bind(results[i]);
 
     var html = '';
-    html += '<img class="favicon" src="'+ favicon +'" />';
-    html += '<span>' + response[i].u + '</span>';
+    html += '<img class="favicon" src="'+ getFaviconUrl(domain) +'" />';
+    html += '<span>' + results[i].u + '</span>';
     el.innerHTML = html;
     list.appendChild(el);
   }
+}
+
+function getFaviconUrl(domain){
+
+  // use current favicon when searching for current tab
+  if(activeTab.favIconUrl.indexOf(domain) > -1) {
+    return activeTab.favIconUrl;
+  }
+
+  // make a smart guess if search looks like a real domain
+  var dot = domain.indexOf('.');
+  if( dot > 1 && domain.substring(dot).length > 2) {
+    return 'http://' + domain + '/favicon.ico';
+  }
+
+  return '';
 }
 
 // fill login form & submit
