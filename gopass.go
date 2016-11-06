@@ -12,7 +12,15 @@ import (
 	"strings"
 )
 
+var PwStoreDir string
+
 func main() {
+	// Find dir to password store
+	PwStoreDir = os.Getenv("PASSWORD_STORE_DIR")
+	if PwStoreDir == "" {
+		PwStoreDir = os.Getenv("HOME") + "/.password-store/"
+	}
+
 	// set logging
 	f, err := os.OpenFile("debug.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	checkError(err)
@@ -59,7 +67,7 @@ func main() {
 
 // get list of usernames for the domain
 func getUsernames(domain string) []string {
-	matches, _ := filepath.Glob(os.Getenv("HOME") + "/.password-store/" + domain + "*/*.gpg")
+	matches, _ := filepath.Glob(PwStoreDir + domain + "*/*.gpg")
 	usernames := make([]string, 0)
 
 	for _, file := range matches {
