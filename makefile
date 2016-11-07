@@ -1,15 +1,11 @@
+SHELL := /bin/bash
+
 .PHONY: empty
 empty:
-	echo "Please specify a target."
 
 .PHONY: firefox
-firefox:
-	cp chrome/content.html firefox/content.html
-	cp chrome/script.js firefox/script.js
-	cp chrome/icon-key.png firefox/icon-key.png
-	cp chrome/icon-lock.png firefox/icon-lock.png
-	cp chrome/icon-search.png firefox/icon-search.png
-	cp chrome/styles.css firefox/styles.css
+firefox: chrome/*
+	cp chrome/{*.html,*.css,*.js,*.png,*.svg} firefox/
 
 .PHONY: static-files
 static-files: chrome/host.json firefox/host.json
