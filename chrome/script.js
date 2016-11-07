@@ -8,7 +8,9 @@ var activeTab;
 
 resultsElement.innerHTML = '<span class="loader"></span>';
 chrome.browserAction.setIcon({ path: 'icon-lock.svg' });
-chrome.tabs.getCurrent(init);
+chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+  init(tabs[0]);
+});
 
 searchForm.addEventListener('submit', function(e) {
   e.preventDefault();
@@ -22,6 +24,7 @@ searchForm.addEventListener('submit', function(e) {
 });
 
 function init(tab) {
+
   // do nothing if called from a non-tab context
   if( tab == undefined ) {
     resultsElement.innerHTML = '';
