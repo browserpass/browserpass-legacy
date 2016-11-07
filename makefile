@@ -11,7 +11,6 @@ chrome:
 .PHONY: firefox
 firefox:
 	cp chrome/{*.html,*.css,*.js,*.png,*.svg} firefox/
-	zip -jFS "release/firefox" firefox/* 
 
 .PHONY: static-files
 static-files: chrome/host.json firefox/host.json
@@ -26,5 +25,7 @@ gopass-darwinx64: gopass.go
 
 .PHONY: static-files chrome firefox
 release: static-files chrome firefox gopass-linux64 gopass-darwinx64
-	zip -jFS "release/gopass-linux64" gopass-linux64 *-host.json chrome-gopass.crx install.sh README.md LICENSE
-	zip -jFS "release/gopass-darwinx64" gopass-darwinx64 *-host.json chrome-gopass.crx install.sh README.md LICENSE
+	zip -jFS "release/chrome" chrome-gopass.crx
+	zip -jFS "release/firefox" firefox/*
+	zip -FS "release/gopass-linux64" gopass-linux64 *-host.json chrome-gopass.crx install.sh README.md LICENSE
+	zip -FS "release/gopass-darwinx64" gopass-darwinx64 *-host.json chrome-gopass.crx install.sh README.md LICENSE
