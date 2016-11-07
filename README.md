@@ -1,23 +1,46 @@
-chrome-gopass
+Gopass
 =======
 
-chrome-gopass is a Chrome extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
+Gopass is a Chrome & Firefox extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
 
 ![Gopass in the Chrome menu](https://github.com/dannyvankooten/chrome-gopass/raw/master/assets/example.gif)
 
-It uses a [native binary written in Golang](https://github.com/dannyvankooten/chrome-gopass/blob/master/gopass.go) to do the interfacing with your password store. Secure communication between the binary and the Chrome extension is handled through [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
+It uses a [native binary written in Golang](https://github.com/dannyvankooten/chrome-gopass/blob/master/gopass.go) to do the interfacing with your password store. Secure communication between the binary and the browser extension is handled through [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
 
 ## Requirements
 
-- UNIX, like pass itself. Prebuilt binaries for OSX (Darwin) and Linux are available.
-- Your `pass` passwords need to be in the following format: `~/.password-store/DOMAIN/USERNAME`.
+- A recent version of Chrome, Chromium or Firefox 50+.
+- Pass (on UNIX)
+- Your password store needs to have the following directory structure: `~/.password-store/DOMAIN/USERNAME`.
+
+```
+~/.password-store
+  /twitter.com
+    /username.gpg
+    /another.gpg
+  /website.com
+    /username.gpg
+```
 
 ## Installation
 
-1. Download the [latest release package](https://github.com/dannyvankooten/chrome-gopass/releases) for your operating system.
-1. Extract to where you would like to have the binary.
-1. Run `./install.sh` to install the native messaging host. This is required to allow the Chrome extension to communicate with the binary. If you want a system-wide installation, run the script with `sudo`.
+Start out by downloading the [latest release package](https://github.com/dannyvankooten/chrome-gopass/releases) for your operating system. Prebuilt binaries for 64-bit OSX & Linux are available.
+
+#### Installing the host application
+
+1. Extract the package to where you would like to have the binary.
+1. Run `./install.sh` to install the native messaging host. This is required to allow the browser extension to communicate with Pass. If you want a system-wide installation, run the script with `sudo`.
+
+#### Installing the Chrome extension
+
 1. Install the extension in Chrome by dragging the `chrome-gopass.crx` file into the [Chrome Extensions](chrome://extensions) (`chrome://extensions`) page.
+
+#### Installing the Firefox extension
+
+The Firefox extension requires Firefox 50, which is currently in beta.
+
+1. [Download firefox.zip from the latest release](https://github.com/dannyvankooten/chrome-gopass/releases)
+1. Go to `about:debugging#addons` and click **Load Temporary Add-on**. Select any file from the extracted package.
 
 ## Usage
 
