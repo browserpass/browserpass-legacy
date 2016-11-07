@@ -1,0 +1,9 @@
+{
+  "name": "com.dannyvankooten.gopass",
+  "description": "Gopass binary for the Firefox extension",
+  "path": "%%replace%%",
+  "type": "stdio",
+  "allowed_extensions": [
+     "gopass@dannyvankooten.com"
+   ]
+}
