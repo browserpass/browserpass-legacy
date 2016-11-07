@@ -93,18 +93,31 @@ function getFaviconUrl(domain){
 
 // fill login form & submit
 function fillLoginForm() {
-  var code = '(function() { ' + "\n";
-  code += 'var passwordInput = document.querySelector(\'input[type="password"]\');' + "\n";
-  code += 'if( ! passwordInput ) { return; }' + "\n";
-  code += 'var origForm = passwordInput.form; var newForm = origForm.cloneNode(true);' + "\n";
-  code += 'passwordInput = newForm.querySelector(\'input[type="password"]\');' + "\n";
-  code += 'passwordInput.value = '+ JSON.stringify(this.p) +';' + "\n";
-  code += "var usernameInput = newForm.querySelector('input[type=email], input[type=text]');" + "\n";
-  code += 'if( usernameInput ) { usernameInput.value = '+ JSON.stringify(this.u) +'; }' + "\n";
-  code += 'origForm.parentNode.replaceChild(newForm, origForm);' + "\n";
-  code += 'newForm.submit();' + "\n";
-  code += '})();' + "\n";
+  var code = `
+  (function(d) {
+    function form() {
+      return d.querySelector('input[type=password]').form || document.createElement('form');
+    }
 
+    function field(selector) {
+      return form().querySelector(selector) || document.createElement('input');
+    }
+
+    function update(el, value) {
+      el.setAttribute('value', value);
+      el.value = value;
+
+      var eventNames = [ 'click', 'focus', 'keyup', 'keydown', 'change', 'blur' ];
+      eventNames.forEach(function(eventName) {
+        el.dispatchEvent(new Event(eventName, {"bubbles":true}));
+      });
+    }
+
+    update(field('input[type=password]'), `+ JSON.stringify(this.p) +`);
+    update(field('input[type=email], input[type=text]'), `+ JSON.stringify(this.u) +`);
+    field('[type=submit]').click();
+  })(document);
+  `;
   chrome.tabs.executeScript({ code: code });
   window.close();
 }
