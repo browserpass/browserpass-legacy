@@ -58,10 +58,10 @@ fi
 mkdir -p "$TARGET_DIR"
 
 if [ "$BROWSER" == "1" ] || [ "$BROWSER" == "2" ]; then
-  # Install Chrome / Chromium host config
+  echo "Installing Chrome / Chromium host config"
   cp "$DIR/chrome-host.json" "$TARGET_DIR/$APP_NAME.json"
 else
-  # Install Firefox host config
+  echo "Installing Firefox host config"
   cp "$DIR/firefox-host.json" "$TARGET_DIR_FIREFOX/$APP_NAME.json"
 fi
 
