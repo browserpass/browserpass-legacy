@@ -8,7 +8,7 @@ var activeTab;
 
 resultsElement.innerHTML = '<span class="loader"></span>';
 chrome.browserAction.setIcon({ path: 'icon-lock.svg' });
-chrome.tabs.getSelected(null, init);
+chrome.tabs.getCurrent(init);
 
 searchForm.addEventListener('submit', function(e) {
   e.preventDefault();
@@ -22,6 +22,12 @@ searchForm.addEventListener('submit', function(e) {
 });
 
 function init(tab) {
+  // do nothing if called from a non-tab context
+  if( tab == undefined ) {
+    resultsElement.innerHTML = '';
+    return;
+  }
+
   activeTab = tab;
   var domain = parseDomainFromUrl(tab.url);
   searchPassword(domain);
@@ -69,7 +75,7 @@ function handleSearchResponse(domain, results) {
 function getFaviconUrl(domain){
 
   // use current favicon when searching for current tab
-  if(activeTab.favIconUrl.indexOf(domain) > -1) {
+  if(activeTab && activeTab.favIconUrl.indexOf(domain) > -1) {
     return activeTab.favIconUrl;
   }
 

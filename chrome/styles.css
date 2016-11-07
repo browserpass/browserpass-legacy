@@ -4,6 +4,7 @@ body{
   margin: 0;
   font-family: sans-serif;
   width: 280px;
+  background: white;
 }
 
 .search input {
