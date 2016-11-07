@@ -1,8 +1,10 @@
 gopass
 gopass-*
 *.crx
-*.exe
 *.log
-*.zip
 *.pem
+*-host.json
 release
+firefox/*
+!firefox/host.json
+!firefox/manifest.json
