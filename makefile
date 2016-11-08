@@ -12,6 +12,10 @@ chrome:
 firefox:
 	cp chrome/{*.html,*.css,*.js,*.png,*.svg} firefox/
 
+.PHONY: js
+js: chrome/script.browserify.js
+	browserify chrome/script.browserify.js -o chrome/script.js
+
 .PHONY: static-files
 static-files: chrome/host.json firefox/host.json
 	cp chrome/host.json chrome-host.json

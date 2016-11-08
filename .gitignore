@@ -8,3 +8,4 @@ release
 firefox/*
 !firefox/host.json
 !firefox/manifest.json
+node_modules

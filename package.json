@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "mithril": "^0.2.5"
+  }
+}
