@@ -1,4 +1,4 @@
-package main
+package gopass
 
 import (
 	"bufio"
@@ -20,11 +20,7 @@ type Login struct {
 }
 
 func main() {
-	// Find dir to password store
-	PwStoreDir = os.Getenv("PASSWORD_STORE_DIR")
-	if PwStoreDir == "" {
-		PwStoreDir = os.Getenv("HOME") + "/.password-store/"
-	}
+	PwStoreDir = getPasswordStoreDir()
 
 	// set logging
 	f, err := os.OpenFile("debug.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -59,6 +55,16 @@ func main() {
 		_, err = os.Stdout.Write(jsonResponse)
 		checkError(err)
 	}
+}
+
+func getPasswordStoreDir() string {
+	var dir = os.Getenv("PASSWORD_STORE_DIR")
+
+	if dir == "" {
+		dir = os.Getenv("HOME") + "/.password-store/"
+	}
+
+	return dir
 }
 
 func getLogins(domain string) []Login {
