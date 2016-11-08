@@ -101,7 +101,7 @@ function searchPassword(_domain) {
 function getFaviconUrl(domain){
 
   // use current favicon when searching for current tab
-  if(activeTab && activeTab.favIconUrl.indexOf(domain) > -1) {
+  if(activeTab && activeTab.favIconUrl && activeTab.favIconUrl.indexOf(domain) > -1) {
     return activeTab.favIconUrl;
   }
 
