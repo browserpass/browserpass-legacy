@@ -50,6 +50,7 @@ body{
   border: 0;
   border-bottom: 1px dotted #ccc;
   text-align: left;
+  background-size: 16px 16px;
   background-repeat: no-repeat;
   background-position: left 6px center;
 }
