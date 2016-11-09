@@ -15,11 +15,11 @@ It uses a [native binary written in Golang](https://github.com/dannyvankooten/br
 
 _Examples_
 
-```
-# ~/.password-store/website.com/johndoe.gpg
+```bash
+$ pass website.com/johndoe
 the-password
 
-# ~/.password-store/website.com.gpg
+$ pass website.com
 the-password
 login: johndoe
 ```
