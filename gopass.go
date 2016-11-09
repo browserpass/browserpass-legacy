@@ -1,4 +1,4 @@
-package gopass
+package main
 
 import (
 	"bufio"
@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"github.com/mattn/go-zglob"
 )
 
 var PwStoreDir string
@@ -17,6 +18,7 @@ var PwStoreDir string
 type Login struct {
 	Username string `json:"u"`
 	Password string `json:"p"`
+	File		 string `json:"f"`
 }
 
 func main() {
@@ -68,7 +70,17 @@ func getPasswordStoreDir() string {
 }
 
 func getLogins(domain string) []Login {
-	matches, _ := filepath.Glob(PwStoreDir + domain + "*/*.gpg")
+	log.Printf("Searching passwords for string `%s`", domain)
+
+	// first, search for DOMAIN/USERNAME.gpg
+	matches, _ := zglob.Glob(PwStoreDir + "**/"+ domain + "*/*.gpg")
+
+	// then, search for DOMAIN.gpg
+	matches2, _ := zglob.Glob(PwStoreDir + "**/"+ domain + "*.gpg")
+
+	// concat the two slices
+	matches = append(matches, matches2...)
+
 	logins := make([]Login, 0)
 
 	for _, file := range matches {
@@ -81,6 +93,7 @@ func getLogins(domain string) []Login {
 		login := Login{
 			Username: username,
 			Password: password,
+			File: strings.Replace(file, PwStoreDir, "", 1),
 		}
 
 		logins = append(logins, login)
