@@ -1,9 +1,9 @@
-Gopass
+Browserpass
 =======
 
-Gopass is a Chrome & Firefox extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
+Browserpass is a Chrome & Firefox extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
 
-![Gopass in the Chrome menu](https://github.com/dannyvankooten/chrome-gopass/raw/master/assets/example.gif)
+![Browserpass in the Chrome menu](https://github.com/dannyvankooten/chrome-gopass/raw/master/assets/example.gif)
 
 It uses a [native binary written in Golang](https://github.com/dannyvankooten/chrome-gopass/blob/master/gopass.go) to do the interfacing with your password store. Secure communication between the binary and the browser extension is handled through [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
 
