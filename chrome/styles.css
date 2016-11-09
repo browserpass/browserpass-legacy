@@ -39,27 +39,36 @@ body{
   vertical-align: middle;
 }
 
-.username {
+.login {
   box-sizing: border-box;
   width: 100%;
   background:white;
   -webkit-appearance: none;
   display: block;
-  padding: 6px;
+  padding: 6px 6px 6px 32px;
   cursor: pointer;
   border: 0;
   border-bottom: 1px dotted #ccc;
   text-align: left;
+  background-repeat: no-repeat;
+  background-position: left 6px center;
 }
 
-.username:last-of-type{
+.login:last-of-type{
   border-bottom: 0;
 }
 
-.username:hover,
-.username:focus {
+.login:hover,
+.login:focus {
   outline: 0;
-  background: #eee;
+  background-color: #eee;
+}
+
+.file {
+  display: block;
+  margin-top: 3px;
+  color: #999;
+  font-size: 12px;
 }
 
 .loader {

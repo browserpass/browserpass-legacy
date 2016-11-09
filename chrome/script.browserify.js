@@ -25,14 +25,13 @@ function view() {
     results = m('div.status-text',  m.trust(`No passwords found for <strong>${domain}</strong>.`));
   } else {
       results = logins.map(function(l) {
-        return m('button.username', {
-          "onclick": fillLoginForm.bind(l)
+        var faviconUrl = getFaviconUrl(domain);
+        return m('button.login', {
+          "onclick": fillLoginForm.bind(l),
+          "style": `background-image: url('${faviconUrl}')`
         }, [
-          m('img', {
-            "class": "favicon",
-            "src": getFaviconUrl(domain)
-          }),
-          m('span', l.u)
+          m('span', l.u),
+          m('span.file', l.f)
         ])
       });
   }
