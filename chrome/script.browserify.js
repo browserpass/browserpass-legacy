@@ -91,6 +91,10 @@ function searchPassword(_domain) {
   m.redraw();
 
   chrome.runtime.sendNativeMessage(app, { "domain": _domain }, function(response) {
+    if( chrome.runtime.lastError ) {
+      console.log(chrome.runtime.lastError);
+    }
+
     searching = false;
     logins = response;
     m.redraw();
