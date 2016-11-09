@@ -11,15 +11,17 @@ It uses a [native binary written in Golang](https://github.com/dannyvankooten/br
 
 - A recent version of Chrome, Chromium or Firefox 50+.
 - Pass (on UNIX)
-- Your password store needs to have the following directory structure: `~/.password-store/DOMAIN/USERNAME`.
+- Your password filename must match your username **or** your file must have a line starting with `login:` or `username:`, followed by your username.
+
+_Examples_
 
 ```
-~/.password-store
-  /twitter.com
-    /username.gpg
-    /another.gpg
-  /website.com
-    /username.gpg
+# ~/.password-store/website.com/johndoe.gpg
+the-password
+
+# ~/.password-store/website.com.gpg
+the-password
+login: johndoe
 ```
 
 ## Installation
