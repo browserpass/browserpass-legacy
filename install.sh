@@ -3,14 +3,14 @@
 set -e
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
-APP_NAME=com.dannyvankooten.gopass
-HOST_FILE=$DIR/gopass
+APP_NAME="com.dannyvankooten.gopass"
+HOST_FILE="$DIR/gopass"
 
 # Find target dirs for various browsers & OS'es
 # https://developer.chrome.com/extensions/nativeMessaging#native-messaging-host-location
 # https://wiki.mozilla.org/WebExtensions/Native_Messaging
 if [ $(uname -s) == 'Darwin' ]; then
-  HOST_FILE=$DIR/gopass-darwinx64
+  HOST_FILE="$DIR/gopass-darwinx64"
   if [ "$(whoami)" == "root" ]; then
     TARGET_DIR_CHROME="/Library/Google/Chrome/NativeMessagingHosts"
     TARGET_DIR_CHROMIUM="/Library/Application Support/Chromium/NativeMessagingHosts"
@@ -21,7 +21,7 @@ if [ $(uname -s) == 'Darwin' ]; then
     TARGET_DIR_FIREFOX="$HOME/Library/Application Support/Mozilla/NativeMessagingHosts"
   fi
 else
-  HOST_FILE=$DIR/gopass-linux64
+  HOST_FILE="$DIR/gopass-linux64"
   if [ "$(whoami)" == "root" ]; then
     TARGET_DIR_CHROME="/etc/opt/chrome/native-messaging-hosts"
     TARGET_DIR_CHROMIUM="/etc/chromium/native-messaging-hosts"
@@ -31,6 +31,11 @@ else
     TARGET_DIR_CHROMIUM="$HOME/.config/chromium/NativeMessagingHosts/"
     TARGET_DIR_FIREFOX="$HOME/.mozilla/native-messaging-hosts"
   fi
+fi
+
+if [ -e "$DIR/gopass" ]; then
+  echo "Detected development binary"
+  HOST_FILE="$DIR/gopass"
 fi
 
 # Escape host file
