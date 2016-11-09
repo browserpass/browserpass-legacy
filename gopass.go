@@ -8,8 +8,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
+	"path/filepath"
 	"github.com/mattn/go-zglob"
 )
 
@@ -70,53 +70,56 @@ func getPasswordStoreDir() string {
 }
 
 func getLogins(domain string) []Login {
-	log.Printf("Searching passwords for string `%s`", domain)
-
 	// first, search for DOMAIN/USERNAME.gpg
-	matches, _ := zglob.Glob(PwStoreDir + "**/"+ domain + "*/*.gpg")
-
 	// then, search for DOMAIN.gpg
+	matches, _ := zglob.Glob(PwStoreDir + "**/"+ domain + "*/*.gpg")
 	matches2, _ := zglob.Glob(PwStoreDir + "**/"+ domain + "*.gpg")
-
-	// concat the two slices
 	matches = append(matches, matches2...)
 
 	logins := make([]Login, 0)
 
 	for _, file := range matches {
-		dir, filename := filepath.Split(file)
-		dir = filepath.Base(dir)
-
-		username := strings.TrimSuffix(filename, filepath.Ext(filename))
-		password := getPassword(dir + "/" + username)
-
-		login := Login{
-			Username: username,
-			Password: password,
-			File: strings.Replace(file, PwStoreDir, "", 1),
-		}
-
+		file = strings.TrimSuffix(strings.Replace(file, PwStoreDir, "", 1), ".gpg")
+		login := getLoginFromFile(file)
 		logins = append(logins, login)
 	}
 
 	return logins
 }
 
-// runs pass to get decrypted file content
-func getPassword(file string) string {
+func getLoginFromFile(file string) Login {
 	var out bytes.Buffer
 	cmd := exec.Command("pass", file)
 	cmd.Stdout = &out
 	err := cmd.Run()
-	if err != nil {
-		return ""
+	checkError(err)
+
+	login := Login{
+		File: file,
 	}
 
 	// read first line (the password)
 	scanner := bufio.NewScanner(&out)
 	scanner.Scan()
-	password := scanner.Text()
-	return password
+	login.Password = scanner.Text()
+
+	// keep reading file for string in "login:" or "username:" format.
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "login:") || strings.HasPrefix(line, "username:") {
+			login.Username = line
+			login.Username = strings.TrimLeft(login.Username, "login:")
+			login.Username = strings.TrimLeft(login.Username, "username:")
+			login.Username = strings.TrimSpace(login.Username)
+		}
+	}
+
+	// if username is empty at this point, assume filename is username
+	if login.Username == "" {
+		login.Username = filepath.Base(file)
+	}
+
+	return login
 }
 
 func checkError(err error) {
