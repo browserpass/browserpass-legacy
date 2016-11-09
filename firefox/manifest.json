@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "chrome-gopass",
-  "description": "Firefox extension for zx2c4's pass (password manager).",
+  "name": "browserpass",
+  "description": "Browserpass Firefox extension for zx2c4's pass (password manager).",
   "version": "1.0",
   "author": "Danny van Kooten",
-  "homepage_url": "https://github.com/dannyvankooten/gopass",
+  "homepage_url": "https://github.com/dannyvankooten/browserpass",
   "browser_action": {
     "default_icon": "icon-lock.png",
     "default_popup": "content.html"
@@ -15,7 +15,7 @@
   ],
  "applications": {
     "gecko": {
-      "id": "gopass@dannyvankooten.com",
+      "id": "browserpass@dannyvankooten.com",
       "strict_min_version": "42.0"
     }
   }

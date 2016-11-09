@@ -5,8 +5,8 @@ empty:
 
 .PHONY: chrome
 chrome:
-	google-chrome --pack-extension=./chrome --pack-extension-key=./chrome-gopass.pem
-	mv chrome.crx chrome-gopass.crx
+	google-chrome --pack-extension=./chrome --pack-extension-key=./chrome-browserpass.pem
+	mv chrome.crx chrome-browserpass.crx
 
 .PHONY: firefox
 firefox:
@@ -21,15 +21,15 @@ static-files: chrome/host.json firefox/host.json
 	cp chrome/host.json chrome-host.json
 	cp firefox/host.json firefox-host.json
 
-gopass-linux64: gopass.go
+browserpass-linux64: browserpass.go
 	env GOOS=linux GOARCH=amd64 go build -o $@
 
-gopass-darwinx64: gopass.go
+browserpass-darwinx64: browserpass.go
 	env GOOS=darwin GOARCH=amd64 go build -o $@
 
 .PHONY: static-files chrome firefox
-release: static-files chrome firefox gopass-linux64 gopass-darwinx64
-	zip -jFS "release/chrome" chrome-gopass.crx
+release: static-files chrome firefox browserpass-linux64 browserpass-darwinx64
+	zip -jFS "release/chrome" chrome-browserpass.crx
 	zip -jFS "release/firefox" firefox/*
-	zip -FS "release/gopass-linux64" gopass-linux64 *-host.json chrome-gopass.crx install.sh README.md LICENSE
-	zip -FS "release/gopass-darwinx64" gopass-darwinx64 *-host.json chrome-gopass.crx install.sh README.md LICENSE
+	zip -FS "release/browserpass-linux64" browserpass-linux64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS "release/browserpass-darwinx64" browserpass-darwinx64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE

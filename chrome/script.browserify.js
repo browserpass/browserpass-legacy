@@ -1,7 +1,7 @@
 'use strict';
 
 var m = require('mithril');
-var app = 'com.dannyvankooten.gopass';
+var app = 'com.dannyvankooten.browserpass';
 var activeTab;
 var searching = true;
 var logins;
