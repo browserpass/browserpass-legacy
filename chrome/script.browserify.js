@@ -30,7 +30,7 @@ function view() {
           "onclick": fillLoginForm.bind(l),
           "style": `background-image: url('${faviconUrl}')`
         }, [
-          m('span', l.u),
+          m('span.username', l.u),
           m('span.file', l.f)
         ])
       });
@@ -58,7 +58,7 @@ function view() {
     ]),
 
     // results
-    m('div', results)
+    m('div.results', results)
   ];
 }
 

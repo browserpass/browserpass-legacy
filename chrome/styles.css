@@ -1,5 +1,4 @@
 body{
-  font-size: 13px;
   padding: 0;
   margin: 0;
   font-family: sans-serif;
@@ -26,33 +25,26 @@ body{
   padding: 6px;
 }
 
-.usernames {
+.results {
   width: 100%;
   min-width: 160px;
 }
 
-.favicon {
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
 .login {
+  display: block;
   box-sizing: border-box;
   width: 100%;
-  background:white;
   -webkit-appearance: none;
-  display: block;
-  padding: 6px 6px 6px 32px;
+  -moz-appearance: none;
+  padding: 12px 6px 12px 32px;
   cursor: pointer;
   border: 0;
   border-bottom: 1px dotted #ccc;
   text-align: left;
+  background: no-repeat url('icon-key.png') left 8px center;
+  background-color: white;
   background-size: 16px 16px;
-  background-repeat: no-repeat;
-  background-position: left 6px center;
+  line-height: 1.2;
 }
 
 .login:last-of-type{
@@ -65,10 +57,17 @@ body{
   background-color: #eee;
 }
 
+
+.username,
 .file {
   display: block;
-  margin-top: 3px;
-  color: #999;
+}
+
+.username {
+}
+
+.file {
+  color: #888;
   font-size: 12px;
 }
 
