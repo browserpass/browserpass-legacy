@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"testing"
+	"bytes"
 )
 
 func TestGetLogins(t *testing.T) {
@@ -34,4 +35,17 @@ func TestGetPasswordStoreDir(t *testing.T) {
 		t.Errorf("%s does not match %s", expected, actual)
 	}
 
+}
+
+func TestParseLogin(t *testing.T) {
+	var b = bytes.NewBufferString("password\n\nfoo\nlogin: bar")
+	login := parseLogin(b)
+
+	if( login.Password != "password" ) {
+		t.Errorf("Password is %s, expected %s", login.Password, "password")
+	}
+
+	if( login.Username != "bar" ) {
+		t.Errorf("Username is %s, expected %s", login.Username, "bar")
+	}
 }
