@@ -2,7 +2,7 @@ body{
   padding: 0;
   margin: 0;
   font-family: sans-serif;
-  width: 280px;
+  min-width: 280px;
   background: white;
 }
 
