@@ -3,8 +3,8 @@
 var m = require('mithril');
 var app = 'com.dannyvankooten.browserpass';
 var activeTab;
-var searching = true;
-var logins;
+var searching = false;
+var logins = null;
 var domain;
 
 m.mount(document.getElementById('mount'), { "view": view });
@@ -15,25 +15,27 @@ chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
 });
 
 function view() {
-  var results;
+  var results = '';
 
   if( searching ) {
     results = m('div.loader');
-  } else if( typeof(logins) === "undefined" ) {
-    results = m('div.status-text', "Error talking to Pass");
-  } else if( logins.length === 0 ) {
-    results = m('div.status-text',  m.trust(`No passwords found for <strong>${domain}</strong>.`));
-  } else {
-      results = logins.map(function(l) {
-        var faviconUrl = getFaviconUrl(domain);
-        return m('button.login', {
-          "onclick": fillLoginForm.bind(l),
-          "style": `background-image: url('${faviconUrl}')`
-        }, [
-          m('span.username', l.u),
-          m('span.file', l.f)
-        ])
-      });
+  } else if( logins !== null ) {
+    if( typeof(logins) === "undefined" ) {
+      results = m('div.status-text', "Error talking to Pass");
+    } else if( logins.length === 0 ) {
+      results = m('div.status-text',  m.trust(`No passwords found for <strong>${domain}</strong>.`));
+    } else if( logins.length > 0 ) {
+        results = logins.map(function(l) {
+          var faviconUrl = getFaviconUrl(domain);
+          return m('button.login', {
+            "onclick": fillLoginForm.bind(l),
+            "style": `background-image: url('${faviconUrl}')`
+          }, [
+            m('span.username', l.u),
+            m('span.file', l.f)
+          ])
+        });
+    }
   }
 
   return [
@@ -75,13 +77,15 @@ function submitSearchForm(e) {
 
 function init(tab) {
   // do nothing if called from a non-tab context
-  if( tab == undefined ) {
+  if( ! tab || ! tab.url ) {
     return;
   }
 
   activeTab = tab;
   var domain = parseDomainFromUrl(tab.url);
-  searchPassword(domain);
+  if( domain ) {
+    searchPassword(domain);
+  }
 }
 
 function searchPassword(_domain) {

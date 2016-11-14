@@ -4,6 +4,7 @@ body{
   font-family: sans-serif;
   min-width: 280px;
   background: white;
+  font-size: 14px;
 }
 
 .search input {
@@ -72,7 +73,7 @@ body{
 }
 
 .loader {
-  margin: 3px auto;
+  margin: 12px auto;
   display: block;
   text-indent: -9999999px;
   border: 3px solid rgba(0, 0, 0, 0.2);
