@@ -29,7 +29,7 @@ browserpass-darwinx64: browserpass.go
 
 .PHONY: static-files chrome firefox
 release: static-files chrome firefox browserpass-linux64 browserpass-darwinx64
-	zip -jFS "release/chrome" chrome-browserpass.crx
+	zip -jFS "release/chrome" chrome/* chrome-browserpass.crx
 	zip -jFS "release/firefox" firefox/*
 	zip -FS "release/browserpass-linux64" browserpass-linux64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE
 	zip -FS "release/browserpass-darwinx64" browserpass-darwinx64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE
