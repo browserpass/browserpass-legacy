@@ -41,12 +41,15 @@ fi
 # Escape host file
 ESCAPED_HOST_FILE=${HOST_FILE////\\/}
 
+echo ""
 echo "Select your browser:"
+echo "===================="
 echo "1) Chrome"
 echo "2) Chromium"
 echo "3) Firefox"
 echo -n "1-3: "
 read BROWSER
+echo ""
 
 # Set target dir from user input
 if [[ "$BROWSER" == "1" ]]; then
