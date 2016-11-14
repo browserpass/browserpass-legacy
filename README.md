@@ -31,18 +31,17 @@ Start out by downloading the [latest release package](https://github.com/dannyva
 #### Installing the host application
 
 1. Extract the package to where you would like to have the binary.
-1. Run `./install.sh` to install the native messaging host. This is required to allow the browser extension to communicate with Pass. If you want a system-wide installation, run the script with `sudo`.
+1. Run `./install.sh` to install the native messaging host. If you want a system-wide installation, run the script with `sudo`.
+
+Installing the binary & registering it with your browser through the installation script is required to allow the browser extension to talk to the local binary application.
 
 #### Installing the Chrome extension
 
-1. Install the extension in Chrome by dragging the `chrome-browserpass.crx` file into the [Chrome Extensions](chrome://extensions) (`chrome://extensions`) page.
+You can either [install the Chrome extension from the Chrome Web Store](https://chrome.google.com/webstore/detail/browserpass/jegbgfamcgeocbfeebacnkociplhmfbk) or drag the `chrome-browserpass.crx` file from the release package into the [Chrome Extensions](chrome://extensions) (`chrome://extensions`) page.
 
 #### Installing the Firefox extension
 
-The Firefox extension requires Firefox 50, which is currently in beta.
-
-1. [Download firefox.zip from the latest release](https://github.com/dannyvankooten/browserpass/releases)
-1. Go to `about:debugging#addons` and click **Load Temporary Add-on**. Select any file from the extracted package.
+You can [install the Firefox extension from the Mozilla add-ons site](https://addons.mozilla.org/en-US/firefox/addon/browserpass/). Please note that you will need Firefox 50 or higher.
 
 ## Usage
 
