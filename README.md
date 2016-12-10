@@ -26,7 +26,7 @@ login: johndoe
 
 ## Installation
 
-Start out by downloading the [latest release package](https://github.com/dannyvankooten/browserpass/releases) for your operating system. Prebuilt binaries for 64-bit OSX & Linux are available.
+Start out by downloading the [latest release package](https://github.com/dannyvankooten/browserpass/releases) for your operating system. Prebuilt binaries for 64-bit OSX & Linux are available. Arch users can install browserpass [from the AUR](https://aur.archlinux.org/packages/browserpass/).
 
 #### Installing the host application
 
