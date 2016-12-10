@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -133,7 +134,6 @@ func getLoginFromFile(file string) *Login {
 // write errors to log & quit
 func checkError(err error) {
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }
