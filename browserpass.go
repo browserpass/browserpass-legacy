@@ -133,7 +133,7 @@ func getLoginFromFile(file string) *Login {
 // write errors to log & quit
 func checkError(err error) {
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "%v\n", err)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
 }
