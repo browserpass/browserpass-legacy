@@ -18,17 +18,11 @@ var PwStoreDir string
 type Login struct {
 	Username string `json:"u"`
 	Password string `json:"p"`
-	File		 string `json:"f"`
+	File     string `json:"f"`
 }
 
 func main() {
 	PwStoreDir = getPasswordStoreDir()
-
-	// set logging
-	f, err := os.OpenFile("debug.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	checkError(err)
-	defer f.Close()
-	log.SetOutput(f)
 
 	// listen for stdin
 	for {
