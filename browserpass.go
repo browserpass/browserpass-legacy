@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"log"
 	"os"
 	"os/exec"
@@ -18,7 +19,6 @@ var PwStoreDir string
 type Login struct {
 	Username string `json:"u"`
 	Password string `json:"p"`
-	File     string `json:"f"`
 }
 
 func main() {
@@ -29,6 +29,7 @@ func main() {
 		// get message length, 4 bytes
 		var data map[string]string
 		var length uint32
+		var jsonResponse []byte
 		err := binary.Read(os.Stdin, binary.LittleEndian, &length)
 		if err != nil {
 			break
@@ -43,9 +44,17 @@ func main() {
 		err = json.Unmarshal(input, &data)
 		checkError(err)
 
-		logins := getLogins(data["domain"])
-		jsonResponse, err := json.Marshal(logins)
-		checkError(err)
+		switch data["action"] {
+		case "search":
+			entries := getLogins(data["domain"])
+			jsonResponse, err = json.Marshal(entries)
+			checkError(err)
+		case "get":
+			login := getLoginFromFile(data["entry"])
+			jsonResponse, err = json.Marshal(login)
+		default:
+			checkError(errors.New("Invalid action"))
+		}
 
 		binary.Write(os.Stdout, binary.LittleEndian, uint32(len(jsonResponse)))
 		_, err = os.Stdout.Write(jsonResponse)
@@ -65,22 +74,21 @@ func getPasswordStoreDir() string {
 }
 
 // search password store for logins matching search string
-func getLogins(domain string) []*Login {
+func getLogins(domain string) []string {
 	// first, search for DOMAIN/USERNAME.gpg
 	// then, search for DOMAIN.gpg
 	matches, _ := zglob.Glob(PwStoreDir + "**/"+ domain + "*/*.gpg")
 	matches2, _ := zglob.Glob(PwStoreDir + "**/"+ domain + "*.gpg")
 	matches = append(matches, matches2...)
 
-	logins := make([]*Login, 0)
+	entries := make([]string, 0)
 
 	for _, file := range matches {
 		file = strings.TrimSuffix(strings.Replace(file, PwStoreDir, "", 1), ".gpg")
-		login := getLoginFromFile(file)
-		logins = append(logins, login)
+		entries = append(entries, file)
 	}
 
-	return logins
+	return entries
 }
 
 // read contents of password file using `pass` command
@@ -120,8 +128,6 @@ func parseLogin(b *bytes.Buffer) *Login {
 func getLoginFromFile(file string) *Login {
 	b := readPassFile(file)
 	login := parseLogin(b)
-
-	login.File = file;
 
 	// if username is empty at this point, assume filename is username
 	if login.Username == "" {
