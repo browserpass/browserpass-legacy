@@ -113,10 +113,11 @@ func parseLogin(b *bytes.Buffer) *Login {
 	// keep reading file for string in "login:" or "username:" format.
 	for scanner.Scan() {
 		line := scanner.Text()
-		if strings.HasPrefix(line, "login:") || strings.HasPrefix(line, "username:") {
+		if strings.HasPrefix(line, "login:") || strings.HasPrefix(line, "username:") || strings.HasPrefix(line, "user:"){
 			login.Username = line
 			login.Username = strings.TrimLeft(login.Username, "login:")
 			login.Username = strings.TrimLeft(login.Username, "username:")
+			login.Username = strings.TrimLeft(login.Username, "user:")
 			login.Username = strings.TrimSpace(login.Username)
 		}
 	}
