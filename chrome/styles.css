@@ -58,20 +58,6 @@ body{
   background-color: #eee;
 }
 
-
-.username,
-.file {
-  display: block;
-}
-
-.username {
-}
-
-.file {
-  color: #888;
-  font-size: 12px;
-}
-
 .loader {
   margin: 12px auto;
   display: block;

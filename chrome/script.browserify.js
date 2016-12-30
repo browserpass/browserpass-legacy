@@ -28,12 +28,10 @@ function view() {
         results = logins.map(function(l) {
           var faviconUrl = getFaviconUrl(domain);
           return m('button.login', {
-            "onclick": fillLoginForm.bind(l),
+            "onclick": getLoginData.bind(l),
             "style": `background-image: url('${faviconUrl}')`
-          }, [
-            m('span.username', l.u),
-            m('span.file', l.f)
-          ])
+          },
+          l)
         });
     }
   }
@@ -94,7 +92,7 @@ function searchPassword(_domain) {
   domain = _domain;
   m.redraw();
 
-  chrome.runtime.sendNativeMessage(app, { "domain": _domain }, function(response) {
+  chrome.runtime.sendNativeMessage(app, { "action": "search", "domain": _domain }, function(response) {
     if( chrome.runtime.lastError ) {
       console.log(chrome.runtime.lastError);
     }
@@ -112,17 +110,26 @@ function getFaviconUrl(domain){
     return activeTab.favIconUrl;
   }
 
-  // make a smart guess if search looks like a real domain
-  var dot = domain.indexOf('.');
-  if( dot > 1 && domain.substring(dot).length > 2) {
-    return 'http://' + domain + '/favicon.ico';
-  }
-
   return 'icon-key.png';
 }
 
+function getLoginData() {
+  searching = true;
+  logins = null;
+  m.redraw();
+
+  chrome.runtime.sendNativeMessage(app, { "action": "get", "entry": this }, function(response) {
+    if( chrome.runtime.lastError) {
+      console.log(chrome.runtime.lastError);
+    }
+
+    searching = false;
+    fillLoginForm(response);
+  });
+}
+
 // fill login form & submit
-function fillLoginForm() {
+function fillLoginForm(login) {
   var code = `
   (function(d) {
     function form() {
@@ -143,8 +150,8 @@ function fillLoginForm() {
       });
     }
 
-    update(field('input[type=password]'), ${JSON.stringify(this.p)});
-    update(field('input[type=email], input[type=text]'), ${JSON.stringify(this.u)});
+    update(field('input[type=password]'), ${JSON.stringify(login.p)});
+    update(field('input[type=email], input[type=text]'), ${JSON.stringify(login.u)});
     field('[type=submit]').click();
   })(document);
   `;
