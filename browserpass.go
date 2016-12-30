@@ -6,12 +6,13 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"errors"
+	"github.com/mattn/go-zglob"
 	"log"
 	"os"
 	"os/exec"
-	"strings"
 	"path/filepath"
-	"github.com/mattn/go-zglob"
+	"regexp"
+	"strings"
 )
 
 var PwStoreDir string
@@ -77,8 +78,8 @@ func getPasswordStoreDir() string {
 func getLogins(domain string) []string {
 	// first, search for DOMAIN/USERNAME.gpg
 	// then, search for DOMAIN.gpg
-	matches, _ := zglob.Glob(PwStoreDir + "**/"+ domain + "*/*.gpg")
-	matches2, _ := zglob.Glob(PwStoreDir + "**/"+ domain + "*.gpg")
+	matches, _ := zglob.Glob(PwStoreDir + "**/" + domain + "*/*.gpg")
+	matches2, _ := zglob.Glob(PwStoreDir + "**/" + domain + "*.gpg")
 	matches = append(matches, matches2...)
 
 	entries := make([]string, 0)
@@ -110,15 +111,14 @@ func parseLogin(b *bytes.Buffer) *Login {
 	scanner.Scan()
 	login.Password = scanner.Text()
 
-	// keep reading file for string in "login:" or "username:" format.
+	re := regexp.MustCompile("(?i)^(login|username|user):")
+
+	// keep reading file for string in "login:", "username:" or "user:" format (case insensitive).
 	for scanner.Scan() {
 		line := scanner.Text()
-		if strings.HasPrefix(line, "login:") || strings.HasPrefix(line, "username:") || strings.HasPrefix(line, "user:"){
-			login.Username = line
-			login.Username = strings.TrimLeft(login.Username, "login:")
-			login.Username = strings.TrimLeft(login.Username, "username:")
-			login.Username = strings.TrimLeft(login.Username, "user:")
-			login.Username = strings.TrimSpace(login.Username)
+		replaced := re.ReplaceAllString(line, "")
+		if len(replaced) != len(line) {
+			login.Username = strings.TrimSpace(replaced)
 		}
 	}
 
