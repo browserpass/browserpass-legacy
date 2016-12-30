@@ -6,6 +6,7 @@
   "author": "Danny van Kooten",
   "homepage_url": "https://github.com/dannyvankooten/browserpass",
   "browser_action": {
+    "browser_style": false,
     "default_icon": "icon-lock.png",
     "default_popup": "content.html"
   },
