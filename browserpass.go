@@ -131,7 +131,7 @@ func getLoginFromFile(file string) *Login {
 	login := parseLogin(b)
 
 	// if username is empty at this point, assume filename is username
-	if login.Username == "" {
+	if login.Username == "" && strings.Count(file, "/") >= 1 {
 		login.Username = filepath.Base(file)
 	}
 

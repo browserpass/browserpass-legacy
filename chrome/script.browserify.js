@@ -141,6 +141,10 @@ function fillLoginForm(login) {
     }
 
     function update(el, value) {
+      if( ! value.length ) {
+        return false;
+      }
+
       el.setAttribute('value', value);
       el.value = value;
 
@@ -148,6 +152,7 @@ function fillLoginForm(login) {
       eventNames.forEach(function(eventName) {
         el.dispatchEvent(new Event(eventName, {"bubbles":true}));
       });
+      return true;
     }
 
     update(field('input[type=password]'), ${JSON.stringify(login.p)});
