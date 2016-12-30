@@ -110,12 +110,6 @@ function getFaviconUrl(domain){
     return activeTab.favIconUrl;
   }
 
-  // make a smart guess if search looks like a real domain
-  var dot = domain.indexOf('.');
-  if( dot > 1 && domain.substring(dot).length > 2) {
-    return 'http://' + domain + '/favicon.ico';
-  }
-
   return 'icon-key.png';
 }
 
