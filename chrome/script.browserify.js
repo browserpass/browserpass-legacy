@@ -5,11 +5,12 @@ var app = 'com.dannyvankooten.browserpass';
 var activeTab;
 var searching = false;
 var logins = null;
-var domain;
+var domain, urlDuringSearch;
 
 m.mount(document.getElementById('mount'), { "view": view });
 
 chrome.browserAction.setIcon({ path: 'icon-lock.svg' });
+chrome.tabs.onActivated.addListener(init);
 chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
   init(tabs[0]);
 });
@@ -90,6 +91,7 @@ function searchPassword(_domain) {
   searching = true;
   logins = null;
   domain = _domain;
+  urlDuringSearch = activeTab.url;
   m.redraw();
 
   chrome.runtime.sendNativeMessage(app, { "action": "search", "domain": _domain }, function(response) {
@@ -130,6 +132,11 @@ function getLoginData() {
 
 // fill login form & submit
 function fillLoginForm(login) {
+  // do not send login data to page if URL changed during search.
+  if( activeTab.url != urlDuringSearch ) {
+    return false;
+  }
+
   var code = `
   (function(d) {
     function form() {
