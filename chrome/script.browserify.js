@@ -181,5 +181,5 @@ function fillLoginForm(login) {
 function parseDomainFromUrl(url) {
   var a = document.createElement('a');
   a.href = url;
-  return a.hostname.replace('www.', '');
+  return a.hostname.replace(/[a-z0-9-]+\.[a-z0-9-]+$/, '$&');
 }
