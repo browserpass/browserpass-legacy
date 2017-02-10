@@ -3,7 +3,8 @@ browserpass-*
 *.crx
 *.log
 *.pem
-*-host.json
+chrome-*
+firefox-*
 release
 firefox/*
 !firefox/host.json

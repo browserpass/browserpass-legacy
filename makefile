@@ -20,6 +20,7 @@ js: chrome/script.browserify.js
 static-files: chrome/host.json firefox/host.json
 	cp chrome/host.json chrome-host.json
 	cp firefox/host.json firefox-host.json
+	cp chrome/policy.json chrome-policy.json
 
 browserpass-linux64: browserpass.go
 	env GOOS=linux GOARCH=amd64 go build -o $@
@@ -32,5 +33,5 @@ release: static-files chrome firefox browserpass-linux64 browserpass-darwinx64
 	mkdir -p release
 	zip -jFS "release/chrome" chrome/* chrome-browserpass.crx
 	zip -jFS "release/firefox" firefox/*
-	zip -FS "release/browserpass-linux64" browserpass-linux64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS "release/browserpass-linux64" browserpass-linux64 *-host.json chrome-browserpass.crx install.sh chrome-policy.json README.md LICENSE
 	zip -FS "release/browserpass-darwinx64" browserpass-darwinx64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE
