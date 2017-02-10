@@ -115,7 +115,7 @@ func readPassFile(file string) ([]byte, error) {
 
 	// assume gpg1
 	gpgbin := "gpg"
-	opts := []string{"--decrypt", "--yes"}
+	opts := []string{"--decrypt", "--yes", "--quiet"}
 
 	// check if we can use gpg2 bin
 	which := exec.Command("which", "gpg2")
