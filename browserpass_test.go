@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 	"testing"
-	"bytes"
 )
 
 func TestGetLogins(t *testing.T) {
@@ -21,31 +20,34 @@ func TestGetPasswordStoreDir(t *testing.T) {
 
 	// default directory
 	os.Setenv("PASSWORD_STORE_DIR", "")
-	expected = home + "/.password-store/"
-	actual = getPasswordStoreDir()
+	expected = home + "/.password-store"
+	actual, _ = getPasswordStoreDir()
 	if expected != actual {
 		t.Errorf("%s does not match %s", expected, actual)
 	}
 
-	// custom directory
-	expected = "/my/custom/dir"
+	// custom directory from $PASSWORD_STORE_DIR
+	expected = "/tmp/browserpass-test"
+	os.Mkdir(expected, os.ModePerm)
 	os.Setenv("PASSWORD_STORE_DIR", expected)
-	actual = getPasswordStoreDir()
+	actual, _ = getPasswordStoreDir()
 	if expected != actual {
 		t.Errorf("%s does not match %s", expected, actual)
 	}
 
+	// clean-up
+	os.Remove(expected)
 }
 
 func TestParseLogin(t *testing.T) {
-	var b = bytes.NewBufferString("password\n\nfoo\nlogin: bar")
+	var b = []byte("password\n\nfoo\nlogin: bar")
 	login := parseLogin(b)
 
-	if( login.Password != "password" ) {
+	if login.Password != "password" {
 		t.Errorf("Password is %s, expected %s", login.Password, "password")
 	}
 
-	if( login.Username != "bar" ) {
+	if login.Username != "bar" {
 		t.Errorf("Username is %s, expected %s", login.Username, "bar")
 	}
 }

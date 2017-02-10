@@ -25,10 +25,11 @@ type Login struct {
 }
 
 func main() {
+	var err error
 	log.SetPrefix("[Browserpass] ")
 
-	PwStoreDir = getPasswordStoreDir()
-	log.Printf("Password store is %s", PwStoreDir)
+	PwStoreDir, err = getPasswordStoreDir()
+	checkError(err)
 
 	// listen for stdin
 	for {
@@ -70,7 +71,7 @@ func main() {
 }
 
 // get absolute path to password store
-func getPasswordStoreDir() string {
+func getPasswordStoreDir() (string, error) {
 	var dir = os.Getenv("PASSWORD_STORE_DIR")
 
 	if dir == "" {
@@ -79,19 +80,21 @@ func getPasswordStoreDir() string {
 
 	// follow symlinks
 	dir, err := filepath.EvalSymlinks(dir)
-	checkError(err)
+	if err != nil {
+		return "", err
+	}
 
-	return strings.TrimSuffix(dir, "/")
+	return strings.TrimSuffix(dir, "/"), nil
 }
 
 // search password store for logins matching search string
 func getLogins(domain string) []string {
-	log.Printf("Searching for %s", domain)
-
 	// first, search for DOMAIN/USERNAME.gpg
 	// then, search for DOMAIN.gpg
-	matches, _ := zglob.Glob(PwStoreDir + "/**/" + domain + "*/*.gpg")
-	matches2, _ := zglob.Glob(PwStoreDir + "/**/" + domain + "*.gpg")
+	matches, err := zglob.Glob(PwStoreDir + "/**/" + domain + "*/*.gpg")
+	checkError(err)
+	matches2, err := zglob.Glob(PwStoreDir + "/**/" + domain + "*.gpg")
+	checkError(err)
 	matches = append(matches, matches2...)
 
 	entries := make([]string, 0)
@@ -107,13 +110,12 @@ func getLogins(domain string) []string {
 }
 
 // read contents of password file using `pass` command
-func readPassFile(file string) *bytes.Buffer {
+func readPassFile(file string) ([]byte, error) {
 	file = PwStoreDir + "/" + file + ".gpg"
-	log.Printf("Reading password file %s", file)
 
 	// assume gpg1
 	gpgbin := "gpg"
-	opts := []string{"--quiet", "--yes"}
+	opts := []string{"--decrypt", "--yes"}
 
 	// check if we can use gpg2 bin
 	which := exec.Command("which", "gpg2")
@@ -124,22 +126,23 @@ func readPassFile(file string) *bytes.Buffer {
 	}
 
 	// append file to decrypt
-	opts = append(opts, []string{"-d", file}...)
+	opts = append(opts, file)
 
-	var out bytes.Buffer
-	cmd := exec.Command(gpgbin, opts...)
-	cmd.Stdout = &out
-	err = cmd.Run()
-	checkError(err)
-	return &out
+	// run gpg command with opts
+	out, err := exec.Command(gpgbin, opts...).CombinedOutput()
+	if err != nil {
+		return nil, errors.New(string(out))
+	}
+
+	return out, nil
 }
 
 // parse login details
-func parseLogin(b *bytes.Buffer) *Login {
+func parseLogin(b []byte) *Login {
 	login := Login{}
 
 	// read first line (the password)
-	scanner := bufio.NewScanner(b)
+	scanner := bufio.NewScanner(bytes.NewReader(b))
 	scanner.Scan()
 	login.Password = scanner.Text()
 
@@ -159,7 +162,9 @@ func parseLogin(b *bytes.Buffer) *Login {
 
 // get login details from frile
 func getLoginFromFile(file string) *Login {
-	b := readPassFile(file)
+	b, err := readPassFile(file)
+	checkError(err)
+
 	login := parseLogin(b)
 
 	// if username is empty at this point, assume filename is username
