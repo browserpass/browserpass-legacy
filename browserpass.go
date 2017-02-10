@@ -108,7 +108,7 @@ func getLogins(domain string) []string {
 
 // read contents of password file using `pass` command
 func readPassFile(file string) *bytes.Buffer {
-	file = PwStoreDir + file + ".gpg"
+	file = PwStoreDir + "/" + file + ".gpg"
 	log.Printf("Reading password file %s", file)
 
 	// assume gpg1
