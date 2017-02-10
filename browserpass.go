@@ -25,7 +25,10 @@ type Login struct {
 }
 
 func main() {
+	log.SetPrefix("[Browserpass] ")
+
 	PwStoreDir = getPasswordStoreDir()
+	log.Printf("Password store is %s", PwStoreDir)
 
 	// listen for stdin
 	for {
@@ -55,6 +58,7 @@ func main() {
 		case "get":
 			login := getLoginFromFile(data["entry"])
 			jsonResponse, err = json.Marshal(login)
+			checkError(err)
 		default:
 			checkError(errors.New("Invalid action"))
 		}
@@ -70,27 +74,32 @@ func getPasswordStoreDir() string {
 	var dir = os.Getenv("PASSWORD_STORE_DIR")
 
 	if dir == "" {
-		dir = os.Getenv("HOME") + "/.password-store/"
+		dir = os.Getenv("HOME") + "/.password-store"
 	}
 
 	// follow symlinks
-	dir, _ = filepath.EvalSymlinks(dir)
+	dir, err := filepath.EvalSymlinks(dir)
+	checkError(err)
 
-	return dir
+	return strings.TrimSuffix(dir, "/")
 }
 
 // search password store for logins matching search string
 func getLogins(domain string) []string {
+	log.Printf("Searching for %s", domain)
+
 	// first, search for DOMAIN/USERNAME.gpg
 	// then, search for DOMAIN.gpg
-	matches, _ := zglob.Glob(PwStoreDir + "**/" + domain + "*/*.gpg")
-	matches2, _ := zglob.Glob(PwStoreDir + "**/" + domain + "*.gpg")
+	matches, _ := zglob.Glob(PwStoreDir + "/**/" + domain + "*/*.gpg")
+	matches2, _ := zglob.Glob(PwStoreDir + "/**/" + domain + "*.gpg")
 	matches = append(matches, matches2...)
 
 	entries := make([]string, 0)
 
 	for _, file := range matches {
-		file = strings.TrimSuffix(strings.Replace(file, PwStoreDir, "", 1), ".gpg")
+		file = strings.Replace(file, PwStoreDir, "", 1)
+		file = strings.TrimPrefix(file, "/")
+		file = strings.TrimSuffix(file, ".gpg")
 		entries = append(entries, file)
 	}
 
@@ -99,10 +108,28 @@ func getLogins(domain string) []string {
 
 // read contents of password file using `pass` command
 func readPassFile(file string) *bytes.Buffer {
+	file = PwStoreDir + file + ".gpg"
+	log.Printf("Reading password file %s", file)
+
+	// assume gpg1
+	gpgbin := "gpg"
+	opts := []string{"--quiet", "--yes"}
+
+	// check if we can use gpg2 bin
+	which := exec.Command("which", "gpg2")
+	err := which.Run()
+	if err == nil {
+		gpgbin = "gpg2"
+		opts = append(opts, []string{"--use-agent", "--batch"}...)
+	}
+
+	// append file to decrypt
+	opts = append(opts, []string{"-d", file}...)
+
 	var out bytes.Buffer
-	cmd := exec.Command("pass", file)
+	cmd := exec.Command(gpgbin, opts...)
 	cmd.Stdout = &out
-	err := cmd.Run()
+	err = cmd.Run()
 	checkError(err)
 	return &out
 }
