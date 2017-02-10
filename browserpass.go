@@ -15,8 +15,10 @@ import (
 	"strings"
 )
 
+// PwStoreDir is the passwordstore root directory
 var PwStoreDir string
 
+// Login represents a single pass login
 type Login struct {
 	Username string `json:"u"`
 	Password string `json:"p"`
@@ -70,6 +72,9 @@ func getPasswordStoreDir() string {
 	if dir == "" {
 		dir = os.Getenv("HOME") + "/.password-store/"
 	}
+
+	// follow symlinks
+	dir, _ = filepath.EvalSymlinks(dir)
 
 	return dir
 }
