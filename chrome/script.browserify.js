@@ -177,9 +177,13 @@ function fillLoginForm(login) {
   window.close();
 }
 
+// Thanks to Simon Buchan at http://stackoverflow.com/questions/6449340/how-to-get-top-level-domain-base-domain-from-the-url-in-javascript
+var DOMAIN_REGEX = /[-\w]+\.(?:[-\w]+\.xn--[-\w]+|[-\w]{3,}|[-\w]+\.[-\w]{2})$/i;
+
 // parse domain from a URL & strip WWW
 function parseDomainFromUrl(url) {
   var a = document.createElement('a');
   a.href = url;
-  return a.hostname.replace(/[a-z0-9-]+\.[a-z0-9-]+$/, '$&');
+  var m = a.hostname.match(DOMAIN_REGEX);
+  return m && m[0];
 }
