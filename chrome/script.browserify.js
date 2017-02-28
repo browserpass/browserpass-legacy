@@ -82,9 +82,18 @@ function init(tab) {
   }
 
   activeTab = tab;
-  var parsedDomain = parseDomain(tab.url);
+  var parsedDomain = parseDomain(tab.url, {
+    customTlds:/localhost/,
+  });
+
   if( parsedDomain ) {
-    searchPassword(parsedDomain.domain + '.' + parsedDomain.tld);
+    var searchDomain = [parsedDomain.domain, parsedDomain.tld]
+      .filter(function (x) { return x; })
+      .join('.');
+
+    if( searchDomain ) {
+      searchPassword(searchDomain);
+    }
   }
 }
 
