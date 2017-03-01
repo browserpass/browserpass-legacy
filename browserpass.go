@@ -1,4 +1,4 @@
-package main
+package browserpass
 
 import (
 	"bufio"
@@ -6,149 +6,137 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"errors"
-	"github.com/mattn/go-zglob"
-	"log"
-	"os"
+	"io"
 	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/dannyvankooten/browserpass/pass"
 )
 
-// PwStoreDir is the passwordstore root directory
-var PwStoreDir string
-
-// Login represents a single pass login
+// Login represents a single pass login.
 type Login struct {
 	Username string `json:"u"`
 	Password string `json:"p"`
 }
 
-func main() {
-	var err error
-	log.SetPrefix("[Browserpass] ")
+var endianness = binary.LittleEndian
 
-	PwStoreDir, err = getPasswordStoreDir()
-	checkError(err)
-
-	// listen for stdin
+// Run starts browserpass.
+func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
 	for {
-		// get message length, 4 bytes
+		// Get message length, 4 bytes
+		var n uint32
+		if err := binary.Read(stdin, endianness, &n); err != nil {
+			return err
+		}
+
+		// Get message body
 		var data map[string]string
-		var length uint32
-		var jsonResponse []byte
-		err := binary.Read(os.Stdin, binary.LittleEndian, &length)
-		if err != nil {
-			break
+		lr := &io.LimitedReader{R: stdin, N: int64(n)}
+		if err := json.NewDecoder(lr).Decode(&data); err != nil {
+			return err
 		}
 
-		input := make([]byte, length)
-		_, err = os.Stdin.Read(input)
-		if err != nil {
-			break
-		}
-
-		err = json.Unmarshal(input, &data)
-		checkError(err)
-
+		var resp interface{}
 		switch data["action"] {
 		case "search":
-			entries := getLogins(data["domain"])
-			jsonResponse, err = json.Marshal(entries)
-			checkError(err)
+			list, err := s.Search(data["domain"])
+			if err != nil {
+				return err
+			}
+			resp = list
 		case "get":
-			login := getLoginFromFile(data["entry"])
-			jsonResponse, err = json.Marshal(login)
-			checkError(err)
+			rc, err := s.Open(data["entry"])
+			if err != nil {
+				return err
+			}
+			login, err := readLoginGPG(rc)
+			if err != nil {
+				return err
+			}
+			rc.Close()
+			if login.Username == "" {
+				login.Username = guessUsername(data["entry"])
+			}
+			resp = login
 		default:
-			checkError(errors.New("Invalid action"))
+			return errors.New("Invalid action")
 		}
 
-		binary.Write(os.Stdout, binary.LittleEndian, uint32(len(jsonResponse)))
-		_, err = os.Stdout.Write(jsonResponse)
-		checkError(err)
+		var b bytes.Buffer
+		if err := json.NewEncoder(&b).Encode(resp); err != nil {
+			return err
+		}
+
+		if err := binary.Write(stdout, endianness, uint32(b.Len())); err != nil {
+			return err
+		}
+		if _, err := b.WriteTo(stdout); err != nil {
+			return err
+		}
 	}
 }
 
-// get absolute path to password store
-func getPasswordStoreDir() (string, error) {
-	var dir = os.Getenv("PASSWORD_STORE_DIR")
-
-	if dir == "" {
-		dir = os.Getenv("HOME") + "/.password-store"
-	}
-
-	// follow symlinks
-	dir, err := filepath.EvalSymlinks(dir)
-	if err != nil {
-		return "", err
-	}
-
-	return strings.TrimSuffix(dir, "/"), nil
-}
-
-// search password store for logins matching search string
-func getLogins(domain string) []string {
-	// first, search for DOMAIN/USERNAME.gpg
-	// then, search for DOMAIN.gpg
-	matches, err := zglob.Glob(PwStoreDir + "/**/" + domain + "*/*.gpg")
-	checkError(err)
-	matches2, err := zglob.Glob(PwStoreDir + "/**/" + domain + "*.gpg")
-	checkError(err)
-	matches = append(matches, matches2...)
-
-	entries := make([]string, 0)
-
-	for _, file := range matches {
-		file = strings.Replace(file, PwStoreDir, "", 1)
-		file = strings.TrimPrefix(file, "/")
-		file = strings.TrimSuffix(file, ".gpg")
-		entries = append(entries, file)
-	}
-
-	return entries
-}
-
-// read contents of password file using `pass` command
-func readPassFile(file string) ([]byte, error) {
-	file = PwStoreDir + "/" + file + ".gpg"
-
-	// assume gpg1
+// readLoginGPG reads a encrypted login from r using the system's GPG binary.
+func readLoginGPG(r io.Reader) (*Login, error) {
+	// Assume gpg1
 	gpgbin := "gpg"
 	opts := []string{"--decrypt", "--yes", "--quiet"}
 
-	// check if we can use gpg2 bin
+	// Check if gpg2 is available
 	which := exec.Command("which", "gpg2")
-	err := which.Run()
-	if err == nil {
+	if err := which.Run(); err == nil {
 		gpgbin = "gpg2"
-		opts = append(opts, []string{"--use-agent", "--batch"}...)
+		opts = append(opts, "--use-agent", "--batch")
 	}
 
-	// append file to decrypt
-	opts = append(opts, file)
+	// Tell gpg to read from stdin
+	opts = append(opts, "-")
 
-	// run gpg command with opts
-	out, err := exec.Command(gpgbin, opts...).CombinedOutput()
+	// Run gpg
+	cmd := exec.Command(gpgbin, opts...)
+
+	cmd.Stdin = r
+
+	rc, err := cmd.StdoutPipe()
 	if err != nil {
-		return nil, errors.New(string(out))
+		return nil, err
 	}
 
-	return out, nil
+	var errbuf bytes.Buffer
+	cmd.Stderr = &errbuf
+
+	if err := cmd.Start(); err != nil {
+		return nil, err
+	}
+
+	// Read decrypted output
+	login, err := parseLogin(rc)
+	if err != nil {
+		return nil, err
+	}
+	rc.Close()
+
+	if err := cmd.Wait(); err != nil {
+		return nil, errors.New(err.Error()+"\n"+errbuf.String())
+	}
+	return login, nil
 }
 
-// parse login details
-func parseLogin(b []byte) *Login {
-	login := Login{}
+// parseLogin parses a login and a password from a decrypted password file.
+func parseLogin(r io.Reader) (*Login, error) {
+	login := new(Login)
 
-	// read first line (the password)
-	scanner := bufio.NewScanner(bytes.NewReader(b))
+	scanner := bufio.NewScanner(r)
+
+	// The first line is the password
 	scanner.Scan()
 	login.Password = scanner.Text()
 
+	// Keep reading file for string in "login:", "username:" or "user:" format (case insensitive).
 	re := regexp.MustCompile("(?i)^(login|username|user):")
-
-	// keep reading file for string in "login:", "username:" or "user:" format (case insensitive).
 	for scanner.Scan() {
 		line := scanner.Text()
 		replaced := re.ReplaceAllString(line, "")
@@ -157,27 +145,13 @@ func parseLogin(b []byte) *Login {
 		}
 	}
 
-	return &login
+	return login, nil
 }
 
-// get login details from frile
-func getLoginFromFile(file string) *Login {
-	b, err := readPassFile(file)
-	checkError(err)
-
-	login := parseLogin(b)
-
-	// if username is empty at this point, assume filename is username
-	if login.Username == "" && strings.Count(file, "/") >= 1 {
-		login.Username = filepath.Base(file)
+// guessLogin tries to guess a username from an entry's name.
+func guessUsername(name string) string {
+	if strings.Count(name, "/") >= 1 {
+		return filepath.Base(name)
 	}
-
-	return login
-}
-
-// write errors to log & quit
-func checkError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
+	return ""
 }

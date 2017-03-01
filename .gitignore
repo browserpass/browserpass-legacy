@@ -1,5 +1,5 @@
-browserpass
-browserpass-*
+/browserpass
+/browserpass-*
 *.crx
 *.log
 *.pem

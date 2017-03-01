@@ -22,11 +22,11 @@ static-files: chrome/host.json firefox/host.json
 	cp firefox/host.json firefox-host.json
 	cp chrome/policy.json chrome-policy.json
 
-browserpass-linux64: browserpass.go
-	env GOOS=linux GOARCH=amd64 go build -o $@
+browserpass-linux64: cmd/browserpass/main.go
+	env GOOS=linux GOARCH=amd64 go build -o $@ ./cmd/browserpass
 
-browserpass-darwinx64: browserpass.go
-	env GOOS=darwin GOARCH=amd64 go build -o $@
+browserpass-darwinx64: cmd/browserpass/main.go
+	env GOOS=darwin GOARCH=amd64 go build -o $@ ./cmd/browserpass
 
 .PHONY: static-files chrome firefox
 release: static-files chrome firefox browserpass-linux64 browserpass-darwinx64
