@@ -23,7 +23,7 @@ function view() {
     results = m('div.loader');
   } else if( logins !== null ) {
     if( typeof(logins) === "undefined" ) {
-      results = m('div.status-text', "Error talking to Pass");
+      results = m('div.status-text', "Error talking to Browserpass host");
     } else if( logins.length === 0 ) {
       results = m('div.status-text',  m.trust(`No passwords found for <strong>${domain}</strong>.`));
     } else if( logins.length > 0 ) {
