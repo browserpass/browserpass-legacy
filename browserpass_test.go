@@ -20,3 +20,16 @@ func TestParseLogin(t *testing.T) {
 		t.Errorf("Username is %s, expected %s", login.Username, "bar")
 	}
 }
+
+func TestGuessUsername(t *testing.T) {
+	tests := map[string]string{
+		"foo":     "",
+		"foo/bar": "bar",
+	}
+
+	for input, expected := range tests {
+		if username := guessUsername(input); username != expected {
+			t.Errorf("guessUsername(%s): expected %s, got %s", input, expected, username)
+		}
+	}
+}
