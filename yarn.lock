@@ -570,6 +570,10 @@ parse-asn1@^5.0.0:
     evp_bytestokey "^1.0.0"
     pbkdf2 "^3.0.3"
 
+parse-domain@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/parse-domain/-/parse-domain-1.1.0.tgz#6cb05bc9002552773bf7cc4c06dbd60dc939a973"
+
 path-browserify@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/path-browserify/-/path-browserify-0.0.0.tgz#a0b870729aae214005b7d5032ec2cbbb0fb4451a"
