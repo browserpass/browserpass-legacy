@@ -52,11 +52,11 @@ func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
 			if err != nil {
 				return err
 			}
+			defer rc.Close()
 			login, err := readLoginGPG(rc)
 			if err != nil {
 				return err
 			}
-			rc.Close()
 			if login.Username == "" {
 				login.Username = guessUsername(data["entry"])
 			}
@@ -120,7 +120,7 @@ func readLoginGPG(r io.Reader) (*Login, error) {
 	rc.Close()
 
 	if err := cmd.Wait(); err != nil {
-		return nil, errors.New(err.Error()+"\n"+errbuf.String())
+		return nil, errors.New(err.Error() + "\n" + errbuf.String())
 	}
 	return login, nil
 }
