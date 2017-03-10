@@ -1,6 +1,7 @@
 'use strict';
 
 var m = require('mithril');
+var parseDomain = require('parse-domain');
 var app = 'com.dannyvankooten.browserpass';
 var activeTab;
 var searching = false;
@@ -81,9 +82,18 @@ function init(tab) {
   }
 
   activeTab = tab;
-  var domain = parseDomainFromUrl(tab.url);
-  if( domain ) {
-    searchPassword(domain);
+  var parsedDomain = parseDomain(tab.url, {
+    customTlds:/localhost/,
+  });
+
+  if( parsedDomain ) {
+    var searchDomain = [parsedDomain.domain, parsedDomain.tld]
+      .filter(function (x) { return x; })
+      .join('.');
+
+    if( searchDomain ) {
+      searchPassword(searchDomain);
+    }
   }
 }
 
@@ -175,11 +185,4 @@ function fillLoginForm(login) {
   `;
   chrome.tabs.executeScript({ code: code });
   window.close();
-}
-
-// parse domain from a URL & strip WWW
-function parseDomainFromUrl(url) {
-  var a = document.createElement('a');
-  a.href = url;
-  return a.hostname.replace(/[a-z0-9-]+\.[a-z0-9-]+$/, '$&');
 }
