@@ -23,6 +23,13 @@ type Login struct {
 
 var endianness = binary.LittleEndian
 
+// msg defines a message sent from a browser extension.
+type msg struct {
+	Action string `json:"action"`
+	Domain string `json:"domain"`
+	Entry  string `json:"entry"`
+}
+
 // Run starts browserpass.
 func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
 	for {
@@ -33,22 +40,22 @@ func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
 		}
 
 		// Get message body
-		var data map[string]string
+		var data msg
 		lr := &io.LimitedReader{R: stdin, N: int64(n)}
 		if err := json.NewDecoder(lr).Decode(&data); err != nil {
 			return err
 		}
 
 		var resp interface{}
-		switch data["action"] {
+		switch data.Action {
 		case "search":
-			list, err := s.Search(data["domain"])
+			list, err := s.Search(data.Domain)
 			if err != nil {
 				return err
 			}
 			resp = list
 		case "get":
-			rc, err := s.Open(data["entry"])
+			rc, err := s.Open(data.Entry)
 			if err != nil {
 				return err
 			}
@@ -58,7 +65,7 @@ func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
 				return err
 			}
 			if login.Username == "" {
-				login.Username = guessUsername(data["entry"])
+				login.Username = guessUsername(data.Entry)
 			}
 			resp = login
 		default:
