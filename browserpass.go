@@ -35,7 +35,9 @@ func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
 	for {
 		// Get message length, 4 bytes
 		var n uint32
-		if err := binary.Read(stdin, endianness, &n); err != nil {
+		if err := binary.Read(stdin, endianness, &n); err == io.EOF {
+			return nil
+		} else if err != nil {
 			return err
 		}
 
