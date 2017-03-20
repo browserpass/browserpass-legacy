@@ -152,10 +152,16 @@ function fillLoginForm(login) {
     function queryFirstVisible(parent, selector) {
       var elems = parent.querySelectorAll(selector);
       for (var i=0; i < elems.length; i++) {
+        // Elem or its parent has a style 'display: none',
+        // or it is just too narrow to be a real field (a trap for spammers?).
+        if (elems[i].offsetWidth < 50 || elems[i].offsetHeight < 10) { continue; }
+
         var style = window.getComputedStyle(elems[i]);
-        if (style.visibility !== 'hidden' && style.display !== 'none') {
-          return elems[i];
-        }
+        // Elem takes space on the screen, but it or its parent is hidden with a visibility style.
+        if (style.visibility == 'hidden') { continue; }
+
+        // This element is visible, will use it.
+        return elems[i];
       }
     }
 
