@@ -149,12 +149,23 @@ function fillLoginForm(login) {
 
   var code = `
   (function(d) {
+    function queryFirstVisible(parent, selector) {
+      var elems = parent.querySelectorAll(selector);
+      for (var i=0; i < elems.length; i++) {
+        var style = window.getComputedStyle(elems[i]);
+        if (style.visibility !== 'hidden' && style.display !== 'none') {
+          return elems[i];
+        }
+      }
+    }
+
     function form() {
-      return d.querySelector('input[type=password]').form || document.createElement('form');
+      var passwordField = queryFirstVisible(d, 'input[type=password]');
+      return (passwordField && passwordField.form) ? passwordField.form : undefined;
     }
 
     function field(selector) {
-      return form().querySelector(selector) || document.createElement('input');
+      return queryFirstVisible(form(), selector) || document.createElement('input');
     }
 
     function update(el, value) {
@@ -172,6 +183,10 @@ function fillLoginForm(login) {
       return true;
     }
 
+    if (typeof form() === 'undefined') {
+      return;
+    }
+
     update(field('input[type=password]'), ${JSON.stringify(login.p)});
     update(field('input[type=email], input[type=text]'), ${JSON.stringify(login.u)});
 
@@ -183,6 +198,6 @@ function fillLoginForm(login) {
     }
   })(document);
   `;
-  chrome.tabs.executeScript({ code: code });
+  chrome.tabs.executeScript({ code: code, allFrames: true });
   window.close();
 }

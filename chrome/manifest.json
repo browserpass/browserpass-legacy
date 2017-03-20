@@ -12,7 +12,9 @@
   },
   "permissions": [
     "activeTab",
-    "nativeMessaging"
+    "nativeMessaging",
+    "http://*/*",
+    "https://*/*"
   ],
   "commands": {
    "_execute_browser_action": {
