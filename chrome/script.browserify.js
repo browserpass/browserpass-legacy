@@ -149,7 +149,8 @@ function fillLoginForm(login) {
 
   var code = `
   (function(d) {
-    function queryFirstVisible(parent, selector) {
+    function queryAllVisible(parent, selector) {
+      var result = [];
       var elems = parent.querySelectorAll(selector);
       for (var i=0; i < elems.length; i++) {
         // Elem or its parent has a style 'display: none',
@@ -161,8 +162,14 @@ function fillLoginForm(login) {
         if (style.visibility == 'hidden') { continue; }
 
         // This element is visible, will use it.
-        return elems[i];
+        result.push(elems[i]);
       }
+      return result;
+    }
+
+    function queryFirstVisible(parent, selector) {
+      var elems = queryAllVisible(parent, selector);
+      return (elems.length > 0) ? elems[0] : undefined;
     }
 
     function form() {
@@ -196,7 +203,7 @@ function fillLoginForm(login) {
     update(field('input[type=password]'), ${JSON.stringify(login.p)});
     update(field('input[type=email], input[type=text]'), ${JSON.stringify(login.u)});
 
-    var password_inputs = document.querySelectorAll('input[type=password]');
+    var password_inputs = queryAllVisible(document, 'input[type=password]');
     if (password_inputs.length > 1) {
       password_inputs[1].select();
     } else {
