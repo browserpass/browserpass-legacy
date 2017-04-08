@@ -47,7 +47,7 @@ You can [install the Firefox extension from the Mozilla add-ons site](https://ad
 
 Click the lock icon or use **Alt + Shift + L** to fill & submit your login info for the current site.
 
-_Note: this does not yet work in Firefox, but will soon once [Firefox supports the _execute_browser_action command](https://blog.mozilla.org/addons/2016/11/18/webextensions-in-firefox-52/)._
+_Note: This does not work in Firefox before version 52._
 
 ## Contributing
 
