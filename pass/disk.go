@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/mattn/go-zglob"
+	"os/user"
 )
 
 type diskStore struct {
@@ -24,9 +25,15 @@ func NewDefaultStore() (Store, error) {
 }
 
 func defaultStorePath() (string, error) {
+	usr, err := user.Current()
+
+	if err != nil {
+		return "", err
+	}
+
 	path := os.Getenv("PASSWORD_STORE_DIR")
 	if path == "" {
-		path = filepath.Join(os.Getenv("HOME"), ".password-store")
+		path = filepath.Join(usr.HomeDir, ".password-store")
 	}
 
 	// Follow symlinks
