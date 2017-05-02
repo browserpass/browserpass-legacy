@@ -37,6 +37,14 @@ else
   fi
 fi
 
+if [ $(uname -s) == 'OpenBSD' ]; then
+  HOST_FILE="$DIR/browserpass-openbsd64"
+  TARGET_DIR_CHROME="$HOME/.config/google-chrome/NativeMessagingHosts"
+  TARGET_DIR_CHROMIUM="$HOME/.config/chromium/NativeMessagingHosts"
+  TARGET_DIR_FIREFOX="$HOME/.mozilla/native-messaging-hosts"
+  TARGET_DIR_VIVALDI="$HOME/.config/vivaldi/NativeMessagingHosts"
+fi
+
 if [ -e "$DIR/browserpass" ]; then
   echo "Detected development binary"
   HOST_FILE="$DIR/browserpass"
