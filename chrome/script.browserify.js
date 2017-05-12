@@ -122,7 +122,7 @@ function getFaviconUrl(domain){
     return activeTab.favIconUrl;
   }
 
-  return 'icon-key.png';
+  return 'icon-key.svg';
 }
 
 function getLoginData() {
