@@ -201,7 +201,7 @@ function fillLoginForm(login) {
     }
 
     update(field('input[type=password]'), ${JSON.stringify(login.p)});
-    update(field('input[type=email], input[type=text]'), ${JSON.stringify(login.u)});
+    update(field('input[type=email], input[type=text], input:first-of-type'), ${JSON.stringify(login.u)});
 
     var password_inputs = queryAllVisible(form(), 'input[type=password]');
     if (password_inputs.length > 1) {
