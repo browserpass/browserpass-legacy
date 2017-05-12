@@ -149,12 +149,36 @@ function fillLoginForm(login) {
 
   var code = `
   (function(d) {
+    function queryAllVisible(parent, selector) {
+      var result = [];
+      var elems = parent.querySelectorAll(selector);
+      for (var i=0; i < elems.length; i++) {
+        // Elem or its parent has a style 'display: none',
+        // or it is just too narrow to be a real field (a trap for spammers?).
+        if (elems[i].offsetWidth < 50 || elems[i].offsetHeight < 10) { continue; }
+
+        var style = window.getComputedStyle(elems[i]);
+        // Elem takes space on the screen, but it or its parent is hidden with a visibility style.
+        if (style.visibility == 'hidden') { continue; }
+
+        // This element is visible, will use it.
+        result.push(elems[i]);
+      }
+      return result;
+    }
+
+    function queryFirstVisible(parent, selector) {
+      var elems = queryAllVisible(parent, selector);
+      return (elems.length > 0) ? elems[0] : undefined;
+    }
+
     function form() {
-      return d.querySelector('input[type=password]').form || document.createElement('form');
+      var passwordField = queryFirstVisible(d, 'input[type=password]');
+      return (passwordField && passwordField.form) ? passwordField.form : undefined;
     }
 
     function field(selector) {
-      return form().querySelector(selector) || document.createElement('input');
+      return queryFirstVisible(form(), selector) || document.createElement('input');
     }
 
     function update(el, value) {
@@ -172,10 +196,14 @@ function fillLoginForm(login) {
       return true;
     }
 
+    if (typeof form() === 'undefined') {
+      return;
+    }
+
     update(field('input[type=password]'), ${JSON.stringify(login.p)});
     update(field('input[type=email], input[type=text]'), ${JSON.stringify(login.u)});
 
-    var password_inputs = document.querySelectorAll('input[type=password]');
+    var password_inputs = queryAllVisible(document, 'input[type=password]');
     if (password_inputs.length > 1) {
       password_inputs[1].select();
     } else {
@@ -183,6 +211,6 @@ function fillLoginForm(login) {
     }
   })(document);
   `;
-  chrome.tabs.executeScript({ code: code });
+  chrome.tabs.executeScript({ code: code, allFrames: true });
   window.close();
 }
