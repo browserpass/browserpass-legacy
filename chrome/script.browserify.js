@@ -189,7 +189,7 @@ function fillLoginForm(login) {
       el.setAttribute('value', value);
       el.value = value;
 
-      var eventNames = [ 'click', 'focus', 'keyup', 'keydown', 'change', 'blur' ];
+      var eventNames = [ 'click', 'focus', 'keypress', 'keydown', 'keyup', 'input', 'blur', 'change' ];
       eventNames.forEach(function(eventName) {
         el.dispatchEvent(new Event(eventName, {"bubbles":true}));
       });
@@ -207,8 +207,10 @@ function fillLoginForm(login) {
     if (password_inputs.length > 1) {
       password_inputs[1].select();
     } else {
-      field('[type=submit]').click();
-    }
+		window.requestAnimationFrame(function() {
+ field('[type=submit]').click(); 
+		});
+	 }
   })(document);
   `;
   chrome.tabs.executeScript({ code: code, allFrames: true });
