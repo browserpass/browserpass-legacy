@@ -95,8 +95,8 @@ func readLoginGPG(r io.Reader) (*Login, error) {
 	opts := []string{"--decrypt", "--yes", "--quiet"}
 
 	// Check if gpg2 is available
-	which := exec.Command("which", "gpg2")
-	if err := which.Run(); err == nil {
+	gpg2check := exec.Command("gpg2", "--version")
+	if err := gpg2check.Run(); err == nil {
 		gpgbin = "gpg2"
 		opts = append(opts, "--use-agent", "--batch")
 	}
