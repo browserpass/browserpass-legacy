@@ -87,7 +87,7 @@ function init(tab) {
   });
 
   if( parsedDomain ) {
-    var searchDomain = [parsedDomain.domain, parsedDomain.tld]
+    var searchDomain = [parsedDomain.subdomain, parsedDomain.domain, parsedDomain.tld]
       .filter(function (x) { return x; })
       .join('.');
 
