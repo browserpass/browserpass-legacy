@@ -80,7 +80,7 @@ func TestDiskStoreSearch(t *testing.T) {
 			}
 		}
 		if found != true {
-			t.Fatalf("Couldn't find %v in %v", domain, searchResults)
+			t.Fatalf("Couldn't find %v in %v", targetDomain, searchResults)
 		}
 	}
 }
