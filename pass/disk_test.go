@@ -2,7 +2,6 @@ package pass
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -81,7 +80,7 @@ func TestDiskStoreSearch(t *testing.T) {
 			}
 		}
 		if found != true {
-			log.Fatalf("Couldn't find %v in %v", domain, searchResults)
+			t.Fatalf("Couldn't find %v in %v", domain, searchResults)
 		}
 	}
 }
