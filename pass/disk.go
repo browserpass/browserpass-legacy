@@ -3,12 +3,13 @@ package pass
 import (
 	"errors"
 	"io"
-	"path/filepath"
 	"os"
+	"path/filepath"
 	"strings"
 
-	"github.com/mattn/go-zglob"
 	"os/user"
+
+	"github.com/mattn/go-zglob"
 )
 
 type diskStore struct {
@@ -60,6 +61,15 @@ func (s *diskStore) Search(query string) ([]string, error) {
 			return nil, err
 		}
 		items[i] = strings.TrimSuffix(item, ".gpg")
+	}
+	if strings.Count(query, ".") >= 2 {
+		// try finding additional items by removing subparts of the query
+		queryParts := strings.SplitN(query, ".", 2)[1:]
+		newItems, err := s.Search(strings.Join(queryParts, "."))
+		if err != nil {
+			return nil, err
+		}
+		items = append(items, newItems...)
 	}
 
 	return items, nil

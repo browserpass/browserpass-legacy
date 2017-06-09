@@ -1,11 +1,11 @@
 package pass
 
 import (
+	"fmt"
 	"os"
-	"testing"
 	"os/user"
 	"path/filepath"
-	"fmt"
+	"testing"
 )
 
 func TestDefaultStorePath(t *testing.T) {
@@ -59,5 +59,28 @@ func TestDiskStore_Search_nomatch(t *testing.T) {
 	}
 	if len(logins) > 0 {
 		t.Errorf("%s yielded results, but it should not", domain)
+	}
+}
+
+func TestDiskStoreSearch(t *testing.T) {
+	store := diskStore{"test_store"}
+	targetDomain := "abc.com"
+	testDomains := []string{"abc.com", "test.abc.com", "testing.test.abc.com"}
+	for _, domain := range testDomains {
+		searchResults, err := store.Search(domain)
+		if err != nil {
+			t.Fatal(err)
+		}
+		// check if result contains abc.com
+		found := false
+		for _, searchResult := range searchResults {
+			if searchResult == targetDomain {
+				found = true
+				break
+			}
+		}
+		if found != true {
+			t.Fatalf("Couldn't find %v in %v", targetDomain, searchResults)
+		}
 	}
 }
