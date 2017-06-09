@@ -1,7 +1,6 @@
 'use strict';
 
 var m = require('mithril');
-var parseDomain = require('parse-domain');
 var app = 'com.dannyvankooten.browserpass';
 var activeTab;
 var searching = false;
@@ -82,21 +81,8 @@ function init(tab) {
 	}
 
 	activeTab = tab;
-	var parsedDomain = parseDomain(tab.url, {
-		customTlds:/localhost/,
-	});
-
-	if( parsedDomain ) {
-		var searchDomain = [parsedDomain.subdomain, parsedDomain.domain, parsedDomain.tld]
-			.filter(function (x) { return x; })
-			.join('.');
-
-		console.log(searchDomain);
-
-		if( searchDomain ) {
-			searchPassword(searchDomain);
-		}
-	}
+	var activeDomain = parseDomainFromUrl(tab.url);
+	searchPassword(activeDomain);
 }
 
 function searchPassword(_domain) {
@@ -115,6 +101,12 @@ function searchPassword(_domain) {
 		logins = response;
 		m.redraw();
 	});
+}
+
+function parseDomainFromUrl(url) {
+	var a = document.createElement('a');
+	a.href = url;
+	return a.hostname;
 }
 
 function getFaviconUrl(domain){
