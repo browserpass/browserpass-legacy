@@ -23,16 +23,16 @@ static-files: chrome/host.json firefox/host.json
 	cp firefox/host.json firefox-host.json
 	cp chrome/policy.json chrome-policy.json
 
-browserpass: cmd/browserpass/main.go
+browserpass: cmd/browserpass/ pass/ browserpass.go
 	go build -o $@ ./cmd/browserpass
 
-browserpass-linux64: cmd/browserpass/main.go
+browserpass-linux64: cmd/browserpass/ pass/ browserpass.go
 	env GOOS=linux GOARCH=amd64 go build -o $@ ./cmd/browserpass
 
-browserpass-darwinx64: cmd/browserpass/main.go
+browserpass-darwinx64: cmd/browserpass/ pass/ browserpass.go
 	env GOOS=darwin GOARCH=amd64 go build -o $@ ./cmd/browserpass
 
-browserpass-openbsd64: browserpass.go
+browserpass-openbsd64: cmd/browserpass/ pass/ browserpass.go
 	env GOOS=openbsd GOARCH=amd64 go build -o $@ ./cmd/browserpass
 
 .PHONY: static-files chrome firefox
