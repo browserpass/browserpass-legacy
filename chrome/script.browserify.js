@@ -143,13 +143,15 @@ function fillLoginForm(login) {
 
 	var code = `
   (function(d) {
-	function queryAllVisible(parent, selector) {
+	function queryAllVisible(parent, selector, form) {
 	  var result = [];
 	  var elems = parent.querySelectorAll(selector);
 	  for (var i=0; i < elems.length; i++) {
 		// Elem or its parent has a style 'display: none',
 		// or it is just too narrow to be a real field (a trap for spammers?).
 		if (elems[i].offsetWidth < 50 || elems[i].offsetHeight < 10) { continue; }
+		// Select only elements from specified form
+		if (form && form != elems[i].form) { continue; }
 
 		var style = window.getComputedStyle(elems[i]);
 		// Elem takes space on the screen, but it or its parent is hidden with a visibility style.
@@ -161,18 +163,18 @@ function fillLoginForm(login) {
 	  return result;
 	}
 
-	function queryFirstVisible(parent, selector) {
-	  var elems = queryAllVisible(parent, selector);
+	function queryFirstVisible(parent, selector, form) {
+	  var elems = queryAllVisible(parent, selector, form);
 	  return (elems.length > 0) ? elems[0] : undefined;
 	}
 
 	function form() {
-	  var passwordField = queryFirstVisible(d, 'input[type=password]');
+	  var passwordField = queryFirstVisible(d, 'input[type=password]', undefined);
 	  return (passwordField && passwordField.form) ? passwordField.form : undefined;
 	}
 
 	function field(selector) {
-	  return queryFirstVisible(form(), selector) || document.createElement('input');
+	  return queryFirstVisible(d, selector, form()) || document.createElement('input');
 	}
 
 	function update(el, value) {
