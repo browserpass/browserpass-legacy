@@ -29,12 +29,6 @@ chrome/script.js: chrome/script.browserify.js
 chrome/inject.js: chrome/inject.browserify.js
 	browserify chrome/inject.browserify.js -o chrome/inject.js
 
-.PHONY: static-files
-static-files: chrome/host.json firefox/host.json
-	cp chrome/host.json chrome-host.json
-	cp firefox/host.json firefox-host.json
-	cp chrome/policy.json chrome-policy.json
-
 browserpass: cmd/browserpass/ pass/ browserpass.go
 	go build -o $@ ./cmd/browserpass
 
@@ -50,8 +44,8 @@ browserpass-openbsd64: cmd/browserpass/ pass/ browserpass.go
 browserpass-freebsd64: cmd/browserpass/ pass/ browserpass.go
 	env GOOS=freebsd GOARCH=amd64 go build -o $@ ./cmd/browserpass
 
-.PHONY: static-files chrome firefox
-release: static-files chrome firefox browserpass-linux64 browserpass-darwinx64 browserpass-openbsd64 browserpass-freebsd64
+.PHONY: chrome firefox
+release: chrome firefox browserpass-linux64 browserpass-darwinx64 browserpass-openbsd64 browserpass-freebsd64
 	mkdir -p release
 	zip -jFS "release/chrome" chrome/* chrome-browserpass.crx
 	zip -jFS "release/firefox" firefox/*

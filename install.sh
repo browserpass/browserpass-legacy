@@ -120,11 +120,11 @@ ESCAPED_HOST_FILE=${HOST_FILE////\\/}
 if [ "$BROWSER_NAME" == "Chrome" ] || \
    [ "$BROWSER_NAME" == "Chromium" ] || \
    [ "$BROWSER_NAME" == "Vivaldi" ]; then
-  cp "$DIR/chrome-host.json" "$TARGET_DIR/$APP_NAME.json"
-	mkdir -p "$TARGET_DIR"/../policies/managed/
-	cp "$DIR/chrome-policy.json" "$TARGET_DIR"/../policies/managed/"$APP_NAME.json"
+  cp "$DIR/chrome/host.json" "$TARGET_DIR/$APP_NAME.json"
+  mkdir -p "$TARGET_DIR"/../policies/managed/
+  cp "$DIR/chrome/policy.json" "$TARGET_DIR"/../policies/managed/"$APP_NAME.json"
 else
-  cp "$DIR/firefox-host.json" "$TARGET_DIR/$APP_NAME.json"
+  cp "$DIR/firefox/host.json" "$TARGET_DIR/$APP_NAME.json"
 fi
 
 # Replace path to host
