@@ -43,7 +43,7 @@
 	  return;
 	}
 	update(field('input[type=password]'), login.p);
-	update(field('input[type=email], input[type=text], input:first-of-type'), login.u);
+	update(field('input[id=username], input[id=user_name], input[id=userid], input[id=user_id], input[id=login], input[id=email], input[type=email], input[type=text]'), login.u);
 	var password_inputs = queryAllVisible(form(), 'input[type=password]');
 	if (password_inputs.length > 1) {
 	  password_inputs[1].select();
