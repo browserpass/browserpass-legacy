@@ -124,27 +124,8 @@ function getLoginData() {
 	logins = null;
 	m.redraw();
 
-	chrome.runtime.sendNativeMessage(app, { "action": "get", "entry": this }, function(response) {
-		if( chrome.runtime.lastError) {
-			console.log(chrome.runtime.lastError);
-		}
-
+	chrome.runtime.sendMessage({ "action": "login", "entry": this, "urlDuringSearch": urlDuringSearch }, function(response) {
 		searching = false;
-		fillLoginForm(response);
+		window.close();
 	});
-}
-
-// fill login form & submit
-function fillLoginForm(login) {
-	// do not send login data to page if URL changed during search.
-	if( activeTab.url != urlDuringSearch ) {
-		return false;
-	}
-
-	chrome.tabs.executeScript(
-		{code: 'var login = ' + JSON.stringify(login) + ';'},
-		function() { chrome.tabs.executeScript({ file: '/inject.js', allFrames: true });}
-	);
-
-	window.close();
 }

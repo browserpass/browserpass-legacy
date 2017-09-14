@@ -17,7 +17,7 @@ firefox:
 .PHONY: js
 js: $(JS_OUTPUT)
 
-chrome/script.js: chrome/script.browserify.js
+chrome/script.js: chrome/script.browserify.js 
 	browserify chrome/script.browserify.js -o chrome/script.js
 
 chrome/inject.js: chrome/inject.browserify.js
