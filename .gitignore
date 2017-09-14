@@ -12,3 +12,4 @@ firefox/*
 chrome/script.js
 chrome/inject.js
 node_modules
+.vagrant/
