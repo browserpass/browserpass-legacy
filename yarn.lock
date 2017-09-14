@@ -534,8 +534,8 @@ minimist@^1.1.0:
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
 mithril@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/mithril/-/mithril-0.2.5.tgz#c1a50438a93ac23f11ada91188bb784c755404c2"
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/mithril/-/mithril-0.2.8.tgz#cc6d470b9227cebb342718655bd0a1d7ab2afb96"
 
 module-deps@^4.0.8:
   version "4.1.1"
@@ -586,10 +586,6 @@ parse-asn1@^5.0.0:
     create-hash "^1.1.0"
     evp_bytestokey "^1.0.0"
     pbkdf2 "^3.0.3"
-
-parse-domain@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/parse-domain/-/parse-domain-1.1.0.tgz#6cb05bc9002552773bf7cc4c06dbd60dc939a973"
 
 path-browserify@~0.0.0:
   version "0.0.0"
