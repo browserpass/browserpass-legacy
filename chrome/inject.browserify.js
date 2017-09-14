@@ -1,18 +1,22 @@
 (function(d) {
 	function queryAllVisible(parent, selector, form) {
 	  var result = [];
-	  var elems = parent.querySelectorAll(selector);
-	  for (var i=0; i < elems.length; i++) {
+	  var selectors = selector.split(",");
+	  for (var i=0; i < selectors.length; i++) {
+	    var selector = selectors[i].trim();
+	    var elems = parent.querySelectorAll(selector);
+	    for (var j=0; j < elems.length; j++) {
 		// Elem or its parent has a style 'display: none',
 		// or it is just too narrow to be a real field (a trap for spammers?).
-		if (elems[i].offsetWidth < 50 || elems[i].offsetHeight < 10) { continue; }
+		if (elems[j].offsetWidth < 50 || elems[j].offsetHeight < 10) { continue; }
 		// Select only elements from specified form
-		if (form && form != elems[i].form) { continue; }
-		var style = window.getComputedStyle(elems[i]);
+		if (form && form != elems[j].form) { continue; }
+		var style = window.getComputedStyle(elems[j]);
 		// Elem takes space on the screen, but it or its parent is hidden with a visibility style.
 		if (style.visibility == 'hidden') { continue; }
 		// This element is visible, will use it.
-		result.push(elems[i]);
+		result.push(elems[j]);
+	    }
 	  }
 	  return result;
 	}
