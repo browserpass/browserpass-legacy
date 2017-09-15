@@ -120,11 +120,23 @@ ESCAPED_HOST_FILE=${HOST_FILE////\\/}
 if [ "$BROWSER_NAME" == "Chrome" ] || \
    [ "$BROWSER_NAME" == "Chromium" ] || \
    [ "$BROWSER_NAME" == "Vivaldi" ]; then
-  cp "$DIR/chrome/host.json" "$TARGET_DIR/$APP_NAME.json"
+  if [ ! -f "$DIR/chrome-host.json" ] || [ ! -f "$DIR/chrome-policy.json" ]; then
+    echo "ERROR: '$DIR/chrome-host.json' or '$DIR/chrome-policy.json' is missing."
+    echo "If you are running './install.sh' from a release archive, please file a bug."
+    echo "If you are running './install.sh' from the source code, make sure to follow CONTRIBUTING.md on how to build first."
+    exit 1
+  fi
+  cp "$DIR/chrome-host.json" "$TARGET_DIR/$APP_NAME.json"
   mkdir -p "$TARGET_DIR"/../policies/managed/
-  cp "$DIR/chrome/policy.json" "$TARGET_DIR"/../policies/managed/"$APP_NAME.json"
+  cp "$DIR/chrome-policy.json" "$TARGET_DIR"/../policies/managed/"$APP_NAME.json"
 else
-  cp "$DIR/firefox/host.json" "$TARGET_DIR/$APP_NAME.json"
+  if [ ! -f "$DIR/firefox-host.json" ]; then
+    echo "ERROR: '$DIR/firefox-host.json' is missing."
+    echo "If you are running './install.sh' from a release archive, please file a bug."
+    echo "If you are running './install.sh' from the source code, make sure to follow CONTRIBUTING.md on how to build first."
+    exit 1
+  fi
+  cp "$DIR/firefox-host.json" "$TARGET_DIR/$APP_NAME.json"
 fi
 
 # Replace path to host
