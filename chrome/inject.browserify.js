@@ -1,4 +1,8 @@
 (function(d) {
+  const USERNAME_FIELDS =
+    "input[id=username], input[id=user_name], input[id=userid], input[id=user_id], input[id=login], input[id=email], input[type=email], input[type=text]";
+  const PASSWORD_FIELDS = "input[type=password]";
+
   function queryAllVisible(parent, selector, form) {
     var result = [];
     var selectors = selector.split(",");
@@ -33,8 +37,12 @@
   }
 
   function form() {
-    var passwordField = queryFirstVisible(d, "input[type=password]", undefined);
-    return passwordField && passwordField.form ? passwordField.form : undefined;
+    var field = queryFirstVisible(
+      d,
+      PASSWORD_FIELDS + ", " + USERNAME_FIELDS,
+      undefined
+    );
+    return field && field.form ? field.form : undefined;
   }
 
   function field(selector) {
@@ -69,16 +77,11 @@
     return;
   }
 
-  update(field("input[type=password]"), login.p);
-  update(
-    field(
-      "input[id=username], input[id=user_name], input[id=userid], input[id=user_id], input[id=login], input[id=email], input[type=email], input[type=text]"
-    ),
-    login.u
-  );
+  update(field(PASSWORD_FIELDS), login.p);
+  update(field(USERNAME_FIELDS), login.u);
 
-  var password_inputs = queryAllVisible(form(), "input[type=password]");
-  if (autoSubmit == 'false' || password_inputs.length > 1) {
+  var password_inputs = queryAllVisible(form(), PASSWORD_FIELDS);
+  if (autoSubmit == "false" || password_inputs.length > 1) {
     password_inputs[1].select();
   } else {
     window.requestAnimationFrame(function() {
