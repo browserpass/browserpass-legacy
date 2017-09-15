@@ -15,13 +15,13 @@
     "nativeMessaging"
   ],
   "commands": {
-   "_execute_browser_action": {
-     "suggested_key": {
-       "default": "Alt+Shift+L"
-     }
-   }
- },
- "applications": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+L"
+      }
+    }
+  },
+  "applications": {
     "gecko": {
       "id": "browserpass@dannyvankooten.com",
       "strict_min_version": "50.0"
