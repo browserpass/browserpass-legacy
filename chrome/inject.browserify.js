@@ -84,12 +84,17 @@
     alert(login.digits);
   }
 
-  var password_inputs = queryAllVisible(form(), PASSWORD_FIELDS);
-  if (autoSubmit == "false" || password_inputs.length > 1) {
+  var password_inputs = queryAllVisible(d, PASSWORD_FIELDS, form());
+  if (password_inputs.length > 1) {
+    // There is likely a field asking for OTP code, so do not submit form just yet
     password_inputs[1].select();
   } else {
     window.requestAnimationFrame(function() {
-      field("[type=submit]").click();
+      if (autoSubmit == "false") {
+        field("[type=submit]").focus();
+      } else {
+        field("[type=submit]").click();
+      }
     });
   }
 })(document);
