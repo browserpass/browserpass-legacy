@@ -73,10 +73,6 @@
     return true;
   }
 
-  if (typeof form() === "undefined") {
-    return;
-  }
-
   update(field(PASSWORD_FIELDS), login.p);
   update(field(USERNAME_FIELDS), login.u);
 
