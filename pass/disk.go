@@ -72,7 +72,7 @@ func (s *diskStore) Search(query string) ([]string, error) {
 		items = append(items, newItems...)
 	}
 
-	return items, nil
+	return unique(items), nil
 }
 
 func (s *diskStore) Open(item string) (io.ReadCloser, error) {
@@ -87,4 +87,16 @@ func (s *diskStore) Open(item string) (io.ReadCloser, error) {
 		return nil, ErrNotFound
 	}
 	return f, err
+}
+
+func unique(elems []string) []string {
+	seen := make(map[string]bool)
+	result := []string{}
+	for _, elem := range elems {
+		if !seen[elem] {
+			seen[elem] = true
+			result = append(result, elem)
+		}
+	}
+	return result
 }

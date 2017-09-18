@@ -84,3 +84,18 @@ func TestDiskStoreSearch(t *testing.T) {
 		}
 	}
 }
+
+func TestDiskStoreSearchNoDuplicates(t *testing.T) {
+	store := diskStore{"test_store"}
+	searchResult, err := store.Search("xyz")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(searchResult) != 1 {
+		t.Fatalf("Found %v results instead of 1", len(searchResult))
+	}
+	expectedResult := "xyz.com/xyz_user"
+	if searchResult[0] != expectedResult {
+		t.Fatalf("Couldn't find %v, found %v instead", expectedResult, searchResult[0])
+	}
+}
