@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/dannyvankooten/browserpass/pass"
+	"github.com/dannyvankooten/browserpass/protector"
 	"github.com/gokyle/twofactor"
 )
 
@@ -35,6 +36,7 @@ type msg struct {
 
 // Run starts browserpass.
 func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
+	protector.Protect("stdio rpath proc exec")
 	for {
 		// Get message length, 4 bytes
 		var n uint32
@@ -123,6 +125,8 @@ func readLoginGPG(r io.Reader) (*Login, error) {
 	if err := cmd.Start(); err != nil {
 		return nil, err
 	}
+
+	protector.Protect("stdio")
 
 	// Read decrypted output
 	login, err := parseLogin(rc)
