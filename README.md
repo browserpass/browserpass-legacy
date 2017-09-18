@@ -28,6 +28,10 @@ login: johndoe
 
 Start out by downloading the [latest release package](https://github.com/dannyvankooten/browserpass/releases) for your operating system. Prebuilt binaries for 64-bit OSX & Linux and Windows are available. Arch users can install browserpass [from the AUR](https://aur.archlinux.org/packages/browserpass/).
 
+#### Verifying authenticity of the releases
+
+All release files are signed with [this PGP key](https://keybase.io/maximbaz). To verify the signature of a given file, use `$ gpg --verify <file>.sig`
+
 #### Installing the host application
 
 1. Extract the package to where you would like to have the binary.
