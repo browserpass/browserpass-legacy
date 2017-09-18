@@ -23,7 +23,7 @@ firefox:
 .PHONY: js
 js: $(JS_OUTPUT)
 
-chrome/script.js: chrome/script.browserify.js 
+chrome/script.js: chrome/script.browserify.js
 	browserify chrome/script.browserify.js -o chrome/script.js
 
 chrome/inject.js: chrome/inject.browserify.js
@@ -51,6 +51,14 @@ browserpass-openbsd64: cmd/browserpass/ pass/ browserpass.go
 
 browserpass-freebsd64: cmd/browserpass/ pass/ browserpass.go
 	env GOOS=freebsd GOARCH=amd64 go build -o $@ ./cmd/browserpass
+
+clean:
+	rm -f browserpass-*
+	rm -rf release
+	git clean -fdx chrome/
+	git clean -fdx firefox/
+	rm -f *.crx
+	rm -f *-host.json
 
 .PHONY: static-files chrome firefox
 release: static-files chrome firefox browserpass-linux64 browserpass-darwinx64 browserpass-openbsd64 browserpass-freebsd64 browserpass-windows64
