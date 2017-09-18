@@ -3,7 +3,7 @@
   "manifest_version": 2,
   "name": "browserpass",
   "description": "Browserpass Chrome extension for zx2c4's pass (password manager).",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "author": "Danny van Kooten",
   "homepage_url": "https://github.com/dannyvankooten/browserpass",
   "background": {
