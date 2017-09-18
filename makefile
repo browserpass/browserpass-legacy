@@ -60,6 +60,11 @@ clean:
 	rm -f *.crx
 	rm -f *-host.json
 
+sign:
+	for file in release/*; do \
+		gpg --detach-sign "$$file"; \
+	done
+
 .PHONY: static-files chrome firefox
 release: static-files chrome firefox browserpass-linux64 browserpass-darwinx64 browserpass-openbsd64 browserpass-freebsd64 browserpass-windows64
 	mkdir -p release
