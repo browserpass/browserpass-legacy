@@ -60,13 +60,26 @@ clean:
 	rm -f *.crx
 	rm -f *-host.json
 
-sign:
+sign: release
 	for file in release/*; do \
 		gpg --detach-sign "$$file"; \
 	done
 
-.PHONY: static-files chrome firefox
-release: static-files chrome firefox browserpass-linux64 browserpass-darwinx64 browserpass-openbsd64 browserpass-freebsd64 browserpass-windows64
+deps:
+	yarn
+	dep ensure
+
+tarball: clean deps js static-files
+	rm -rf /tmp/browserpass /tmp/browserpass-src.tar.gz
+	cp -r ../browserpass /tmp/browserpass
+	rm -rf /tmp/browserpass/.git
+	find /tmp/browserpass -name "*.pem" -type f -delete
+	(cd /tmp && tar -czf /tmp/browserpass-src.tar.gz browserpass)
+	mkdir -p release
+	cp /tmp/browserpass-src.tar.gz release/
+
+.PHONY: static-files js chrome firefox
+release: clean deps js static-files tarball chrome firefox browserpass-linux64 browserpass-darwinx64 browserpass-openbsd64 browserpass-freebsd64 browserpass-windows64
 	mkdir -p release
 	cp chrome-browserpass.crx release/
 	zip -jFS "release/chrome" chrome/* chrome-browserpass.crx
