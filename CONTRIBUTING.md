@@ -3,11 +3,26 @@
 You will need Node, [Yarn](https://yarnpkg.com/), Golang and [dep](https://github.com/golang/dep) installed.
 
 ## To build
-- Open `makefile` and, if needed, change `google-chrome` to the appropriate name of your Google Chrome executable (in Linux, it could be google-chrome-stable)
-- Run `make deps` to install Node/GO dependencies
-- Run `make release`
+- Run `make` to compile both front-end and back-end code
 
-The command above will generate packed extensions for both Firefox and Chrome and compile the Go binaries for Linux and MacOSX.
+OR
+
+- Run `make js` to compile only front-end code
+- Run `make browserpass` to compile only back-end code
+
+The commands above will generate unpacked extensions for both Firefox and Chrome and compile the Go binaries for all supported platforms.
+
+## To load an unpacked extension
+- Run `./install.sh` or `./install.ps1` to install the compiled Go binary
+- For Chrome:
+    - Go to `chrome://extensions`
+    - Enable `Developer mode`
+    - Click `Load unpacked extension`
+    - Select `browserpass/chrome` directory
+- For Firefox:
+    - Go to `about:debugging#addons`
+    - Click `Load temporary add-on`
+    - Select `browserpass/firefox` directory
 
 ## Setting up a Vagrant build environment and building the Linux binary
 
