@@ -43,7 +43,7 @@ function view() {
     }
   }
 
-  return [
+  return m("div.container", { onkeydown: keyHandler }, [
     // search form
     m("div.search", [
       m(
@@ -54,6 +54,7 @@ function view() {
         [
           m("input", {
             type: "text",
+            id: "search-field",
             name: "s",
             placeholder: "Search password..",
             autocomplete: "off",
@@ -70,7 +71,7 @@ function view() {
 
     // results
     m("div.results", results)
-  ];
+  ]);
 }
 
 function submitSearchForm(e) {
@@ -148,4 +149,32 @@ function getLoginData() {
       window.close();
     }
   );
+}
+
+// This function uses regular DOM
+// therefore there is no need for redraw calls
+function keyHandler(e) {
+  switch (e.key) {
+    case "ArrowUp":
+      switchFocus("button.login:last-child", "previousElementSibling");
+      break;
+
+    case "ArrowDown":
+      switchFocus("button.login:first-child", "nextElementSibling");
+      break;
+  }
+}
+
+function switchFocus(firstSelector, nextNodeAttr) {
+  var inputId = "search-field";
+  var newActive =
+    document.activeElement.id === inputId
+      ? document.querySelector(firstSelector)
+      : document.activeElement[nextNodeAttr];
+
+  if (newActive) {
+    newActive.focus();
+  } else {
+    document.getElementById(inputId).focus();
+  }
 }
