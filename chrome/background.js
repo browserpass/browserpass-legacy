@@ -6,10 +6,19 @@ chrome.runtime.onMessage.addListener(onMessage);
 
 // fill login form & submit
 function fillLoginForm(login) {
+  const loginParam = JSON.stringify(login);
+  const autoSubmitParam = JSON.stringify(localStorage.getItem("autoSubmit"));
+
   chrome.tabs.executeScript(
-    { code: "var login = " + JSON.stringify(login) + "; var autoSubmit = " + JSON.stringify(localStorage.getItem("autoSubmit")) + ";"},
+    {
+      allFrames: true,
+      file: "/inject.js"
+    },
     function() {
-      chrome.tabs.executeScript({ file: "/inject.js", allFrames: true });
+      chrome.tabs.executeScript({
+        allFrames: true,
+        code: `browserpassFillForm(${loginParam}, ${autoSubmitParam});`
+      });
     }
   );
 }

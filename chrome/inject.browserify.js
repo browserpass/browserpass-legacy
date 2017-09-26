@@ -1,4 +1,4 @@
-(function(d) {
+window.browserpassFillForm = function(login, autoSubmit) {
   const USERNAME_FIELDS =
     "input[id=username i], input[id=user_name i], input[id=userid i], input[id=user_id i], input[id=login i], input[id=email i], input[type=email i], input[type=text i]";
   const PASSWORD_FIELDS = "input[type=password i]";
@@ -38,7 +38,7 @@
 
   function form() {
     var field = queryFirstVisible(
-      d,
+      document,
       PASSWORD_FIELDS + ", " + USERNAME_FIELDS,
       undefined
     );
@@ -47,7 +47,8 @@
 
   function field(selector) {
     return (
-      queryFirstVisible(d, selector, form()) || document.createElement("input")
+      queryFirstVisible(document, selector, form()) ||
+      document.createElement("input")
     );
   }
 
@@ -80,7 +81,7 @@
     alert((login.label || "OTP") + ": " + login.digits);
   }
 
-  var password_inputs = queryAllVisible(d, PASSWORD_FIELDS, form());
+  var password_inputs = queryAllVisible(document, PASSWORD_FIELDS, form());
   if (password_inputs.length > 1) {
     // There is likely a field asking for OTP code, so do not submit form just yet
     password_inputs[1].select();
@@ -93,4 +94,4 @@
       }
     });
   }
-})(document);
+};
