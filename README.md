@@ -49,9 +49,11 @@ You can [install the Firefox extension from the Mozilla add-ons site](https://ad
 
 ## Usage
 
-Click the lock icon or use **Alt + Shift + L** to fill & submit your login info for the current site.
+Click the lock icon or use **Ctrl+Shift+L** to fill & submit your login info for the current site.
 
-_Note: This does not work in Firefox before version 52._
+- Chrome allows changing the shortcut via chrome://extensions > Keyboard shortcuts.
+- Firefox unfortunately does not allow changing the default shortcut.
+- Firefox supports the keyboard shortcut only since version 53.
 
 ## Security
 
