@@ -20,6 +20,7 @@ endif
 js: $(JS_OUTPUT)
 	cp chrome/host.json chrome-host.json
 	cp firefox/host.json firefox-host.json
+	cp chrome/policy.json chrome-policy.json
 	cp chrome/{*.html,*.css,*.js,*.png,*.svg} firefox/
 
 chrome/script.js: chrome/script.browserify.js
@@ -54,6 +55,7 @@ clean:
 	git clean -fdx firefox/
 	rm -f *.crx
 	rm -f *-host.json
+	rm -f chrome-policy.json
 
 sign: release
 	for file in release/*; do \
@@ -79,8 +81,8 @@ release: clean deps js tarball crx browserpass-linux64 browserpass-darwinx64 bro
 	cp chrome-browserpass.crx release/
 	zip -jFS "release/chrome" chrome/* chrome-browserpass.crx
 	zip -jFS "release/firefox" firefox/*
-	zip -FS "release/browserpass-linux64" browserpass-linux64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE
-	zip -FS "release/browserpass-darwinx64" browserpass-darwinx64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE
-	zip -FS "release/browserpass-openbsd64" browserpass-openbsd64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE
-	zip -FS "release/browserpass-freebsd64" browserpass-freebsd64 *-host.json chrome-browserpass.crx install.sh README.md LICENSE
-	zip -FS "release/browserpass-windows64" browserpass-windows64.exe *-host.json chrome-browserpass.crx *.ps1 README.md LICENSE
+	zip -FS "release/browserpass-linux64"   browserpass-linux64       *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS "release/browserpass-darwinx64" browserpass-darwinx64     *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS "release/browserpass-openbsd64" browserpass-openbsd64     *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS "release/browserpass-freebsd64" browserpass-freebsd64     *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS "release/browserpass-windows64" browserpass-windows64.exe *-host.json chrome-policy.json chrome-browserpass.crx *.ps1      README.md LICENSE
