@@ -1,6 +1,6 @@
 SHELL := /usr/bin/env bash
 CHROME := $(shell which google-chrome 2>/dev/null || which google-chrome-stable 2>/dev/null || which chromium 2>/dev/null || which chromium-browser 2>/dev/null || which chrome 2>/dev/null)
-PEM := $(shell find . -name "chrome-browserpass.pem")
+PEM := $(shell find . -maxdepth 1 -name "*.pem")
 JS_OUTPUT := chrome/script.js chrome/inject.js
 BROWSERIFY := ./node_modules/.bin/browserify
 
@@ -8,7 +8,7 @@ all: deps js browserpass
 
 .PHONY: crx
 crx:
-ifeq ($(PEM),./chrome-browserpass.pem)
+ifneq ($(PEM),)
 	"$(CHROME)" --disable-gpu --pack-extension=./chrome --pack-extension-key=$(PEM)
 else
 	"$(CHROME)" --disable-gpu --pack-extension=./chrome
@@ -51,6 +51,7 @@ clean:
 	rm -f browserpass
 	rm -f browserpass-*
 	rm -rf release
+	rm -rf private-release
 	git clean -fdx chrome/
 	git clean -fdx firefox/
 	rm -f *.crx
@@ -77,6 +78,8 @@ tarball: clean deps js
 
 .PHONY: release js crx
 release: clean deps js tarball crx browserpass-linux64 browserpass-darwinx64 browserpass-openbsd64 browserpass-freebsd64 browserpass-windows64
+	mkdir -p private-release
+	zip -jFS "private-release/chrome" chrome/* key.pem
 	mkdir -p release
 	cp chrome-browserpass.crx release/
 	zip -jFS "release/chrome" chrome/* chrome-browserpass.crx

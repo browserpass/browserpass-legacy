@@ -1,5 +1,6 @@
 /browserpass
 /browserpass-*
+/private-release
 *.crx
 *.log
 *.pem
