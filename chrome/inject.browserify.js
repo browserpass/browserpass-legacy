@@ -55,10 +55,7 @@ window.browserpassFillForm = function(login, autoSubmit) {
   }
 
   function field(selector) {
-    return (
-      queryFirstVisible(document, selector, form()) ||
-      document.createElement("input")
-    );
+    return queryFirstVisible(document, selector, form());
   }
 
   function update(selector, value) {
@@ -68,6 +65,9 @@ window.browserpassFillForm = function(login, autoSubmit) {
 
     // Focus the input element first
     var el = field(selector);
+    if (!el) {
+      return false;
+    }
     var eventNames = ["click", "focus"];
     eventNames.forEach(function(eventName) {
       el.dispatchEvent(new Event(eventName, { bubbles: true }));
@@ -75,6 +75,9 @@ window.browserpassFillForm = function(login, autoSubmit) {
 
     // Focus may have triggered unvealing a true input, find it again
     el = field(selector);
+    if (!el) {
+      return false;
+    }
 
     // Now set the value and unfocus
     el.setAttribute("value", value);
@@ -106,10 +109,25 @@ window.browserpassFillForm = function(login, autoSubmit) {
     password_inputs[1].select();
   } else {
     window.requestAnimationFrame(function() {
-      if (autoSubmit == "false") {
-        field("[type=submit]").focus();
+      // Try to submit the form, or focus on the submit button (based on user settings)
+      var submit = field("[type=submit]");
+      if (submit) {
+        if (autoSubmit == "false") {
+          submit.focus();
+        } else {
+          submit.click();
+        }
       } else {
-        field("[type=submit]").click();
+        // There is no submit button. We need to keep focus somewhere within the form, so that Enter hopefully submits the form.
+        var password = field(PASSWORD_FIELDS);
+        if (password) {
+          password.focus();
+        } else {
+          var username = field(USERNAME_FIELDS);
+          if (username) {
+            username.focus();
+          }
+        }
       }
     });
   }
