@@ -79,13 +79,16 @@ tarball: clean deps js
 .PHONY: release js crx
 release: clean deps js tarball crx browserpass-linux64 browserpass-darwinx64 browserpass-openbsd64 browserpass-freebsd64 browserpass-windows64
 	mkdir -p private-release
-	zip -jFS "private-release/chrome" chrome/* key.pem
+	cp -r chrome private-release
+	sed -i '/"key"/d' private-release/chrome/manifest.json
+	zip -jFS private-release/chrome private-release/chrome/* key.pem
+	rm -rf private-release/chrome
 	mkdir -p release
 	cp chrome-browserpass.crx release/
-	zip -jFS "release/chrome" chrome/* chrome-browserpass.crx
-	zip -jFS "release/firefox" firefox/*
-	zip -FS "release/browserpass-linux64"   browserpass-linux64       *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
-	zip -FS "release/browserpass-darwinx64" browserpass-darwinx64     *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
-	zip -FS "release/browserpass-openbsd64" browserpass-openbsd64     *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
-	zip -FS "release/browserpass-freebsd64" browserpass-freebsd64     *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
-	zip -FS "release/browserpass-windows64" browserpass-windows64.exe *-host.json chrome-policy.json chrome-browserpass.crx *.ps1      README.md LICENSE
+	zip -jFS release/chrome chrome/* chrome-browserpass.crx
+	zip -jFS release/firefox firefox/*
+	zip -FS release/browserpass-linux64   browserpass-linux64       *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS release/browserpass-darwinx64 browserpass-darwinx64     *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS release/browserpass-openbsd64 browserpass-openbsd64     *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS release/browserpass-freebsd64 browserpass-freebsd64     *-host.json chrome-policy.json chrome-browserpass.crx install.sh README.md LICENSE
+	zip -FS release/browserpass-windows64 browserpass-windows64.exe *-host.json chrome-policy.json chrome-browserpass.crx *.ps1      README.md LICENSE
