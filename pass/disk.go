@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"os/user"
@@ -72,7 +73,10 @@ func (s *diskStore) Search(query string) ([]string, error) {
 		items = append(items, newItems...)
 	}
 
-	return unique(items), nil
+	result := unique(items)
+	sort.Strings(result)
+
+	return result, nil
 }
 
 func (s *diskStore) Open(item string) (io.ReadCloser, error) {
