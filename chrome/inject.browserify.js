@@ -19,9 +19,18 @@ window.browserpassFillForm = function(login, autoSubmit) {
         if (form && form != elems[j].form) {
           continue;
         }
-        var style = window.getComputedStyle(elems[j]);
         // Elem takes space on the screen, but it or its parent is hidden with a visibility style.
+        var style = window.getComputedStyle(elems[j]);
         if (style.visibility == "hidden") {
+          continue;
+        }
+        // Elem is outside of the boundaries of the visible viewport.
+        var rect = elems[j].getBoundingClientRect();
+        if (
+          rect.x + rect.width < 0 ||
+          rect.y + rect.height < 0 ||
+          (rect.x > window.innerWidth || rect.y > window.innerHeight)
+        ) {
           continue;
         }
         // This element is visible, will use it.
@@ -52,15 +61,25 @@ window.browserpassFillForm = function(login, autoSubmit) {
     );
   }
 
-  function update(el, value) {
+  function update(selector, value) {
     if (!value.length) {
       return false;
     }
+
+    // Focus the input element first
+    var el = field(selector);
+    var eventNames = ["click", "focus"];
+    eventNames.forEach(function(eventName) {
+      el.dispatchEvent(new Event(eventName, { bubbles: true }));
+    });
+
+    // Focus may have triggered unvealing a true input, find it again
+    el = field(selector);
+
+    // Now set the value and unfocus
     el.setAttribute("value", value);
     el.value = value;
     var eventNames = [
-      "click",
-      "focus",
       "keypress",
       "keydown",
       "keyup",
@@ -74,8 +93,8 @@ window.browserpassFillForm = function(login, autoSubmit) {
     return true;
   }
 
-  update(field(PASSWORD_FIELDS), login.p);
-  update(field(USERNAME_FIELDS), login.u);
+  update(USERNAME_FIELDS, login.u);
+  update(PASSWORD_FIELDS, login.p);
 
   if (login.digits) {
     alert((login.label || "OTP") + ": " + login.digits);
