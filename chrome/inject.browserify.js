@@ -1,6 +1,6 @@
 window.browserpassFillForm = function(login, autoSubmit) {
   const USERNAME_FIELDS =
-    "input[id*=user i], input[id*=login i], input[id*=email i], input[type=email i], input[type=text i]";
+    "input[id*=user i], input[id*=login i], input[id*=email i], input[class*=user i], input[class*=login i], input[class*=email i], input[type=email i], input[type=text i]";
   const PASSWORD_FIELDS = "input[type=password i]";
 
   function queryAllVisible(parent, selector, form) {
