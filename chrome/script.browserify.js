@@ -9,7 +9,6 @@ var domain, urlDuringSearch;
 
 m.mount(document.getElementById("mount"), { view: view });
 
-chrome.browserAction.setIcon({ path: "icon-lock.svg" });
 chrome.tabs.onActivated.addListener(init);
 chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
   init(tabs[0]);
