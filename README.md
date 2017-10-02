@@ -11,7 +11,7 @@ It uses a [native binary written in Golang](https://github.com/dannyvankooten/br
 
 - A recent version of Chrome, Chromium or Firefox 50+.
 - Pass (on UNIX)
-- Your password filename must match your username **or** your file must have a line starting with `login:` or `username:`, followed by your username.
+- Your password filename must match your username **or** your file must have a line starting with `login:`, `user:` or `username:`, followed by your username.
 
 _Examples_
 
