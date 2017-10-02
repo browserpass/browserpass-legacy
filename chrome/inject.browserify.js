@@ -1,31 +1,57 @@
 window.browserpassFillForm = function(login, autoSubmit) {
-  const USERNAME_FIELDS =
-    "input[id*=user i], input[id*=login i], input[id*=email i], input[class*=user i], input[class*=login i], input[class*=email i], input[type=email i], input[type=text i]";
-  const PASSWORD_FIELDS = "input[type=password i]";
+  const USERNAME_FIELDS = {
+    selectors: [
+      "input[name*=user i]",
+      "input[name*=login i]",
+      "input[name*=email i]",
+      "input[id*=user i]",
+      "input[id*=login i]",
+      "input[id*=email i]",
+      "input[class*=user i]",
+      "input[class*=login i]",
+      "input[class*=email i]",
+      "input[type=email i]",
+      "input[type=text i]",
+      "input[type=tel i]"
+    ],
+    types: ["email", "text", "tel"]
+  };
+  const PASSWORD_FIELDS = {
+    selectors: ["input[type=password i]"]
+  };
+  const INPUT_FIELDS = {
+    selectors: PASSWORD_FIELDS.selectors.concat(USERNAME_FIELDS.selectors)
+  };
+  const SUBMIT_FIELDS = {
+    selectors: ["[type=submit i]"]
+  };
 
-  function queryAllVisible(parent, selector, form) {
+  function queryAllVisible(parent, field, form) {
     var result = [];
-    var selectors = selector.split(",");
-    for (var i = 0; i < selectors.length; i++) {
-      var selector = selectors[i].trim();
-      var elems = parent.querySelectorAll(selector);
+    for (var i = 0; i < field.selectors.length; i++) {
+      var elems = parent.querySelectorAll(field.selectors[i]);
       for (var j = 0; j < elems.length; j++) {
+        var elem = elems[j];
+        // We may have a whitelist of acceptable field types. If so, skip elements of a different type.
+        if (field.types && field.types.indexOf(elem.type.toLowerCase()) < 0) {
+          continue;
+        }
         // Elem or its parent has a style 'display: none',
         // or it is just too narrow to be a real field (a trap for spammers?).
-        if (elems[j].offsetWidth < 50 || elems[j].offsetHeight < 10) {
+        if (elem.offsetWidth < 50 || elem.offsetHeight < 10) {
           continue;
         }
         // Select only elements from specified form
-        if (form && form != elems[j].form) {
+        if (form && form != elem.form) {
           continue;
         }
         // Elem takes space on the screen, but it or its parent is hidden with a visibility style.
-        var style = window.getComputedStyle(elems[j]);
+        var style = window.getComputedStyle(elem);
         if (style.visibility == "hidden") {
           continue;
         }
         // Elem is outside of the boundaries of the visible viewport.
-        var rect = elems[j].getBoundingClientRect();
+        var rect = elem.getBoundingClientRect();
         if (
           rect.x + rect.width < 0 ||
           rect.y + rect.height < 0 ||
@@ -34,37 +60,33 @@ window.browserpassFillForm = function(login, autoSubmit) {
           continue;
         }
         // This element is visible, will use it.
-        result.push(elems[j]);
+        result.push(elem);
       }
     }
     return result;
   }
 
-  function queryFirstVisible(parent, selector, form) {
-    var elems = queryAllVisible(parent, selector, form);
+  function queryFirstVisible(parent, field, form) {
+    var elems = queryAllVisible(parent, field, form);
     return elems.length > 0 ? elems[0] : undefined;
   }
 
   function form() {
-    var field = queryFirstVisible(
-      document,
-      PASSWORD_FIELDS + ", " + USERNAME_FIELDS,
-      undefined
-    );
-    return field && field.form ? field.form : undefined;
+    var elem = queryFirstVisible(document, INPUT_FIELDS, undefined);
+    return elem && elem.form ? elem.form : undefined;
   }
 
-  function field(selector) {
-    return queryFirstVisible(document, selector, form());
+  function find(field) {
+    return queryFirstVisible(document, field, form());
   }
 
-  function update(selector, value) {
+  function update(field, value) {
     if (!value.length) {
       return false;
     }
 
     // Focus the input element first
-    var el = field(selector);
+    var el = find(field);
     if (!el) {
       return false;
     }
@@ -74,7 +96,7 @@ window.browserpassFillForm = function(login, autoSubmit) {
     });
 
     // Focus may have triggered unvealing a true input, find it again
-    el = field(selector);
+    el = find(field);
     if (!el) {
       return false;
     }
@@ -110,7 +132,7 @@ window.browserpassFillForm = function(login, autoSubmit) {
   } else {
     window.requestAnimationFrame(function() {
       // Try to submit the form, or focus on the submit button (based on user settings)
-      var submit = field("[type=submit]");
+      var submit = find(SUBMIT_FIELDS);
       if (submit) {
         if (autoSubmit == "false") {
           submit.focus();
@@ -119,11 +141,11 @@ window.browserpassFillForm = function(login, autoSubmit) {
         }
       } else {
         // There is no submit button. We need to keep focus somewhere within the form, so that Enter hopefully submits the form.
-        var password = field(PASSWORD_FIELDS);
+        var password = find(PASSWORD_FIELDS);
         if (password) {
           password.focus();
         } else {
-          var username = field(USERNAME_FIELDS);
+          var username = find(USERNAME_FIELDS);
           if (username) {
             username.focus();
           }
