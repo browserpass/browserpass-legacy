@@ -189,14 +189,9 @@ function switchFocus(firstSelector, nextNodeAttr) {
 // The oncreate(vnode) hook is called after a DOM element is created and attached to the document.
 // see https://mithril.js.org/lifecycle-methods.html#oncreate for mor informations
 function oncreate() {
-  var searchField = document.getElementById('search-field');
-
   // FireFox probably prevents `focus()` calls for some time
   // after extension is rendered.
-  searchField.focus();
   window.setTimeout(function() {
-    if (searchField) {
-      searchField.focus();
-    }
+    document.getElementById('search-field').focus();
   }, 100);
 }
