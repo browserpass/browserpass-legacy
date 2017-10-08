@@ -8,7 +8,7 @@ var logins;
 var error;
 var domain, urlDuringSearch;
 
-m.mount(document.getElementById("mount"), { view: view });
+m.mount(document.getElementById("mount"), { view: view, oncreate: oncreate });
 
 chrome.tabs.onActivated.addListener(init);
 chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
@@ -174,15 +174,29 @@ function keyHandler(e) {
 }
 
 function switchFocus(firstSelector, nextNodeAttr) {
-  var inputId = "search-field";
-  var newActive =
-    document.activeElement.id === inputId
+  var searchField = document.getElementById('search-field');
+  var newActive = document.activeElement === searchField
       ? document.querySelector(firstSelector)
       : document.activeElement[nextNodeAttr];
 
   if (newActive) {
     newActive.focus();
   } else {
-    document.getElementById(inputId).focus();
+    searchField.focus();
   }
+}
+
+// The oncreate(vnode) hook is called after a DOM element is created and attached to the document.
+// see https://mithril.js.org/lifecycle-methods.html#oncreate for mor informations
+function oncreate() {
+  var searchField = document.getElementById('search-field');
+
+  // FireFox probably prevents `focus()` calls for some time
+  // after extension is rendered.
+  searchField.focus();
+  window.setTimeout(function() {
+    if (searchField) {
+      searchField.focus();
+    }
+  }, 100);
 }
