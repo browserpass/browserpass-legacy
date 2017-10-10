@@ -46,7 +46,7 @@ window.browserpassFillForm = function(login, autoSubmit) {
         }
         // Elem or its parent has a style 'display: none',
         // or it is just too narrow to be a real field (a trap for spammers?).
-        if (elem.offsetWidth < 50 || elem.offsetHeight < 10) {
+        if (elem.offsetWidth < 30 || elem.offsetHeight < 10) {
           continue;
         }
         // Select only elements from specified form
