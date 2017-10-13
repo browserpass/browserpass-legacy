@@ -31,7 +31,45 @@ window.browserpassFillForm = function(login, autoSubmit) {
     selectors: PASSWORD_FIELDS.selectors.concat(USERNAME_FIELDS.selectors)
   };
   const SUBMIT_FIELDS = {
-    selectors: ["[type=submit i]"]
+    selectors: [
+      "[type=submit i]",
+      "button[name*=login i]",
+      "button[name*=log-in i]",
+      "button[name*=log_in i]",
+      "button[name*=signin i]",
+      "button[name*=sign-in i]",
+      "button[name*=sign_in i]",
+      "button[id*=login i]",
+      "button[id*=log-in i]",
+      "button[id*=log_in i]",
+      "button[id*=signin i]",
+      "button[id*=sign-in i]",
+      "button[id*=sign_in i]",
+      "button[class*=login i]",
+      "button[class*=log-in i]",
+      "button[class*=log_in i]",
+      "button[class*=signin i]",
+      "button[class*=sign-in i]",
+      "button[class*=sign_in i]",
+      "input[type=button i][name*=login i]",
+      "input[type=button i][name*=log-in i]",
+      "input[type=button i][name*=log_in i]",
+      "input[type=button i][name*=signin i]",
+      "input[type=button i][name*=sign-in i]",
+      "input[type=button i][name*=sign_in i]",
+      "input[type=button i][id*=login i]",
+      "input[type=button i][id*=log-in i]",
+      "input[type=button i][id*=log_in i]",
+      "input[type=button i][id*=signin i]",
+      "input[type=button i][id*=sign-in i]",
+      "input[type=button i][id*=sign_in i]",
+      "input[type=button i][class*=login i]",
+      "input[type=button i][class*=log-in i]",
+      "input[type=button i][class*=log_in i]",
+      "input[type=button i][class*=signin i]",
+      "input[type=button i][class*=sign-in i]",
+      "input[type=button i][class*=sign_in i]"
+    ]
   };
 
   function queryAllVisible(parent, field, form) {
