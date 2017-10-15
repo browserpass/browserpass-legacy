@@ -23,6 +23,7 @@
     "default_popup": "content.html"
   },
   "permissions": [
+    "tabs",
     "activeTab",
     "nativeMessaging",
     "storage",
@@ -35,5 +36,8 @@
         "default": "Ctrl+Shift+L"
       }
     }
-  }
+  },
+  "web_accessible_resources": [
+    "otp.html"
+  ]
 }
