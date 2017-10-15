@@ -87,6 +87,10 @@ window.browserpassFillForm = function(login, autoSubmit) {
         if (elem.offsetWidth < 30 || elem.offsetHeight < 10) {
           continue;
         }
+        // Ignore disabled fields
+        if (elem.disabled) {
+          continue;
+        }
         // Select only elements from specified form
         if (form && form != elem.form) {
           continue;
