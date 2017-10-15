@@ -78,8 +78,12 @@ window.browserpassFillForm = function(login, autoSubmit) {
       var elems = parent.querySelectorAll(field.selectors[i]);
       for (var j = 0; j < elems.length; j++) {
         var elem = elems[j];
-        // We may have a whitelist of acceptable field types. If so, skip elements of a different type.
-        if (field.types && field.types.indexOf(elem.type.toLowerCase()) < 0) {
+        // Select only elements from specified form
+        if (form && form != elem.form) {
+          continue;
+        }
+        // Ignore disabled fields
+        if (elem.disabled) {
           continue;
         }
         // Elem or its parent has a style 'display: none',
@@ -87,12 +91,8 @@ window.browserpassFillForm = function(login, autoSubmit) {
         if (elem.offsetWidth < 30 || elem.offsetHeight < 10) {
           continue;
         }
-        // Ignore disabled fields
-        if (elem.disabled) {
-          continue;
-        }
-        // Select only elements from specified form
-        if (form && form != elem.form) {
+        // We may have a whitelist of acceptable field types. If so, skip elements of a different type.
+        if (field.types && field.types.indexOf(elem.type.toLowerCase()) < 0) {
           continue;
         }
         // Elem takes space on the screen, but it or its parent is hidden with a visibility style.
