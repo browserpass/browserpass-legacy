@@ -26,9 +26,6 @@ js: $(JS_OUTPUT)
 chrome/script.js: chrome/script.browserify.js
 	$(BROWSERIFY) chrome/script.browserify.js -o chrome/script.js
 
-chrome/inject.js: chrome/inject.browserify.js
-	$(BROWSERIFY) chrome/inject.browserify.js -o chrome/inject.js
-
 browserpass: cmd/browserpass/ pass/ browserpass.go
 	go build -o $@ ./cmd/browserpass
 
