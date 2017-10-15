@@ -36,11 +36,11 @@ window.browserpassDisplayOTP = function(login) {
       iframe.remove();
       window.removeEventListener("message", receiveMessage);
     }
-  };
+  }
 
-  var oldIframe = document.getElementById("browserpass-otp-iframe")
+  var oldIframe = document.getElementById("browserpass-otp-iframe");
   if (oldIframe != null) {
     oldIframe.remove();
   }
   document.body.appendChild(iframe);
-}
+};

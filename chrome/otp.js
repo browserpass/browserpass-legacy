@@ -20,18 +20,18 @@ function receiveMessage(event) {
 
 window.onload = function() {
   window.parent.postMessage({ action: "load" }, "*");
-}
+};
 
 document.body.onclick = function() {
   otpInput.select();
-}
+};
 
 otpCopy.onclick = function() {
   otpInput.select();
   document.execCommand("copy");
-}
+};
 
 otpDismiss.onclick = function() {
   chrome.runtime.sendMessage({ action: "dismissOTP" });
   window.parent.postMessage({ action: "dismiss" }, "*");
-}
+};

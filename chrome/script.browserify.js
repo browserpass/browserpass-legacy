@@ -174,8 +174,9 @@ function keyHandler(e) {
 }
 
 function switchFocus(firstSelector, nextNodeAttr) {
-  var searchField = document.getElementById('search-field');
-  var newActive = document.activeElement === searchField
+  var searchField = document.getElementById("search-field");
+  var newActive =
+    document.activeElement === searchField
       ? document.querySelector(firstSelector)
       : document.activeElement[nextNodeAttr];
 
@@ -192,6 +193,6 @@ function oncreate() {
   // FireFox probably prevents `focus()` calls for some time
   // after extension is rendered.
   window.setTimeout(function() {
-    document.getElementById('search-field').focus();
+    document.getElementById("search-field").focus();
   }, 100);
 }

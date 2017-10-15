@@ -41,12 +41,9 @@ function displayOTP(tabId) {
       file: "/inject_otp.js"
     },
     function() {
-      chrome.tabs.executeScript(
-        tabId,
-        {
-          code: `browserpassDisplayOTP(${tabInfos[tabId].login});`
-        }
-      );
+      chrome.tabs.executeScript(tabId, {
+        code: `browserpassDisplayOTP(${tabInfos[tabId].login});`
+      });
     }
   );
 }
