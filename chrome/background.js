@@ -13,6 +13,7 @@ function fillLoginForm(login, tab) {
   const autoSubmitParam = JSON.stringify(localStorage.getItem("autoSubmit"));
 
   chrome.tabs.executeScript(
+    tab.id,
     {
       allFrames: true,
       file: "/inject.js"
@@ -60,7 +61,7 @@ function onMessage(request, sender, sendResponse) {
           sendResponse({ status: "ERROR", error: error });
         }
 
-        chrome.tabs.query({ currentWindow: true, active: true }, function(
+        chrome.tabs.query({ lastFocusedWindow: true, active: true }, function(
           tabs
         ) {
           // do not send login data to page if URL changed during search.

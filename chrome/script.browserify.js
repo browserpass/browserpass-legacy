@@ -11,7 +11,7 @@ var domain, urlDuringSearch;
 m.mount(document.getElementById("mount"), { view: view, oncreate: oncreate });
 
 chrome.tabs.onActivated.addListener(init);
-chrome.tabs.query({ currentWindow: true, active: true }, function(tabs) {
+chrome.tabs.query({ lastFocusedWindow: true, active: true }, function(tabs) {
   init(tabs[0]);
 });
 
