@@ -45,12 +45,12 @@ func defaultStorePath() (string, error) {
 func (s *diskStore) Search(query string) ([]string, error) {
 	// First, search for DOMAIN/USERNAME.gpg
 	// Then, search for DOMAIN.gpg
-	matches, err := zglob.Glob(s.path + "/**/" + query + "*/*.gpg")
+	matches, err := zglob.GlobFollowSymlinks(s.path + "/**/" + query + "*/*.gpg")
 	if err != nil {
 		return nil, err
 	}
 
-	matches2, err := zglob.Glob(s.path + "/**/" + query + "*.gpg")
+	matches2, err := zglob.GlobFollowSymlinks(s.path + "/**/" + query + "*.gpg")
 	if err != nil {
 		return nil, err
 	}

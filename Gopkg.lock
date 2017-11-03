@@ -11,13 +11,13 @@
   branch = "master"
   name = "github.com/mattn/go-zglob"
   packages = [".","fastwalk"]
-  revision = "4ecb59231939b2e499b1f2fd8f075565977d2452"
+  revision = "4b74c24375b3b1ee226867156e01996f4e19a8d6"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "314a259e304ff91bd6985da2a7149bbf91237993"
+  revision = "4fe5d7925040acd225bf9c7cee65e82d07f06bff"
 
 [[projects]]
   branch = "master"
