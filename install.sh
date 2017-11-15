@@ -2,9 +2,19 @@
 
 set -e
 
-DIR="$( cd "$( dirname "$0" )" && pwd )"
+assert_file_exists() {
+  if [ ! -f "$1" ]; then
+    echo "ERROR: '$1' is missing."
+    echo "If you are running './install.sh' from a release archive, please file a bug."
+    echo "If you are running './install.sh' from the source code, make sure to follow CONTRIBUTING.md on how to build first."
+    exit 1
+  fi
+}
+
+BIN_DIR="$( cd "$( dirname "$0" )" && pwd )"
+JSON_DIR="$BIN_DIR"
 APP_NAME="com.dannyvankooten.browserpass"
-HOST_FILE="$DIR/browserpass"
+HOST_FILE="$BIN_DIR/browserpass"
 
 # Find target dirs for various browsers & OS'es
 # https://developer.chrome.com/extensions/nativeMessaging#native-messaging-host-location
@@ -13,7 +23,7 @@ OPERATING_SYSTEM=$(uname -s)
 
 case $OPERATING_SYSTEM in
 Linux)
-  HOST_FILE="$DIR/browserpass-linux64"
+  HOST_FILE="$BIN_DIR/browserpass-linux64"
   if [ "$(whoami)" == "root" ]; then
     TARGET_DIR_CHROME="/etc/opt/chrome/native-messaging-hosts"
     TARGET_DIR_CHROMIUM="/etc/chromium/native-messaging-hosts"
@@ -27,7 +37,7 @@ Linux)
   fi
   ;;
 Darwin)
-  HOST_FILE="$DIR/browserpass-darwinx64"
+  HOST_FILE="$BIN_DIR/browserpass-darwinx64"
   if [ "$(whoami)" == "root" ]; then
     TARGET_DIR_CHROME="/Library/Google/Chrome/NativeMessagingHosts"
     TARGET_DIR_CHROMIUM="/Library/Application Support/Chromium/NativeMessagingHosts"
@@ -41,7 +51,7 @@ Darwin)
   fi
   ;;
 OpenBSD)
-  HOST_FILE="$DIR/browserpass-openbsd64"
+  HOST_FILE="$BIN_DIR/browserpass-openbsd64"
   if [ "$(whoami)" == "root" ]; then
     echo "Installing as root not supported."
     exit 1
@@ -52,7 +62,7 @@ OpenBSD)
   TARGET_DIR_VIVALDI="$HOME/.config/vivaldi/NativeMessagingHosts"
   ;;
 FreeBSD)
-  HOST_FILE="$DIR/browserpass-freebsd64"
+  HOST_FILE="$BIN_DIR/browserpass-freebsd64"
   if [ "$(whoami)" == "root" ]; then
     echo "Installing as root not supported"
     exit 1
@@ -68,9 +78,9 @@ FreeBSD)
   ;;
 esac
 
-if [ -e "$DIR/browserpass" ]; then
+if [ -e "$BIN_DIR/browserpass" ]; then
   echo "Detected development binary"
-  HOST_FILE="$DIR/browserpass"
+  HOST_FILE="$BIN_DIR/browserpass"
 fi
 
 echo ""
@@ -113,36 +123,27 @@ echo "Installing $BROWSER_NAME host config"
 # Create config dir if not existing
 mkdir -p "$TARGET_DIR"
 
-# Escape host file
-ESCAPED_HOST_FILE=${HOST_FILE////\\/}
-
-# Copy manifest host config file
-if [ "$BROWSER_NAME" == "Chrome" ] || \
-   [ "$BROWSER_NAME" == "Chromium" ] || \
-   [ "$BROWSER_NAME" == "Vivaldi" ]; then
-  if [ ! -f "$DIR/chrome-host.json" ] || [ ! -f "$DIR/chrome-policy.json" ]; then
-    echo "ERROR: '$DIR/chrome-host.json' or '$DIR/chrome-policy.json' is missing."
-    echo "If you are running './install.sh' from a release archive, please file a bug."
-    echo "If you are running './install.sh' from the source code, make sure to follow CONTRIBUTING.md on how to build first."
-    exit 1
-  fi
-  cp "$DIR/chrome-host.json" "$TARGET_DIR/$APP_NAME.json"
-  mkdir -p "$TARGET_DIR"/../policies/managed/
-  cp "$DIR/chrome-policy.json" "$TARGET_DIR/../policies/managed/$APP_NAME.json"
+if [ "$BROWSER_NAME" == "Firefox" ]; then
+  MANIFEST="$JSON_DIR/firefox-host.json"
 else
-  if [ ! -f "$DIR/firefox-host.json" ]; then
-    echo "ERROR: '$DIR/firefox-host.json' is missing."
-    echo "If you are running './install.sh' from a release archive, please file a bug."
-    echo "If you are running './install.sh' from the source code, make sure to follow CONTRIBUTING.md on how to build first."
-    exit 1
-  fi
-  cp "$DIR/firefox-host.json" "$TARGET_DIR/$APP_NAME.json"
+  MANIFEST="$JSON_DIR/chrome-host.json"
+  POLICY="$JSON_DIR/chrome-policy.json"
 fi
 
-# Replace path to host
-sed -i -e "s/%%replace%%/$ESCAPED_HOST_FILE/" "$TARGET_DIR/$APP_NAME.json"
+# Copy native host manifest, filling in binary path
+assert_file_exists "$MANIFEST"
+sed "s/%%replace%%/${HOST_FILE////\\/}/" "$MANIFEST" \
+  > "$TARGET_DIR/$APP_NAME.json"
 
 # Set permissions for the manifest so that all users can read it.
 chmod o+r "$TARGET_DIR/$APP_NAME.json"
+
+# Copy policy file, if any
+if [ -n "$POLICY" ]; then
+  assert_file_exists "$POLICY"
+  POLICY_DIR="$TARGET_DIR"/../policies/managed/
+  mkdir -p "$POLICY_DIR"
+  cp "$POLICY" "$POLICY_DIR/$APP_NAME.json"
+fi
 
 echo "Native messaging host for $BROWSER_NAME has been installed to $TARGET_DIR."
