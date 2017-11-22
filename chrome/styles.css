@@ -1,4 +1,4 @@
-body{
+body {
   padding: 0;
   margin: 0;
   font-family: sans-serif;
@@ -13,7 +13,7 @@ body{
   padding: 6px;
   border: 0;
   border-bottom: 1px solid #bbb;
-  background: url( "icon-search.svg") center right 6px no-repeat;
+  background: url("icon-search.svg") center right 6px no-repeat;
   background-size: 16px 16px;
   background-color: white;
   color: black;
@@ -39,20 +39,25 @@ body{
   width: 100%;
   -webkit-appearance: none;
   -moz-appearance: none;
-  padding: 12px 6px 12px 32px;
+  padding: 12px;
   cursor: pointer;
   border: 0;
   border-bottom: 1px dotted #ccc;
   text-align: left;
-  background: no-repeat url('icon-key.svg') left 8px center;
   background-color: white;
   color: black;
-  background-size: 16px 16px;
   line-height: 1.2;
   white-space: nowrap;
 }
 
-.login:last-of-type{
+.login.favicon {
+  background-repeat: no-repeat;
+  background-position: left 8px center;
+  background-size: 16px 16px;
+  padding-left: 32px;
+}
+
+.login:last-of-type {
   border-bottom: 0;
 }
 

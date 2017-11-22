@@ -30,16 +30,17 @@ function view() {
         m.trust(`No passwords found for <strong>${domain}</strong>.`)
       );
     } else if (logins.length > 0) {
-      results = logins.map(function(l) {
-        var faviconUrl = getFaviconUrl(domain);
-        return m(
-          "button.login",
-          {
-            onclick: getLoginData.bind(l),
-            style: `background-image: url('${faviconUrl}')`
-          },
-          l
-        );
+      results = logins.map(function(login) {
+        let selector = "button.login";
+        let options = { onclick: getLoginData.bind(login) };
+
+        let faviconUrl = getFaviconUrl(domain);
+        if (faviconUrl) {
+          selector += ".favicon";
+          options.style = `background-image: url('${faviconUrl}')`;
+        }
+
+        return m(selector, options, login);
       });
     }
   }
@@ -136,7 +137,7 @@ function getFaviconUrl(domain) {
     return activeTab.favIconUrl;
   }
 
-  return "icon-key.svg";
+  return null;
 }
 
 function getLoginData() {
