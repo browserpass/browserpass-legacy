@@ -40,27 +40,17 @@ function view() {
           options.style = `background-image: url('${faviconUrl}')`;
         }
 
-        return m(
-          "div.entry",
-          [
-            m(selector,
-              options,
-              login
-            ),
-            m("button.copy.username",
-              {
-                onclick: loginToClipboard.bind({entry: login, what: "username"}),
-                tabindex: -1
-              }
-            ),
-            m("button.copy.password",
-              {
-                onclick: loginToClipboard.bind({entry: login, what: "password"}),
-                tabindex: -1
-              }
-            )
-          ]
-        );
+        return m("div.entry", [
+          m(selector, options, login),
+          m("button.copy.username", {
+            onclick: loginToClipboard.bind({ entry: login, what: "username" }),
+            tabindex: -1
+          }),
+          m("button.copy.password", {
+            onclick: loginToClipboard.bind({ entry: login, what: "password" }),
+            tabindex: -1
+          })
+        ]);
       });
     }
   }
@@ -184,15 +174,15 @@ function loginToClipboard() {
   var what = this.what;
   chrome.runtime.sendNativeMessage(
     app,
-    {action: "get", entry: this.entry},
+    { action: "get", entry: this.entry },
     function(response) {
-      if(chrome.runtime.lastError) {
+      if (chrome.runtime.lastError) {
         error = chrome.runtime.lastError.message;
         m.redraw();
       } else {
-        if (what === "password"){
+        if (what === "password") {
           toClipboard(response.p);
-        } else if (what === "username"){
+        } else if (what === "username") {
           toClipboard(response.u);
         }
         window.close();
@@ -201,7 +191,7 @@ function loginToClipboard() {
   );
 }
 
-function toClipboard(s){
+function toClipboard(s) {
   var clipboardContainer = document.getElementById("clipboard-container");
   var clipboard = document.createElement("input");
   clipboardContainer.appendChild(clipboard);
@@ -224,12 +214,14 @@ function keyHandler(e) {
       switchFocus("div.entry:first-child > .login", "nextElementSibling");
       break;
     case "c":
-      if(e.ctrlKey) {
-        (document.activeElement["nextElementSibling"]["nextElementSibling"]).click();
+      if (e.ctrlKey) {
+        document.activeElement["nextElementSibling"][
+          "nextElementSibling"
+        ].click();
       }
       break;
     case "C":
-      (document.activeElement["nextElementSibling"]).click();
+      document.activeElement["nextElementSibling"].click();
       break;
   }
 }
@@ -238,11 +230,11 @@ function switchFocus(firstSelector, nextNodeAttr) {
   var searchField = document.getElementById("search-field");
   var newActive = searchField;
 
-  if(document.activeElement === searchField){
+  if (document.activeElement === searchField) {
     newActive = document.querySelector(firstSelector);
   } else {
     let tmp = document.activeElement["parentElement"][nextNodeAttr];
-    if (tmp !== null){
+    if (tmp !== null) {
       newActive = tmp["firstElementChild"];
     }
   }
