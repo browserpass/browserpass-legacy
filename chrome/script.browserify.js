@@ -40,7 +40,27 @@ function view() {
           options.style = `background-image: url('${faviconUrl}')`;
         }
 
-        return m(selector, options, login);
+        return m(
+          "div.entry",
+          [
+            m(selector,
+              options,
+              login
+            ),
+            m("button.copy.username",
+              {
+                onclick: loginToClipboard.bind({entry: login, what: "username"}),
+                tabindex: -1
+              }
+            ),
+            m("button.copy.password",
+              {
+                onclick: loginToClipboard.bind({entry: login, what: "password"}),
+                tabindex: -1
+              }
+            )
+          ]
+        );
       });
     }
   }
@@ -160,32 +180,83 @@ function getLoginData() {
   );
 }
 
+function loginToClipboard() {
+  var what = this.what;
+  chrome.runtime.sendNativeMessage(
+    app,
+    {action: "get", entry: this.entry},
+    function(response) {
+      if(chrome.runtime.lastError) {
+        error = chrome.runtime.lastError.message;
+        m.redraw();
+      } else {
+        if (what === "password"){
+          toClipboard(response.p);
+        } else if (what === "username"){
+          toClipboard(response.u);
+        }
+        window.close();
+      }
+    }
+  );
+}
+
+function toClipboard(s){
+  m.render(
+    document.getElementById("clipboard-container"),
+    m(
+      "input#clipboard",
+      {
+        type: "text",
+        value: s
+      }
+    )
+  );
+  var c = document.getElementById("clipboard");
+  c.select();
+  document.execCommand("copy");
+  c.blur();
+  m.render(
+    document.getElementById("clipboard-container")
+  );
+}
+
 // This function uses regular DOM
 // therefore there is no need for redraw calls
 function keyHandler(e) {
   switch (e.key) {
     case "ArrowUp":
-      switchFocus("button.login:last-child", "previousElementSibling");
+      switchFocus("div.entry:last-child > .login", "previousElementSibling");
       break;
 
     case "ArrowDown":
-      switchFocus("button.login:first-child", "nextElementSibling");
+      switchFocus("div.entry:first-child > .login", "nextElementSibling");
+      break;
+    case "c":
+      if(e.ctrlKey) {
+        (document.activeElement["nextElementSibling"]["nextElementSibling"]).click();
+      }
+      break;
+    case "C":
+      (document.activeElement["nextElementSibling"]).click();
       break;
   }
 }
 
 function switchFocus(firstSelector, nextNodeAttr) {
   var searchField = document.getElementById("search-field");
-  var newActive =
-    document.activeElement === searchField
-      ? document.querySelector(firstSelector)
-      : document.activeElement[nextNodeAttr];
+  var newActive = searchField;
 
-  if (newActive) {
-    newActive.focus();
+  if(document.activeElement === searchField){
+    newActive = document.querySelector(firstSelector);
   } else {
-    searchField.focus();
+    let tmp = document.activeElement["parentElement"][nextNodeAttr];
+    if (tmp !== null){
+      newActive = tmp["firstElementChild"];
+    }
   }
+
+  newActive.focus();
 }
 
 // The oncreate(vnode) hook is called after a DOM element is created and attached to the document.

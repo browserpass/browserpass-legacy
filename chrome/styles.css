@@ -33,16 +33,36 @@ body {
   min-width: 160px;
 }
 
+.entry {
+  display:flex;
+  flex-flow: row;
+  border: 0;
+  border-bottom: 1px dotted #ccc;
+}
+
+.copy {
+  width: 32px;
+  border: 0;
+  cursor: pointer;
+}
+
+.username {
+  background: no-repeat url('icon-user.svg') center;
+  background-size: 16px 16px;
+}
+
+.password {
+  background: no-repeat url('icon-key.svg') center;
+  background-size: 16px 16px;
+}
+
 .login {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
+  flex: 1;
   -webkit-appearance: none;
   -moz-appearance: none;
   padding: 12px;
   cursor: pointer;
   border: 0;
-  border-bottom: 1px dotted #ccc;
   text-align: left;
   background-color: white;
   color: black;
@@ -57,12 +77,12 @@ body {
   padding-left: 32px;
 }
 
-.login:last-of-type {
+.entry:last-of-type{
   border-bottom: 0;
 }
 
-.login:hover,
-.login:focus {
+.entry>*:hover,
+.entry>*:focus {
   outline: 0;
   background-color: #eee;
 }
@@ -80,6 +100,21 @@ body {
   vertical-align: middle;
   width: 12px;
   height: 12px;
+}
+
+#clipboard-container {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 0px;
+  height: 0px;
+  z-index: 100;
+  opacity: 0;
+}
+
+#clipboard {
+  width: 1px;
+  height: 1px;
 }
 
 @keyframes load8 {
