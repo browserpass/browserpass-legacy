@@ -202,23 +202,14 @@ function loginToClipboard() {
 }
 
 function toClipboard(s){
-  m.render(
-    document.getElementById("clipboard-container"),
-    m(
-      "input#clipboard",
-      {
-        type: "text",
-        value: s
-      }
-    )
-  );
-  var c = document.getElementById("clipboard");
-  c.select();
+  var clipboardContainer = document.getElementById("clipboard-container");
+  var clipboard = document.createElement("input");
+  clipboardContainer.appendChild(clipboard);
+  clipboard.value = s;
+  clipboard.select();
   document.execCommand("copy");
-  c.blur();
-  m.render(
-    document.getElementById("clipboard-container")
-  );
+  clipboard.blur();
+  clipboardContainer.removeChild(clipboard);
 }
 
 // This function uses regular DOM
