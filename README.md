@@ -1,7 +1,7 @@
 Browserpass
 =======
 
-Browserpass is a Chrome & Firefox extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
+Browserpass is a Chrome & Firefox extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms, as well as copy it to clipboard. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
 
 ![Browserpass in the Chrome menu](https://github.com/dannyvankooten/browserpass/raw/master/assets/example.gif)
 
@@ -76,11 +76,15 @@ You can [install the Firefox extension from the Mozilla add-ons site](https://ad
 
 ## Usage
 
-Click the lock icon or use **Ctrl+Shift+L** to fill & submit your login info for the current site.
+Click the lock icon or use <kbd>Ctrl+Shift+L</kbd> to fill & submit your login info for the current site.
 
 - Chrome allows changing the shortcut via chrome://extensions > Keyboard shortcuts.
 - Firefox unfortunately does not allow changing the default shortcut.
 - Firefox supports the keyboard shortcut only since version 53.
+
+Navigate through the list of available credentials with <kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> or with arrow keys.
+
+Click on the username or password buttons to copy them to clipboard. Keyboard shortcuts are also available, use <kbd>Ctrl+C</kbd> to copy password of the selected entry and <kbd>Shift+C</kbd> to copy the username.
 
 ## Security
 
