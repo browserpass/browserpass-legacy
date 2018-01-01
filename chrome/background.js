@@ -10,7 +10,11 @@ chrome.tabs.onUpdated.addListener(onTabUpdated);
 // fill login form & submit
 function fillLoginForm(login, tab) {
   const loginParam = JSON.stringify(login);
-  const autoSubmitParam = JSON.stringify(localStorage.getItem("autoSubmit"));
+  const autoSubmit = localStorage.getItem("autoSubmit");
+  const autoSubmitParam = autoSubmit != "false";
+  if (autoSubmit === null) {
+    localStorage.setItem("autoSubmit", autoSubmitParam);
+  }
 
   chrome.tabs.executeScript(
     tab.id,
