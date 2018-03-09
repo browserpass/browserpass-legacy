@@ -142,7 +142,7 @@ If you still experience the issue, try starting your browser from terminal. If t
 
 ## Contributing
 
-Check out [Contributing](CONTRIBUTING.md).
+Check out [Contributing](CONTRIBUTING.md) for details on how to build browser extension and host app from sources, and how to load browserpass as an unpacked extension into your browser.
 
 ## License
 
