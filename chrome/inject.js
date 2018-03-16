@@ -164,17 +164,17 @@ window.browserpassFillForm = function(login, autoSubmit) {
     return forms[0];
   }
 
-  function find(field) {
-    return queryFirstVisible(document, field, form());
+  function find(field, form) {
+    return queryFirstVisible(document, field, form);
   }
 
-  function update(field, value) {
+  function update(field, value, form) {
     if (!value.length) {
       return false;
     }
 
     // Focus the input element first
-    var el = find(field);
+    var el = find(field, form);
     if (!el) {
       return false;
     }
@@ -184,7 +184,7 @@ window.browserpassFillForm = function(login, autoSubmit) {
     });
 
     // Focus may have triggered unvealing a true input, find it again
-    el = find(field);
+    el = find(field, form);
     if (!el) {
       return false;
     }
@@ -206,17 +206,19 @@ window.browserpassFillForm = function(login, autoSubmit) {
     return true;
   }
 
-  update(USERNAME_FIELDS, login.u);
-  update(PASSWORD_FIELDS, login.p);
+  var loginForm = form();
 
-  var password_inputs = queryAllVisible(document, PASSWORD_FIELDS, form());
+  update(USERNAME_FIELDS, login.u, loginForm);
+  update(PASSWORD_FIELDS, login.p, loginForm);
+
+  var password_inputs = queryAllVisible(document, PASSWORD_FIELDS, loginForm);
   if (password_inputs.length > 1) {
     // There is likely a field asking for OTP code, so do not submit form just yet
     password_inputs[1].select();
   } else {
     window.requestAnimationFrame(function() {
       // Try to submit the form, or focus on the submit button (based on user settings)
-      var submit = find(SUBMIT_FIELDS);
+      var submit = find(SUBMIT_FIELDS, loginForm);
       if (submit) {
         if (autoSubmit) {
           submit.click();
@@ -224,12 +226,16 @@ window.browserpassFillForm = function(login, autoSubmit) {
           submit.focus();
         }
       } else {
-        // There is no submit button. We need to keep focus somewhere within the form, so that Enter hopefully submits the form.
-        var password = find(PASSWORD_FIELDS);
+        // There is no submit button. Try to submit the form itself.
+        if (autoSubmit && loginForm) {
+          loginForm.submit();
+        }
+        // We need to keep focus somewhere within the form, so that Enter hopefully submits the form.
+        var password = find(PASSWORD_FIELDS, loginForm);
         if (password) {
           password.focus();
         } else {
-          var username = find(USERNAME_FIELDS);
+          var username = find(USERNAME_FIELDS, loginForm);
           if (username) {
             username.focus();
           }
