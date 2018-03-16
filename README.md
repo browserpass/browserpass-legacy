@@ -87,6 +87,17 @@ Navigate through the list of available credentials with <kbd>Tab</kbd> / <kbd>Sh
 
 Click on the username or password buttons to copy them to clipboard. Keyboard shortcuts are also available, use <kbd>Ctrl+C</kbd> to copy password of the selected entry and <kbd>Shift+C</kbd> to copy the username.
 
+## Options
+
+Open settings to configure browserpass:
+
+- Right click on the lock icon > "Options".
+- Find the browserpass in the list of extensions in your browser > "Options".
+
+The list of currently available options:
+
+- `Auto-submit the form`: make browserpass automatically submit the login form for you.
+
 ## Security
 
 Browserpass aims to protect your passwords and computer from malicious or fraudulent websites.
