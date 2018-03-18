@@ -27,11 +27,22 @@ type Login struct {
 
 var endianness = binary.LittleEndian
 
+// Settings info for the browserpass program.
+//
+// The browser extension will look up settings in its localstorage and find
+// which options have been selected by the user, and put them in a JSON object
+// which is then passed along with the command over the native messaging api.
+type Config struct {
+	// Manual searches use FuzzySearch if true, GlobSearch otherwise
+	UseFuzzy bool `json:"use_fuzzy_search"`
+}
+
 // msg defines a message sent from a browser extension.
 type msg struct {
-	Action string `json:"action"`
-	Domain string `json:"domain"`
-	Entry  string `json:"entry"`
+	Settings Config `json:"settings"`
+	Action   string `json:"action"`
+	Domain   string `json:"domain"`
+	Entry    string `json:"entry"`
 }
 
 // Run starts browserpass.
@@ -53,10 +64,20 @@ func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
 			return err
 		}
 
+		// Since the pass.Store object is created by the wrapper prior to
+		// settings from the browser being made available, we set them here
+		s.SetConfig(&data.Settings.UseFuzzy)
+
 		var resp interface{}
 		switch data.Action {
 		case "search":
 			list, err := s.Search(data.Domain)
+			if err != nil {
+				return err
+			}
+			resp = list
+		case "match_domain":
+			list, err := s.GlobSearch(data.Domain)
 			if err != nil {
 				return err
 			}

@@ -105,30 +105,38 @@ function init(tab) {
 
   activeTab = tab;
   var activeDomain = parseDomainFromUrl(tab.url);
-  searchPassword(activeDomain);
+  searchPassword(activeDomain, "match_domain");
 }
 
-function searchPassword(_domain) {
+function searchPassword(_domain, action="search") {
   searching = true;
   logins = null;
   domain = _domain;
   urlDuringSearch = activeTab.url;
   m.redraw();
 
-  chrome.runtime.sendNativeMessage(
-    app,
-    { action: "search", domain: _domain },
+  // First get the settings needed by the browserpass native client
+  // by requesting them from the background script (which has localStorage access
+  // to the settings). Then construct the message to send to browserpass and
+  // send that via sendNativeMessage.
+  chrome.runtime.sendMessage(
+    { action: "getSettings" },
     function(response) {
-      if (chrome.runtime.lastError) {
-        error = chrome.runtime.lastError.message;
-        console.error(error);
-      }
+      chrome.runtime.sendNativeMessage(
+        app,
+        { action: action, domain: _domain, settings: response},
+        function(response) {
+          if (chrome.runtime.lastError) {
+            error = chrome.runtime.lastError.message;
+            console.error(error);
+          }
 
-      searching = false;
-      logins = response;
-      m.redraw();
-    }
-  );
+          searching = false;
+          logins = response;
+          m.redraw();
+        }
+      );
+    });
 }
 
 function parseDomainFromUrl(url) {
