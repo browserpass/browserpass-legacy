@@ -1,10 +1,13 @@
 "use strict";
 
 var m = require("mithril");
+var FuzzySort = require("fuzzysort");
 var app = "com.dannyvankooten.browserpass";
 var activeTab;
 var searching = false;
-var logins;
+var resultLogins = [];
+var logins = [];
+var fillOnSubmit = false;
 var error;
 var domain, urlDuringSearch;
 
@@ -24,10 +27,10 @@ function view() {
     results = m("div.status-text", "Error: " + error);
     error = undefined;
   } else if (logins) {
-    if (logins.length === 0) {
+    if (logins.length === 0 && domain && domain.length > 0) {
       results = m(
         "div.status-text",
-        m.trust(`No passwords found for <strong>${domain}</strong>.`)
+        m.trust(`No matching passwords found for <strong>${domain}</strong>.`)
       );
     } else if (logins.length > 0) {
       results = logins.map(function(login) {
@@ -61,22 +64,29 @@ function view() {
       m(
         "form",
         {
-          onsubmit: submitSearchForm
+          onsubmit: submitSearchForm,
+          onkeydown: searchKeyHandler
         },
         [
-          m("input", {
-            type: "text",
-            id: "search-field",
-            name: "s",
-            placeholder: "Search password..",
-            autocomplete: "off",
-            autofocus: "on"
+          m("div", {
+            "id": "filter-search"
           }),
-          m("input", {
-            type: "submit",
-            value: "Search",
-            style: "display: none;"
-          })
+          m("div", [
+            m("input", {
+              type: "text",
+              id: "search-field",
+              name: "s",
+              placeholder: "Search passwords..",
+              autocomplete: "off",
+              autofocus: "on",
+              oninput: filterLogins
+            }),
+            m("input", {
+              type: "submit",
+              value: "Search",
+              style: "display: none;"
+            })
+          ])
         ]
       )
     ]),
@@ -86,15 +96,73 @@ function view() {
   ]);
 }
 
+function filterLogins(e) {
+  // use fuzzy search to filter results
+  var filter = e.target.value.trim().split(/[\s\/]+/);
+  if (filter.length > 0) {
+    logins = resultLogins.slice(0);
+    filter.forEach(function(word) {
+      if (word.length > 0) {
+        var refine = [];
+        FuzzySort.go(word, logins, {allowTypo: false}).forEach(function(result) {
+          refine.push(result.target);
+        });
+        logins = refine.slice(0);
+      }
+    });
+
+    // fill login forms on submit rather than initiating a search
+    fillOnSubmit = logins.length > 0;
+  } else {
+    // reset the result list if the filter is empty
+    logins = resultLogins.slice(0);
+  }
+
+  // redraw the list
+  m.redraw();
+
+  // show / hide the filter hint
+  showFilterHint(logins.length);
+}
+
+function searchKeyHandler(e) {
+  // switch to search mode if backspace is pressed and no filter text has been entered
+  if (e.code == "Backspace" && logins.length > 0 && e.target.value.length == 0) {
+    e.preventDefault();
+    logins = resultLogins = [];
+    e.target.value = fillOnSubmit ? '' : domain;
+    domain = '';
+    showFilterHint(false);
+  }
+}
+
+function showFilterHint(show=true) {
+  var filterHint = document.getElementById("filter-search");
+  var searchField = document.getElementById("search-field");
+  if (show) {
+    filterHint.style.display = "block";
+    searchField.setAttribute("placeholder", "Refine search...");
+  } else {
+    filterHint.style.display = "none";
+    searchField.setAttribute("placeholder", "Search passwords...");
+  }
+}
+
 function submitSearchForm(e) {
   e.preventDefault();
 
-  // don't search without input.
-  if (!this.s.value.length) {
-    return;
-  }
+  if (fillOnSubmit && logins.length > 0) {
+    // fill using the first result
+    getLoginData.bind(logins[0])();
+  } else {
+    // don't search without input.
+    if (!this.s.value.length) {
+      return;
+    }
 
-  searchPassword(this.s.value);
+    // search for matching entries
+    searchPassword(this.s.value, "search", false);
+  }
 }
 
 function init(tab) {
@@ -108,9 +176,9 @@ function init(tab) {
   searchPassword(activeDomain, "match_domain");
 }
 
-function searchPassword(_domain, action="search") {
+function searchPassword(_domain, action="search", useFillOnSubmit=true) {
   searching = true;
-  logins = null;
+  logins = resultLogins = [];
   domain = _domain;
   urlDuringSearch = activeTab.url;
   m.redraw();
@@ -132,7 +200,13 @@ function searchPassword(_domain, action="search") {
           }
 
           searching = false;
-          logins = response;
+          logins = resultLogins = response ? response : [];
+          document.getElementById("filter-search").textContent = domain;
+          fillOnSubmit = useFillOnSubmit && logins.length > 0;
+          if (logins.length > 0) {
+            showFilterHint(true);
+            document.getElementById("search-field").value = '';
+          }
           m.redraw();
         }
       );
@@ -160,13 +234,14 @@ function getFaviconUrl(domain) {
 
 function getLoginData() {
   searching = true;
-  logins = null;
+  logins = resultLogins = [];
   m.redraw();
 
   chrome.runtime.sendMessage(
     { action: "login", entry: this, urlDuringSearch: urlDuringSearch },
     function(response) {
       searching = false;
+      fillOnSubmit = false;
 
       if (response.error) {
         error = response.error;
@@ -222,14 +297,16 @@ function keyHandler(e) {
       switchFocus("div.entry:first-child > .login", "nextElementSibling");
       break;
     case "c":
-      if (e.ctrlKey) {
+      if (e.target.id != "search-field" && e.ctrlKey) {
         document.activeElement["nextElementSibling"][
           "nextElementSibling"
         ].click();
       }
       break;
     case "C":
-      document.activeElement["nextElementSibling"].click();
+      if (e.target.id != "search-field") {
+        document.activeElement["nextElementSibling"].click();
+      }
       break;
   }
 }
