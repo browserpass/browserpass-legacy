@@ -173,18 +173,23 @@ function onExtensionInstalled(details) {
   }
 
   var changelog = {
-    "2.0.13": "Breaking change: please update the host app to at least v2.0.12"
+    2012: "Breaking change: please update the host app to at least v2.0.12"
   };
 
-  var version = chrome.runtime.getManifest().version;
-  if (!(version in changelog)) {
-    return;
-  }
+  var parseVersion = version => parseInt(version.replace(/\./g, ""));
+  var newVersion = parseVersion(chrome.runtime.getManifest().version);
+  var prevVersion = parseVersion(details.previousVersion);
 
-  chrome.notifications.create(version, {
-    title: "browserpass: Important changes",
-    message: changelog[version],
-    iconUrl: "icon-lock.png",
-    type: "basic"
-  });
+  Object.keys(changelog)
+    .sort()
+    .forEach(function(version) {
+      if (version > prevVersion && version <= newVersion) {
+        chrome.notifications.create(version, {
+          title: "browserpass: Important changes",
+          message: changelog[version],
+          iconUrl: "icon-lock.png",
+          type: "basic"
+        });
+      }
+    });
 }
