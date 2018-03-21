@@ -74,7 +74,7 @@ function view() {
         },
         [
           m("div", {
-            "id": "filter-search"
+            id: "filter-search"
           }),
           m("div", [
             m("input", {
@@ -109,7 +109,9 @@ function filterLogins(e) {
     filter.forEach(function(word) {
       if (word.length > 0) {
         var refine = [];
-        FuzzySort.go(word, logins, {allowTypo: false}).forEach(function(result) {
+        FuzzySort.go(word, logins, { allowTypo: false }).forEach(function(
+          result
+        ) {
           refine.push(result.target);
         });
         logins = refine.slice(0);
@@ -132,16 +134,20 @@ function filterLogins(e) {
 
 function searchKeyHandler(e) {
   // switch to search mode if backspace is pressed and no filter text has been entered
-  if (e.code == "Backspace" && logins.length > 0 && e.target.value.length == 0) {
+  if (
+    e.code == "Backspace" &&
+    logins.length > 0 &&
+    e.target.value.length == 0
+  ) {
     e.preventDefault();
     logins = resultLogins = [];
-    e.target.value = fillOnSubmit ? '' : domain;
-    domain = '';
+    e.target.value = fillOnSubmit ? "" : domain;
+    domain = "";
     showFilterHint(false);
   }
 }
 
-function showFilterHint(show=true) {
+function showFilterHint(show = true) {
   var filterHint = document.getElementById("filter-search");
   var searchField = document.getElementById("search-field");
   if (show) {
@@ -180,7 +186,7 @@ function init(tab) {
   searchPassword(activeDomain, "match_domain");
 }
 
-function searchPassword(_domain, action="search", useFillOnSubmit=true) {
+function searchPassword(_domain, action = "search", useFillOnSubmit = true) {
   searching = true;
   logins = resultLogins = [];
   domain = _domain;
@@ -191,30 +197,28 @@ function searchPassword(_domain, action="search", useFillOnSubmit=true) {
   // by requesting them from the background script (which has localStorage access
   // to the settings). Then construct the message to send to browserpass and
   // send that via sendNativeMessage.
-  chrome.runtime.sendMessage(
-    { action: "getSettings" },
-    function(response) {
-      chrome.runtime.sendNativeMessage(
-        app,
-        { action: action, domain: _domain, settings: response},
-        function(response) {
-          if (chrome.runtime.lastError) {
-            error = chrome.runtime.lastError.message;
-            console.error(error);
-          }
-
-          searching = false;
-          logins = resultLogins = response ? response : [];
-          document.getElementById("filter-search").textContent = domain;
-          fillOnSubmit = useFillOnSubmit && logins.length > 0;
-          if (logins.length > 0) {
-            showFilterHint(true);
-            document.getElementById("search-field").value = '';
-          }
-          m.redraw();
+  chrome.runtime.sendMessage({ action: "getSettings" }, function(response) {
+    chrome.runtime.sendNativeMessage(
+      app,
+      { action: action, domain: _domain, settings: response },
+      function(response) {
+        if (chrome.runtime.lastError) {
+          error = chrome.runtime.lastError.message;
+          console.error(error);
         }
-      );
-    });
+
+        searching = false;
+        logins = resultLogins = response ? response : [];
+        document.getElementById("filter-search").textContent = domain;
+        fillOnSubmit = useFillOnSubmit && logins.length > 0;
+        if (logins.length > 0) {
+          showFilterHint(true);
+          document.getElementById("search-field").value = "";
+        }
+        m.redraw();
+      }
+    );
+  });
 }
 
 function parseDomainFromUrl(url) {
@@ -246,7 +250,7 @@ function launchURL() {
       if (chrome.runtime.lastError) {
         error = chrome.runtime.lastError.message;
         m.redraw();
-          return;
+        return;
       }
       // get url from login path if not available in the host app response
       if (!response.hasOwnProperty("url") || response.url.length == 0) {
@@ -254,7 +258,12 @@ function launchURL() {
         for (var i in parts) {
           var part = parts[i];
           var info = Tldjs.parse(part);
-          if (info.isValid && info.tldExists && info.domain !== null && info.hostname === part) {
+          if (
+            info.isValid &&
+            info.tldExists &&
+            info.domain !== null &&
+            info.hostname === part
+          ) {
             response.url = part;
             break;
           }
@@ -262,8 +271,15 @@ function launchURL() {
       }
       // if a url is present, then launch a new tab via the background script
       if (response.hasOwnProperty("url") && response.url.length > 0) {
-        var url = response.url.match(/^([a-z]+:)?\/\//i) ? response.url : "http://" + response.url;
-        chrome.runtime.sendMessage({action: "launch", url: url, username: response.u, password: response.p});
+        var url = response.url.match(/^([a-z]+:)?\/\//i)
+          ? response.url
+          : "http://" + response.url;
+        chrome.runtime.sendMessage({
+          action: "launch",
+          url: url,
+          username: response.u,
+          password: response.p
+        });
         window.close();
         return;
       }
@@ -271,7 +287,7 @@ function launchURL() {
       if (!response.hasOwnProperty("url")) {
         resetWithError(
           "Unable to determine the URL for this entry. If you have defined one in the password file, " +
-          "your host application must be at least v2.0.14 for this to be usable."
+            "your host application must be at least v2.0.14 for this to be usable."
         );
       } else {
         resetWithError("Unable to determine the URL for this entry.");
@@ -346,17 +362,23 @@ function keyHandler(e) {
       break;
     case "c":
       if (e.target.id != "search-field" && e.ctrlKey) {
-        document.activeElement.parentNode.querySelector("button.copy.password").click();
+        document.activeElement.parentNode
+          .querySelector("button.copy.password")
+          .click();
       }
       break;
     case "C":
       if (e.target.id != "search-field") {
-        document.activeElement.parentNode.querySelector("button.copy.username").click();
+        document.activeElement.parentNode
+          .querySelector("button.copy.username")
+          .click();
       }
       break;
     case "g":
       if (e.target.id != "search-field") {
-        document.activeElement.parentNode.querySelector("button.launch.url").click();
+        document.activeElement.parentNode
+          .querySelector("button.launch.url")
+          .click();
       }
   }
 }
@@ -388,13 +410,13 @@ function oncreate() {
 }
 
 function resetWithError(errMsg) {
-  domain = '';
+  domain = "";
   logins = resultLogins = [];
   fillOnSubmit = false;
   searching = false;
   var filterSearch = document.getElementById("filter-search");
   filterSearch.style.display = "none";
-  filterSearch.textContent = '';
+  filterSearch.textContent = "";
   var searchField = document.getElementById("search-field");
   searchField.setAttribute("placeholder", "Search passwords...");
   error = errMsg;

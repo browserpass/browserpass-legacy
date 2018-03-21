@@ -98,7 +98,7 @@ function onMessage(request, sender, sendResponse) {
 
   // spawn a new tab with pre-provided credentials
   if (request.action == "launch") {
-    chrome.tabs.create({url: request.url}, function (tab) {
+    chrome.tabs.create({ url: request.url }, function(tab) {
       var authAttempted = false;
       chrome.webRequest.onAuthRequired.addListener(
         function authListener(requestDetails) {
@@ -108,11 +108,14 @@ function onMessage(request, sender, sendResponse) {
           }
           authAttempted = true;
           // remove event listeners once tab loading is complete
-          chrome.tabs.onUpdated.addListener(function statusListener(tabId, info) {
-              if (info.status === "complete") {
+          chrome.tabs.onUpdated.addListener(function statusListener(
+            tabId,
+            info
+          ) {
+            if (info.status === "complete") {
               chrome.tabs.onUpdated.removeListener(statusListener);
               chrome.webRequest.onAuthRequired.removeListener(authListener);
-              }
+            }
           });
           // ask the user before sending credentials over an insecure connection
           if (!requestDetails.url.match(/^https:/i)) {
@@ -120,15 +123,20 @@ function onMessage(request, sender, sendResponse) {
               "You are about to send login credentials via an insecure connection!\n\n" +
               "Are you sure you want to do this? If there is an attacker watching your " +
               "network traffic, they may be able to see your username and password.\n\n" +
-              "URL: " + requestDetails.url
-              ;
+              "URL: " +
+              requestDetails.url;
             if (!confirm(message)) {
               return {};
             }
           }
-          return {authCredentials: {username: request.username, password: request.password}};
+          return {
+            authCredentials: {
+              username: request.username,
+              password: request.password
+            }
+          };
         },
-        {urls: ["*://*/*"], tabId: tab.id},
+        { urls: ["*://*/*"], tabId: tab.id },
         ["blocking"]
       );
     });
