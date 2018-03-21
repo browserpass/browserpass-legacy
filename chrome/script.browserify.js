@@ -2,6 +2,7 @@
 
 var m = require("mithril");
 var FuzzySort = require("fuzzysort");
+var Tldjs = require("tldjs");
 var app = "com.dannyvankooten.browserpass";
 var activeTab;
 var searching = false;
@@ -45,6 +46,10 @@ function view() {
 
         return m("div.entry", [
           m(selector, options, login),
+          m("button.launch.url", {
+            onclick: launchURL.bind({ entry: login, what: "url" }),
+            tabindex: -1
+          }),
           m("button.copy.username", {
             onclick: loginToClipboard.bind({ entry: login, what: "username" }),
             tabindex: -1
@@ -76,7 +81,7 @@ function view() {
               type: "text",
               id: "search-field",
               name: "s",
-              placeholder: "Search passwords..",
+              placeholder: "Search passwords...",
               autocomplete: "off",
               autofocus: "on",
               oninput: filterLogins
@@ -150,7 +155,6 @@ function showFilterHint(show=true) {
 
 function submitSearchForm(e) {
   e.preventDefault();
-
   if (fillOnSubmit && logins.length > 0) {
     // fill using the first result
     getLoginData.bind(logins[0])();
@@ -232,6 +236,50 @@ function getFaviconUrl(domain) {
   return null;
 }
 
+function launchURL() {
+  var what = this.what;
+  var entry = this.entry;
+  chrome.runtime.sendNativeMessage(
+    app,
+    { action: "get", entry: this.entry },
+    function(response) {
+      if (chrome.runtime.lastError) {
+        error = chrome.runtime.lastError.message;
+        m.redraw();
+          return;
+      }
+      // get url from login path if not available in the host app response
+      if (!response.hasOwnProperty("url") || response.url.length == 0) {
+        var parts = entry.split(/\//).reverse();
+        for (var i in parts) {
+          var part = parts[i];
+          var info = Tldjs.parse(part);
+          if (info.isValid && info.tldExists && info.domain !== null && info.hostname === part) {
+            response.url = part;
+            break;
+          }
+        }
+      }
+      // if a url is present, then launch a new tab via the background script
+      if (response.hasOwnProperty("url") && response.url.length > 0) {
+        var url = response.url.match(/^([a-z]+:)?\/\//i) ? response.url : "http://" + response.url;
+        chrome.runtime.sendMessage({action: "launch", url: url, username: response.u, password: response.p});
+        window.close();
+        return;
+      }
+      // no url available
+      if (!response.hasOwnProperty("url")) {
+        resetWithError(
+          "Unable to determine the URL for this entry. If you have defined one in the password file, " +
+          "your host application must be at least v2.0.14 for this to be usable."
+        );
+      } else {
+        resetWithError("Unable to determine the URL for this entry.");
+      }
+    }
+  );
+}
+
 function getLoginData() {
   searching = true;
   logins = resultLogins = [];
@@ -298,16 +346,18 @@ function keyHandler(e) {
       break;
     case "c":
       if (e.target.id != "search-field" && e.ctrlKey) {
-        document.activeElement["nextElementSibling"][
-          "nextElementSibling"
-        ].click();
+        document.activeElement.parentNode.querySelector("button.copy.password").click();
       }
       break;
     case "C":
       if (e.target.id != "search-field") {
-        document.activeElement["nextElementSibling"].click();
+        document.activeElement.parentNode.querySelector("button.copy.username").click();
       }
       break;
+    case "g":
+      if (e.target.id != "search-field") {
+        document.activeElement.parentNode.querySelector("button.launch.url").click();
+      }
   }
 }
 
@@ -335,4 +385,19 @@ function oncreate() {
   window.setTimeout(function() {
     document.getElementById("search-field").focus();
   }, 100);
+}
+
+function resetWithError(errMsg) {
+  domain = '';
+  logins = resultLogins = [];
+  fillOnSubmit = false;
+  searching = false;
+  var filterSearch = document.getElementById("filter-search");
+  filterSearch.style.display = "none";
+  filterSearch.textContent = '';
+  var searchField = document.getElementById("search-field");
+  searchField.setAttribute("placeholder", "Search passwords...");
+  error = errMsg;
+  m.redraw();
+  searchField.focus();
 }
