@@ -1,150 +1,151 @@
 body {
-  padding: 0;
-  margin: 0;
-  font-family: sans-serif;
-  min-width: 280px;
-  background: white;
-  font-size: 14px;
+	padding: 0;
+	margin: 0;
+	font-family: sans-serif;
+	min-width: 280px;
+	background: white;
+	font-size: 14px;
 }
 
 .search > form {
-  border-bottom: 1px solid #bbb;
-  display: flex;
-  flex-wrap: nowrap;
+	border-bottom: 1px solid #bbb;
+	display: flex;
+	flex-wrap: nowrap;
 }
 
 .search > form :last-child {
-  width: 100%;
+	width: 100%;
 }
 
 .search input {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 6px;
-  border: 0;
-  background: url("icon-search.svg") center right 6px no-repeat;
-  background-size: 16px 16px;
-  background-color: white;
-  color: black;
-  padding-right: 20px;
+	box-sizing: border-box;
+	width: 100%;
+	padding: 6px;
+	border: 0;
+	background: url("icon-search.svg") center right 6px no-repeat;
+	background-size: 16px 16px;
+	background-color: white;
+	color: black;
+	padding-right: 20px;
 }
 
 #filter-search {
-  background: #eee;
-  border: 0;
-  box-sizing: border-box;
-  display: none;
-  padding: 6px;
-  padding-top: 5px;
+	background: #eee;
+	border: 0;
+	box-sizing: border-box;
+	display: none;
+	padding: 6px;
+	padding-top: 5px;
 }
 
 .search input:focus {
-  outline: 0;
+	outline: 0;
 }
 
 .status-text {
-  padding: 6px;
+	padding: 6px;
 }
 
 .results {
-  width: 100%;
-  min-width: 160px;
+	width: 100%;
+	min-width: 160px;
 }
 
 .entry {
-  display:flex;
-  flex-flow: row;
-  border: 0;
-  border-bottom: 1px dotted #ccc;
+	display: flex;
+	flex-flow: row;
+	border: 0;
+	border-bottom: 1px dotted #ccc;
 }
 
-.copy, .launch {
-  width: 32px;
-  border: 0;
-  cursor: pointer;
+.copy,
+.launch {
+	width: 32px;
+	border: 0;
+	cursor: pointer;
 }
 
 .url {
-    background: no-repeat url('icon-globe.svg') center;
-    background-size: 16px 16px;
+	background: no-repeat url("icon-globe.svg") center;
+	background-size: 16px 16px;
 }
 
 .username {
-  background: no-repeat url('icon-user.svg') center;
-  background-size: 16px 16px;
+	background: no-repeat url("icon-user.svg") center;
+	background-size: 16px 16px;
 }
 
 .password {
-  background: no-repeat url('icon-key.svg') center;
-  background-size: 16px 16px;
+	background: no-repeat url("icon-key.svg") center;
+	background-size: 16px 16px;
 }
 
 .login {
-  flex: 1;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding: 12px;
-  cursor: pointer;
-  border: 0;
-  text-align: left;
-  background-color: white;
-  color: black;
-  line-height: 1.2;
-  white-space: nowrap;
+	flex: 1;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	padding: 12px;
+	cursor: pointer;
+	border: 0;
+	text-align: left;
+	background-color: white;
+	color: black;
+	line-height: 1.2;
+	white-space: nowrap;
 }
 
 .login.favicon {
-  background-repeat: no-repeat;
-  background-position: left 8px center;
-  background-size: 16px 16px;
-  padding-left: 32px;
+	background-repeat: no-repeat;
+	background-position: left 8px center;
+	background-size: 16px 16px;
+	padding-left: 32px;
 }
 
-.entry:last-of-type{
-  border-bottom: 0;
+.entry:last-of-type {
+	border-bottom: 0;
 }
 
-.entry>*:hover,
-.entry>*:focus {
-  outline: 0;
-  background-color: #eee;
+.entry > *:hover,
+.entry > *:focus {
+	outline: 0;
+	background-color: #eee;
 }
 
 .loader {
-  margin: 12px auto;
-  display: block;
-  text-indent: -9999999px;
-  border: 3px solid rgba(0, 0, 0, 0.2);
-  border-left-color: #000000;
-  -webkit-transform: translateZ(0);
-  -webkit-animation: load8 1.1s infinite linear;
-  overflow: hidden;
-  border-radius: 50%;
-  vertical-align: middle;
-  width: 12px;
-  height: 12px;
+	margin: 12px auto;
+	display: block;
+	text-indent: -9999999px;
+	border: 3px solid rgba(0, 0, 0, 0.2);
+	border-left-color: #000000;
+	-webkit-transform: translateZ(0);
+	-webkit-animation: load8 1.1s infinite linear;
+	overflow: hidden;
+	border-radius: 50%;
+	vertical-align: middle;
+	width: 12px;
+	height: 12px;
 }
 
 #clipboard-container {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 0px;
-  height: 0px;
-  z-index: 100;
-  opacity: 0;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 0px;
+	height: 0px;
+	z-index: 100;
+	opacity: 0;
 }
 
 #clipboard {
-  width: 1px;
-  height: 1px;
+	width: 1px;
+	height: 1px;
 }
 
 @keyframes load8 {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
+	0% {
+		-webkit-transform: rotate(0deg);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
 }
