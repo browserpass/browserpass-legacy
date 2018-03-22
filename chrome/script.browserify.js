@@ -34,9 +34,10 @@ function view() {
         m.trust(`No matching passwords found for <strong>${domain}</strong>.`)
       );
     } else if (logins.length > 0) {
+      const autoSubmit = localStorage.getItem("autoSubmit") == "true";
       results = logins.map(function(login) {
         let selector = "button.login";
-        let options = { onclick: getLoginData.bind(login) };
+        let options = { onclick: getLoginData.bind(login), title: "Fill form" + (autoSubmit ? " and submit" : "") };
 
         let faviconUrl = getFaviconUrl(domain);
         if (faviconUrl) {
@@ -48,14 +49,17 @@ function view() {
           m(selector, options, login),
           m("button.launch.url", {
             onclick: launchURL.bind({ entry: login, what: "url" }),
+            title: "Visit URL",
             tabindex: -1
           }),
           m("button.copy.username", {
             onclick: loginToClipboard.bind({ entry: login, what: "username" }),
+            title: "Copy username",
             tabindex: -1
           }),
           m("button.copy.password", {
             onclick: loginToClipboard.bind({ entry: login, what: "password" }),
+            title: "Copy password",
             tabindex: -1
           })
         ]);
