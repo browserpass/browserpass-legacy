@@ -85,7 +85,7 @@ Click the lock icon or use <kbd>Ctrl+Shift+L</kbd> to fill & submit your login i
 
 Navigate through the list of available credentials with <kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> or with arrow keys.
 
-Click on the username or password buttons to copy them to clipboard. Keyboard shortcuts are also available, use <kbd>Ctrl+C</kbd> to copy password of the selected entry and <kbd>Shift+C</kbd> to copy the username.
+Click on the username or password buttons to copy them to clipboard. Keyboard shortcuts are also available, use <kbd>Ctrl+C</kbd> to copy password of the selected entry and <kbd>Shift+C</kbd> to copy the username. Click on the globe button to navigate to the URL or use the <kbd>g</kbd> shortcut. You can also specify one of the following metadata fields in your pass file to control exactly which URL is navigated to: `url:`, `link:`, `website:`, `web:` or `site:`.
 
 ## Options
 
