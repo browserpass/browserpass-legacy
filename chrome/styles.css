@@ -36,6 +36,7 @@ body {
 	display: none;
 	padding: 6px;
 	padding-top: 5px;
+	white-space: nowrap;
 }
 
 .search input:focus {
