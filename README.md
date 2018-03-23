@@ -97,6 +97,7 @@ Open settings to configure browserpass:
 The list of currently available options:
 
 - `Auto-submit the form`: make browserpass automatically submit the login form for you.
+- `Use fuzzy search`: whether the manual search should be fuzzy or not (refining search results is always fuzzy).
 
 ## Security
 
