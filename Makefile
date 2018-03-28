@@ -6,7 +6,7 @@ BROWSERIFY := node_modules/.bin/browserify
 PRETTIER := node_modules/.bin/prettier
 PRETTIER_SOURCES := $(shell find chrome -maxdepth 1 -name "*.js" -o -name "*.css")
 
-all: deps prettier js browserpass tests
+all: deps prettier js browserpass test
 
 .PHONY: crx
 crx:
@@ -53,8 +53,8 @@ browserpass-openbsd64: cmd/browserpass/ pass/ browserpass.go
 browserpass-freebsd64: cmd/browserpass/ pass/ browserpass.go
 	env GOOS=freebsd GOARCH=amd64 go build -o $@ ./cmd/browserpass
 
-.PHONY: tests
-tests:
+.PHONY: test
+test:
 	go test
 	go test ./pass
 
