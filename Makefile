@@ -1,7 +1,7 @@
 SHELL := /usr/bin/env bash
 CHROME := $(shell which google-chrome 2>/dev/null || which google-chrome-stable 2>/dev/null || which chromium 2>/dev/null || which chromium-browser 2>/dev/null || which chrome 2>/dev/null)
 PEM := $(shell find . -maxdepth 1 -name "*.pem")
-JS_OUTPUT := chrome/script.js chrome/options.js chrome/inject.js chrome/inject_otp.js
+JS_OUTPUT := chrome/background.js chrome/script.js chrome/options.js chrome/inject.js chrome/inject_otp.js
 BROWSERIFY := node_modules/.bin/browserify
 PRETTIER := node_modules/.bin/prettier
 PRETTIER_SOURCES := $(shell find chrome -maxdepth 1 -name "*.js" -o -name "*.css")
@@ -28,6 +28,9 @@ js: $(JS_OUTPUT)
 	cp firefox/host.json firefox-host.json
 	cp chrome/policy.json chrome-policy.json
 	cp chrome/{*.html,*.css,*.js,*.png,*.svg} firefox/
+
+chrome/background.js: chrome/background.browserify.js
+	$(BROWSERIFY) chrome/background.browserify.js -o chrome/background.js
 
 chrome/script.js: chrome/script.browserify.js
 	$(BROWSERIFY) chrome/script.browserify.js -o chrome/script.js
