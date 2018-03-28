@@ -230,17 +230,14 @@ function searchPassword(_domain, action = "search", useFillOnSubmit = true) {
       { action: action, domain: _domain, settings: settings },
       function(response) {
         if (chrome.runtime.lastError) {
-          error = chrome.runtime.lastError.message;
-          console.error(error);
+          return resetWithError(chrome.runtime.lastError.message);
+        }
+
+        if (typeof response == "string") {
+          return resetWithError(response);
         }
 
         searching = false;
-
-        if (typeof response == "string") {
-          error = response;
-          m.redraw();
-          return;
-        }
 
         logins = resultLogins = response ? response : [];
         document.getElementById("filter-search").textContent = domain;
@@ -281,7 +278,6 @@ function launchURL() {
     if (response.error) {
       return resetWithError(response.error);
     }
-
     window.close();
   });
 }
@@ -294,15 +290,10 @@ function getLoginData() {
   chrome.runtime.sendMessage(
     { action: "login", entry: this, urlDuringSearch: urlDuringSearch },
     function(response) {
-      searching = false;
-      fillOnSubmit = false;
-
       if (response.error) {
-        error = response.error;
-        m.redraw();
-      } else {
-        window.close();
+        return resetWithError(response.error);
       }
+      window.close();
     }
   );
 }
@@ -312,9 +303,7 @@ function loginToClipboard() {
     { action: "copyToClipboard", entry: this.entry, what: this.what },
     function(response) {
       if (response.error) {
-        error = response.error;
-        m.redraw();
-        return;
+        return resetWithError(response.error);
       }
 
       copyToClipboard(response.text);
@@ -395,6 +384,7 @@ function oncreate() {
 }
 
 function resetWithError(errMsg) {
+  console.error(errMsg);
   domain = "";
   logins = resultLogins = [];
   fillOnSubmit = false;

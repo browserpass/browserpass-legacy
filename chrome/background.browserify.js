@@ -62,6 +62,13 @@ function onMessage(request, sender, sendResponse) {
             var error = chrome.runtime.lastError.message;
             console.error(error);
             sendResponse({ status: "ERROR", error: error });
+            return;
+          }
+
+          if (typeof response == "string") {
+            console.error(response);
+            sendResponse({ status: "ERROR", error: response });
+            return;
           }
 
           chrome.tabs.query({ lastFocusedWindow: true, active: true }, function(
@@ -90,6 +97,12 @@ function onMessage(request, sender, sendResponse) {
             var error = chrome.runtime.lastError.message;
             console.error(error);
             sendResponse({ status: "ERROR", error: error });
+            return;
+          }
+
+          if (typeof response == "string") {
+            console.error(response);
+            sendResponse({ status: "ERROR", error: response });
             return;
           }
 
@@ -136,6 +149,19 @@ function onMessage(request, sender, sendResponse) {
         app,
         { action: "get", entry: request.entry, settings: getSettings() },
         function(response) {
+          if (chrome.runtime.lastError) {
+            var error = chrome.runtime.lastError.message;
+            console.error(error);
+            sendResponse({ status: "ERROR", error: error });
+            return;
+          }
+
+          if (typeof response == "string") {
+            console.error(response);
+            sendResponse({ status: "ERROR", error: response });
+            return;
+          }
+
           if (!response.hasOwnProperty("url") || response.url.length == 0) {
             // guess url from login path if not available in the host app response
             response.url = parseUrlFromEntry(request.entry);
