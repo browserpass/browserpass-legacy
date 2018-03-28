@@ -50,66 +50,73 @@ function displayOTP(tabId) {
 }
 
 function onMessage(request, sender, sendResponse) {
-  if (request.action == "login") {
-    chrome.runtime.sendNativeMessage(
-      app,
-      { action: "get", entry: request.entry, settings: getSettings() },
-      function(response) {
-        if (chrome.runtime.lastError) {
-          var error = chrome.runtime.lastError.message;
-          console.error(error);
-          sendResponse({ status: "ERROR", error: error });
-        }
-
-        chrome.tabs.query({ lastFocusedWindow: true, active: true }, function(
-          tabs
-        ) {
-          // do not send login data to page if URL changed during search.
-          if (tabs[0].url == request.urlDuringSearch) {
-            fillLoginForm(response, tabs[0]);
+  switch (request.action) {
+    case "login": {
+      chrome.runtime.sendNativeMessage(
+        app,
+        { action: "get", entry: request.entry, settings: getSettings() },
+        function(response) {
+          if (chrome.runtime.lastError) {
+            var error = chrome.runtime.lastError.message;
+            console.error(error);
+            sendResponse({ status: "ERROR", error: error });
           }
-        });
 
-        sendResponse({ status: "OK" });
-      }
-    );
+          chrome.tabs.query({ lastFocusedWindow: true, active: true }, function(
+            tabs
+          ) {
+            // do not send login data to page if URL changed during search.
+            if (tabs[0].url == request.urlDuringSearch) {
+              fillLoginForm(response, tabs[0]);
+            }
+          });
 
-    // Need to return true if we are planning to sendResponse asynchronously
-    return true;
-  }
-
-  if (request.action == "dismissOTP" && sender.tab.id in tabInfos) {
-    delete tabInfos[sender.tab.id];
-  }
-
-  // allows the local communication to request settings. Returns an
-  // object that has current settings. Update this as new settings
-  // are added (or old ones removed)
-  if (request.action == "getSettings") {
-    sendResponse(getSettings());
-  }
-
-  // spawn a new tab with pre-provided credentials
-  if (request.action == "launch") {
-    chrome.tabs.create({ url: request.url }, function(tab) {
-      var authAttempted = false;
-
-      authListeners[tab.id] = function(requestDetails) {
-        // only supply credentials if this is the first time for this tab, and the tab is not loaded
-        if (authAttempted) {
-          return {};
+          sendResponse({ status: "OK" });
         }
-        authAttempted = true;
-        return onAuthRequired(request, requestDetails);
-      };
-
-      // intercept requests for authentication
-      chrome.webRequest.onAuthRequired.addListener(
-        authListeners[tab.id],
-        { urls: ["*://*/*"], tabId: tab.id },
-        ["blocking"]
       );
-    });
+
+      // Need to return true if we are planning to sendResponse asynchronously
+      return true;
+    }
+
+    case "dismissOTP": {
+      if (request.action == "dismissOTP" && sender.tab.id in tabInfos) {
+        delete tabInfos[sender.tab.id];
+      }
+      break;
+    }
+
+    // allows the local communication to request settings. Returns an
+    // object that has current settings. Update this as new settings
+    // are added (or old ones removed)
+    case "getSettings": {
+      sendResponse(getSettings());
+      break;
+    }
+
+    // spawn a new tab with pre-provided credentials
+    case "launch": {
+      chrome.tabs.create({ url: request.url }, function(tab) {
+        var authAttempted = false;
+
+        authListeners[tab.id] = function(requestDetails) {
+          // only supply credentials if this is the first time for this tab, and the tab is not loaded
+          if (authAttempted) {
+            return {};
+          }
+          authAttempted = true;
+          return onAuthRequired(request, requestDetails);
+        };
+
+        // intercept requests for authentication
+        chrome.webRequest.onAuthRequired.addListener(
+          authListeners[tab.id],
+          { urls: ["*://*/*"], tabId: tab.id },
+          ["blocking"]
+        );
+      });
+      break;
+    }
   }
 }
 
