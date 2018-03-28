@@ -1,5 +1,7 @@
 "use strict";
 
+var Tldjs = require("tldjs");
+
 var app = "com.dannyvankooten.browserpass";
 
 var tabInfos = {};
@@ -128,30 +130,79 @@ function onMessage(request, sender, sendResponse) {
       break;
     }
 
-    // spawn a new tab with pre-provided credentials
+    // spawn a new tab with credentials from the password file
     case "launch": {
-      chrome.tabs.create({ url: request.url }, function(tab) {
-        var authAttempted = false;
+      chrome.runtime.sendNativeMessage(
+        app,
+        { action: "get", entry: request.entry, settings: getSettings() },
+        function(response) {
+          if (!response.hasOwnProperty("url") || response.url.length == 0) {
+            // guess url from login path if not available in the host app response
+            response.url = parseUrlFromEntry(request.entry);
 
-        authListeners[tab.id] = function(requestDetails) {
-          // only supply credentials if this is the first time for this tab, and the tab is not loaded
-          if (authAttempted) {
-            return {};
+            // if url is not available at this point, send an error
+            if (!response.hasOwnProperty("url") || response.url.length == 0) {
+              sendResponse({
+                status: "ERROR",
+                error:
+                  "Unable to determine the URL for this entry. If you have defined one in the password file, " +
+                  "your host application must be at least v2.0.14 for this to be usable."
+              });
+              return;
+            }
           }
-          authAttempted = true;
-          return onAuthRequired(request, requestDetails);
-        };
 
-        // intercept requests for authentication
-        chrome.webRequest.onAuthRequired.addListener(
-          authListeners[tab.id],
-          { urls: ["*://*/*"], tabId: tab.id },
-          ["blocking"]
-        );
-      });
-      break;
+          var url = response.url.match(/^([a-z]+:)?\/\//i)
+            ? response.url
+            : "http://" + response.url;
+
+          chrome.tabs.create({ url: url }, function(tab) {
+            var authAttempted = false;
+
+            authListeners[tab.id] = function(requestDetails) {
+              // only supply credentials if this is the first time for this tab, and the tab is not loaded
+              if (authAttempted) {
+                return {};
+              }
+              authAttempted = true;
+              return onAuthRequired(url, requestDetails, response);
+            };
+
+            // intercept requests for authentication
+            chrome.webRequest.onAuthRequired.addListener(
+              authListeners[tab.id],
+              { urls: ["*://*/*"], tabId: tab.id },
+              ["blocking"]
+            );
+          });
+
+          sendResponse({ status: "OK" });
+        }
+      );
+
+      // Must return true when sendResponse is being called asynchronously
+      return true;
     }
   }
+}
+
+function parseUrlFromEntry(entry) {
+  var parts =
+    entry.indexOf(":") > 0 ? entry.substr(entry.indexOf(":") + 1) : entry;
+  parts = parts.split(/\//).reverse();
+  for (var i in parts) {
+    var part = parts[i];
+    var info = Tldjs.parse(part);
+    if (
+      info.isValid &&
+      info.tldExists &&
+      info.domain !== null &&
+      info.hostname === part
+    ) {
+      return part;
+    }
+  }
+  return "";
 }
 
 function copyToClipboard(s) {
@@ -194,15 +245,15 @@ function getSettings() {
 }
 
 // listener function for authentication interception
-function onAuthRequired(request, requestDetails) {
+function onAuthRequired(url, requestDetails, response) {
   // ask the user before sending credentials to a different domain
-  var launchHost = request.url.match(/:\/\/([^\/]+)/)[1];
+  var launchHost = url.match(/:\/\/([^\/]+)/)[1];
   if (launchHost !== requestDetails.challenger.host) {
     var message =
       "You are about to send login credentials to a domain that is different than " +
       "the one you lauched from the browserpass extension. Do you wish to proceed?\n\n" +
       "Launched URL: " +
-      request.url +
+      url +
       "\n" +
       "Authentication URL: " +
       requestDetails.url;
@@ -227,8 +278,8 @@ function onAuthRequired(request, requestDetails) {
   // supply credentials
   return {
     authCredentials: {
-      username: request.username,
-      password: request.password
+      username: response.u,
+      password: response.p
     }
   };
 }
