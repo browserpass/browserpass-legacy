@@ -75,7 +75,41 @@ function onMessage(request, sender, sendResponse) {
         }
       );
 
-      // Need to return true if we are planning to sendResponse asynchronously
+      // Must return true when sendResponse is being called asynchronously
+      return true;
+    }
+
+    case "copyToClipboard": {
+      chrome.runtime.sendNativeMessage(
+        app,
+        { action: "get", entry: request.entry, settings: getSettings() },
+        function(response) {
+          if (chrome.runtime.lastError) {
+            var error = chrome.runtime.lastError.message;
+            console.error(error);
+            sendResponse({ status: "ERROR", error: error });
+            return;
+          }
+
+          let text = "";
+          if (request.what === "password") {
+            text = response.p;
+          } else if (request.what === "username") {
+            text = response.u;
+          }
+
+          try {
+            sendResponse({ status: "OK", text: text });
+          } catch (e) {
+            // If unable to send text to the popup to let it copy the text to clipboard,
+            // try to copy to clipboard from the background page itself.
+            // This only works in Chrome. See #241
+            copyToClipboard(text);
+          }
+        }
+      );
+
+      // Must return true when sendResponse is being called asynchronously
       return true;
     }
 
@@ -118,6 +152,16 @@ function onMessage(request, sender, sendResponse) {
       break;
     }
   }
+}
+
+function copyToClipboard(s) {
+  var clipboard = document.createElement("input");
+  document.body.appendChild(clipboard);
+  clipboard.value = s;
+  clipboard.select();
+  document.execCommand("copy");
+  clipboard.blur();
+  document.body.removeChild(clipboard);
 }
 
 function getSettings() {

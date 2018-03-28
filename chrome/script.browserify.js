@@ -359,30 +359,22 @@ function getLoginData() {
 }
 
 function loginToClipboard() {
-  var what = this.what;
-  var entry = this.entry;
-  chrome.runtime.sendMessage({ action: "getSettings" }, function(settings) {
-    chrome.runtime.sendNativeMessage(
-      app,
-      { action: "get", entry: entry, settings: settings },
-      function(response) {
-        if (chrome.runtime.lastError) {
-          error = chrome.runtime.lastError.message;
-          m.redraw();
-        } else {
-          if (what === "password") {
-            toClipboard(response.p);
-          } else if (what === "username") {
-            toClipboard(response.u);
-          }
-          window.close();
-        }
+  chrome.runtime.sendMessage(
+    { action: "copyToClipboard", entry: this.entry, what: this.what },
+    function(response) {
+      if (response.error) {
+        error = response.error;
+        m.redraw();
+        return;
       }
-    );
-  });
+
+      copyToClipboard(response.text);
+      window.close();
+    }
+  );
 }
 
-function toClipboard(s) {
+function copyToClipboard(s) {
   var clipboardContainer = document.getElementById("clipboard-container");
   var clipboard = document.createElement("input");
   clipboardContainer.appendChild(clipboard);
