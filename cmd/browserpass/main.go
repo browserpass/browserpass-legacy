@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/dannyvankooten/browserpass"
-	"github.com/dannyvankooten/browserpass/pass"
 	"github.com/dannyvankooten/browserpass/protector"
 )
 
@@ -25,12 +24,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	s, err := pass.NewDefaultStore()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := browserpass.Run(os.Stdin, os.Stdout, s); err != nil && err != io.EOF {
+	if err := browserpass.Run(os.Stdin, os.Stdout); err != nil && err != io.EOF {
 		log.Fatal(err)
 	}
 }

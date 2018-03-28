@@ -12,12 +12,6 @@ chrome.runtime.onInstalled.addListener(onExtensionInstalled);
 // fill login form & submit
 function fillLoginForm(login, tab) {
   const loginParam = JSON.stringify(login);
-  const autoSubmit = localStorage.getItem("autoSubmit");
-  const autoSubmitParam = autoSubmit == "true";
-  if (autoSubmit === null) {
-    localStorage.setItem("autoSubmit", autoSubmitParam);
-  }
-
   chrome.tabs.executeScript(
     tab.id,
     {
@@ -27,7 +21,7 @@ function fillLoginForm(login, tab) {
     function() {
       chrome.tabs.executeScript({
         allFrames: true,
-        code: `browserpassFillForm(${loginParam}, ${autoSubmitParam});`
+        code: `browserpassFillForm(${loginParam}, ${getSettings().autoSubmit});`
       });
     }
   );
@@ -59,7 +53,7 @@ function onMessage(request, sender, sendResponse) {
   if (request.action == "login") {
     chrome.runtime.sendNativeMessage(
       app,
-      { action: "get", entry: request.entry },
+      { action: "get", entry: request.entry, settings: getSettings() },
       function(response) {
         if (chrome.runtime.lastError) {
           var error = chrome.runtime.lastError.message;
@@ -92,9 +86,7 @@ function onMessage(request, sender, sendResponse) {
   // object that has current settings. Update this as new settings
   // are added (or old ones removed)
   if (request.action == "getSettings") {
-    const use_fuzzy_search =
-      localStorage.getItem("use_fuzzy_search") != "false";
-    sendResponse({ use_fuzzy_search: use_fuzzy_search });
+    sendResponse(getSettings());
   }
 
   // spawn a new tab with pre-provided credentials
@@ -119,6 +111,35 @@ function onMessage(request, sender, sendResponse) {
       );
     });
   }
+}
+
+function getSettings() {
+  // default settings
+  var settings = {
+    autoSubmit: false,
+    use_fuzzy_search: true,
+    customStores: []
+  };
+
+  // load settings from local storage
+  for (var key in settings) {
+    var value = localStorage.getItem(key);
+    if (value !== null) {
+      settings[key] = JSON.parse(value);
+    }
+  }
+
+  // filter custom stores by enabled & path length, and ensure they are named
+  settings.customStores = settings.customStores
+    .filter(store => store.enabled && store.path.length > 0)
+    .map(function(store) {
+      if (!store.name) {
+        store.name = store.path;
+      }
+      return store;
+    });
+
+  return settings;
 }
 
 // listener function for authentication interception

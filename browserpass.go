@@ -33,9 +33,12 @@ var endianness = binary.LittleEndian
 // The browser extension will look up settings in its localstorage and find
 // which options have been selected by the user, and put them in a JSON object
 // which is then passed along with the command over the native messaging api.
+
+// Config defines the root config structure sent from the browser extension
 type Config struct {
 	// Manual searches use FuzzySearch if true, GlobSearch otherwise
-	UseFuzzy bool `json:"use_fuzzy_search"`
+	UseFuzzy    bool                    `json:"use_fuzzy_search"`
+	CustomStores []pass.StoreDefinition `json:"customStores"`
 }
 
 // msg defines a message sent from a browser extension.
@@ -46,8 +49,20 @@ type msg struct {
 	Entry    string `json:"entry"`
 }
 
+func SendError(err error, stdout io.Writer) error {
+	var buf bytes.Buffer
+	if writeError := json.NewEncoder(&buf).Encode(err.Error()); writeError != nil {
+		return err
+	}
+	if writeError := binary.Write(stdout, endianness, uint32(buf.Len())); writeError != nil {
+		return err
+	}
+	buf.WriteTo(stdout)
+	return err
+}
+
 // Run starts browserpass.
-func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
+func Run(stdin io.Reader, stdout io.Writer) error {
 	protector.Protect("stdio rpath proc exec")
 	for {
 		// Get message length, 4 bytes
@@ -55,55 +70,56 @@ func Run(stdin io.Reader, stdout io.Writer, s pass.Store) error {
 		if err := binary.Read(stdin, endianness, &n); err == io.EOF {
 			return nil
 		} else if err != nil {
-			return err
+			return SendError(err, stdout)
 		}
 
 		// Get message body
 		var data msg
 		lr := &io.LimitedReader{R: stdin, N: int64(n)}
 		if err := json.NewDecoder(lr).Decode(&data); err != nil {
-			return err
+			return SendError(err, stdout)
 		}
 
-		// Since the pass.Store object is created by the wrapper prior to
-		// settings from the browser being made available, we set them here
-		s.SetConfig(&data.Settings.UseFuzzy)
+		s, err := pass.NewDefaultStore(data.Settings.CustomStores, data.Settings.UseFuzzy)
+		if err != nil {
+			return SendError(err, stdout)
+		}
 
 		var resp interface{}
 		switch data.Action {
 		case "search":
 			list, err := s.Search(data.Domain)
 			if err != nil {
-				return err
+				return SendError(err, stdout)
 			}
 			resp = list
 		case "match_domain":
 			list, err := s.GlobSearch(data.Domain)
 			if err != nil {
-				return err
+				return SendError(err, stdout)
 			}
 			resp = list
 		case "get":
 			rc, err := s.Open(data.Entry)
 			if err != nil {
-				return err
+				return SendError(err, stdout)
 			}
 			defer rc.Close()
 			login, err := readLoginGPG(rc)
 			if err != nil {
-				return err
+				return SendError(err, stdout)
 			}
 			if login.Username == "" {
 				login.Username = guessUsername(data.Entry)
 			}
 			resp = login
 		default:
-			return errors.New("Invalid action")
+			return SendError(errors.New("Invalid action"), stdout)
 		}
 
 		var b bytes.Buffer
 		if err := json.NewEncoder(&b).Encode(resp); err != nil {
-			return err
+			return SendError(err, stdout)
 		}
 
 		if err := binary.Write(stdout, endianness, uint32(b.Len())); err != nil {
@@ -185,7 +201,7 @@ func parseTotp(str string, l *Login) error {
 
 	if ourl == "" {
 		tokenPattern := regexp.MustCompile("(?i)^totp(-secret)?:")
-		token := tokenPattern.ReplaceAllString(str, "");
+		token := tokenPattern.ReplaceAllString(str, "")
 		if len(token) != len(str) {
 			ourl = "otpauth://totp/?secret=" + strings.TrimSpace(token)
 		}
@@ -222,7 +238,7 @@ func parseLogin(r io.Reader) (*Login, error) {
 		if len(replaced) != len(line) {
 			login.Username = strings.TrimSpace(replaced)
 		}
-		if (login.URL == "") {
+		if login.URL == "" {
 			replaced = urlPattern.ReplaceAllString(line, "")
 			if len(replaced) != len(line) {
 				login.URL = strings.TrimSpace(replaced)
