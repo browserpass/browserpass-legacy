@@ -3,7 +3,7 @@ Browserpass
 
 Browserpass is a Chrome & Firefox extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms, as well as copy it to clipboard. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
 
-![Browserpass in the Chrome menu](https://github.com/dannyvankooten/browserpass/raw/master/assets/example.gif)
+![Browserpass in the Chrome menu](https://user-images.githubusercontent.com/1177900/38048732-79007146-32c6-11e8-98d5-557ba3f8b262.gif)
 
 It uses a [native binary written in Golang](https://github.com/dannyvankooten/browserpass/blob/master/browserpass.go) to do the interfacing with your password store. Secure communication between the binary and the browser extension is handled through [native messaging](https://developer.chrome.com/extensions/nativeMessaging).
 
