@@ -38,14 +38,16 @@ function view() {
         let selector = "button.login";
         let options = {
           onclick: getLoginData.bind(login),
-          title: "Fill form" + (searchSettings.autoSubmit ? " and submit" : "")
+          title:
+            "Fill form" +
+            (searchSettings && searchSettings.autoSubmit ? " and submit" : "")
         };
 
         var store = "default";
         var name = login;
         var i;
         if ((i = login.indexOf(":"))) {
-          if (searchSettings.customStores.length > 1) {
+          if (searchSettings && searchSettings.customStores.length > 1) {
             store = login.substr(0, i);
           }
           name = login.substr(++i);
