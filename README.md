@@ -11,11 +11,12 @@ It uses a [native binary written in Golang](https://github.com/dannyvankooten/br
 
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Updates](#updates)
 - [Usage](#usage)
 - [Options](#options)
 - [Security](#security)
 - [FAQ](#faq)
-- [Contribute](#contributing)
+- [Contributing](#contributing)
 - [License](#license)
 
 
@@ -38,7 +39,23 @@ login: johndoe
 
 ## Installation
 
-Start out by downloading the [latest release package](https://github.com/dannyvankooten/browserpass/releases) for your operating system. Prebuilt binaries for 64-bit OSX & Linux and Windows are available. Arch users can install browserpass [from the AUR](https://aur.archlinux.org/packages/browserpass/).
+In order to install browserpass correctly, you have to install two of its components:
+
+* host application
+* browser extension(s).
+
+### Installing the host application
+
+The following OS have a browserpass package that can be installed via package manager:
+
+- [Arch Linux](https://aur.archlinux.org/packages/browserpass/)
+- [NixOS](https://github.com/NixOS/nixpkgs/blob/master/pkgs/tools/security/browserpass/default.nix)
+
+If your OS is not listed above, proceed with the manual installation steps below.
+
+#### Download the latest Github release.
+
+Start out by downloading the [latest release package](https://github.com/dannyvankooten/browserpass/releases) for your operating system.
 
 #### Verifying authenticity of the releases
 
@@ -59,7 +76,7 @@ Primary key fingerprint: EB4F 9E5A 60D3 2232 BB52  150C 12C8 7A28 FEAC 6B20
 
 1. Extract the package to where you would like to have the binary.
 1. Run `./install.sh` (`.\install.ps1` on Windows) to install the native messaging host. If you want a system-wide installation, run the script with `sudo`. For Windows, system-wide installation can be done by running `.\install.ps1` as Administrator and specifying "yes" at the "Install for all users?" prompt.
-	* If you desire a non-interactive installation on a Unix system, pass the name of the browser to the script (i.e. `./install.sh chrome`)
+	* If you desire a non-interactive installation on a Unix system, pass the name of the browser to the script (e.g. `./install.sh chrome`)
 
 Installing the binary & registering it with your browser through the installation script is required to allow the browser extension to talk to the local binary application.
 
@@ -79,13 +96,29 @@ If you installed the Linux host application in a location different from `~/.bro
 If your GPG key has a password, the host application running under WSL won't be able to unlock it since it can't interactively prompt for the password. This means you can't decrypt any passwords unless you've already got the key loaded in gpg-agent.
 As a workaround, you can use the key (`pass website.com`) in a WSL terminal to load the key into gpg-agent. Then browserpass will work until gpg-agent times out (it is possible to configure larger timeouts, check manual for gpg-agent).
 
-#### Installing the Chrome extension
+### Installing the Chrome extension
 
 You can either [install the Chrome extension from the Chrome Web Store](https://chrome.google.com/webstore/detail/browserpass/naepdomgkenhinolocfifgehidddafch) or drag the `chrome-browserpass.crx` file from the release package into the [Chrome Extensions](chrome://extensions) (`chrome://extensions`) page.
 
-#### Installing the Firefox extension
+### Installing the Firefox extension
 
 You can [install the Firefox extension from the Mozilla add-ons site](https://addons.mozilla.org/en-US/firefox/addon/browserpass-ce/). Please note that you will need Firefox 50 or higher.
+
+## Updates
+
+**IMPORTANT**: Majority of the improvements require changing code in both browser extensions and the host application. While we are trying to maintain backwards compatibility, it is expected that you will make sure to keep both components up to date.
+
+### Updating the host application
+
+If you installed the host application via a package manager for your OS, you will likely update it in the the same way.
+
+If not, repeat the installation instructions for your OS.
+
+### Updating browser extensions
+
+If you installed the extension from a webstore, you will receive updates automatically.
+
+If not, repeat the installation instructions for the extension.
 
 ## Usage
 
