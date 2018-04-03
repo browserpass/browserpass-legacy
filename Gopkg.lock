@@ -14,7 +14,7 @@
     ".",
     "fastwalk"
   ]
-  revision = "cb5263554791976bf8cdd747c82355370893ecd7"
+  revision = "4959821b481786922ac53e7ef25c61ae19fb7c36"
 
 [[projects]]
   name = "github.com/sahilm/fuzzy"
@@ -26,7 +26,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "83801418e1b59fb1880e363299581ee543af32ca"
+  revision = "378d26f46672a356c46195c28f61bdb4c0a781dd"
 
 [[projects]]
   branch = "master"
