@@ -11,6 +11,8 @@
     * If in doubt what version you have, download and re-install the latest version!
   * If built from sources, put a commit id (`$ git describe --always`): 
 * Information about the browser extension:
+  * How did you install it?
+    * Installed via webstore, downloaded a pre-built extension, compiled yourself?
   * Browserpass extension version as reported by your browser:
 
 ---
