@@ -14,14 +14,14 @@ var searchSettings;
 
 // load settings and initialise popup
 chrome.runtime.sendMessage({ action: "getSettings" }, function(settings) {
-    searchSettings = settings;
+  searchSettings = settings;
 
-    m.mount(document.getElementById("mount"), { view: view, oncreate: oncreate });
+  m.mount(document.getElementById("mount"), { view: view, oncreate: oncreate });
 
-    chrome.tabs.onActivated.addListener(init);
-    chrome.tabs.query({ lastFocusedWindow: true, active: true }, function(tabs) {
-        init(tabs[0]);
-    });
+  chrome.tabs.onActivated.addListener(init);
+  chrome.tabs.query({ lastFocusedWindow: true, active: true }, function(tabs) {
+    init(tabs[0]);
+  });
 });
 
 function view() {
@@ -73,7 +73,9 @@ function view() {
 
         return m("div.entry", [
           m(selector, options, [
-            i > 0 && store != "default" ? m("div.store", {title: storeTitle}, store) : null,
+            i > 0 && store != "default"
+              ? m("div.store", { title: storeTitle }, store)
+              : null,
             m("div.name", name)
           ]),
           m("button.launch.url", {
