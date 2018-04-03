@@ -51,18 +51,19 @@ function view() {
         var store = "default";
         var storeTitle = "Default password store";
         var name = login;
-        var i;
-        if ((i = login.indexOf(":"))) {
+        var loginStoreSplitterIndex = login.indexOf(":");
+        if (loginStoreSplitterIndex > -1) {
           if (searchSettings && searchSettings.customStores.length > 1) {
-            store = login.substr(0, i);
-            searchSettings.customStores.map(function(customStore) {
-              if (customStore.name != store) {
-                return;
+            store = login.substr(0, loginStoreSplitterIndex);
+            for (let i = 0; i < searchSettings.customStores.length; i++) {
+              let customStore = searchSettings.customStores[i];
+              if (customStore.name == store) {
+                storeTitle = customStore.path;
+                break;
               }
-              storeTitle = customStore.path;
-            });
+            }
           }
-          name = login.substr(++i);
+          name = login.substr(loginStoreSplitterIndex + 1);
         }
 
         let faviconUrl = getFaviconUrl(domain);
@@ -73,7 +74,7 @@ function view() {
 
         return m("div.entry", [
           m(selector, options, [
-            i > 0 && store != "default"
+            loginStoreSplitterIndex > -1 && store != "default"
               ? m("div.store", { title: storeTitle }, store)
               : null,
             m("div.name", name)
