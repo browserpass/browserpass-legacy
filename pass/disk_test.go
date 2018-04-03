@@ -8,23 +8,21 @@ import (
 )
 
 func TestDefaultStorePath(t *testing.T) {
-	var home, expectedCustom, expected, actual string
+	var expectedCustom, expected, actual string
 
 	usr, err := user.Current()
 
 	if err != nil {
-		t.Error(err)
-	}
+		t.Log("Unable to retrieve current user, skipping part of the test. Error: ", err)
+	} else {
+		// default directory
+		os.Setenv("PASSWORD_STORE_DIR", "")
+		expected = filepath.Join(usr.HomeDir, ".password-store")
+		actual, _ = defaultStorePath()
 
-	home = usr.HomeDir
-
-	// default directory
-	os.Setenv("PASSWORD_STORE_DIR", "")
-	expected = filepath.Join(home, ".password-store")
-	actual, _ = defaultStorePath()
-
-	if expected != actual {
-		t.Errorf("1: '%s' does not match '%s'", expected, actual)
+		if expected != actual {
+			t.Errorf("1: '%s' does not match '%s'", expected, actual)
+		}
 	}
 
 	// custom directory from $PASSWORD_STORE_DIR
