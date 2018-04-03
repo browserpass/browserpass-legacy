@@ -132,7 +132,7 @@ Navigate through the list of available credentials with <kbd>Tab</kbd> / <kbd>Sh
 
 Click on the username or password buttons to copy them to clipboard. Keyboard shortcuts are also available, use <kbd>Ctrl+C</kbd> to copy password of the selected entry and <kbd>Shift+C</kbd> to copy the username.
 
-Click on the globe button to navigate to the URL or use the <kbd>g</kbd> shortcut. You can also specify one of the following metadata fields in your pass file to control exactly which URL is navigated to: `url:`, `link:`, `website:`, `web:` or `site:`.
+Click on the globe button or use the <kbd>g</kbd> shortcut to navigate to the URL in the current tab, hold <kbd>Shift</kbd> while doing so to open a new tab instead. You can also specify one of the following metadata fields in your pass file to control exactly which URL is navigated to: `url:`, `link:`, `website:`, `web:` or `site:`.
 
 Keep in mind that browserpass can only fill HTTP basic auth credentials _if you open this URL using browserpass_.
 

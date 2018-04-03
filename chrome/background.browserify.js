@@ -182,7 +182,8 @@ function onMessage(request, sender, sendResponse) {
             ? response.url
             : "http://" + response.url;
 
-          chrome.tabs.create({ url: url }, function(tab) {
+          var tabsMethod = request.openInNewTab ? "create" : "update";
+          chrome.tabs[tabsMethod]({ url: url }, function(tab) {
             var authAttempted = false;
 
             authListeners[tab.id] = function(requestDetails) {

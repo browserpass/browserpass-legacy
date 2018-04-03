@@ -288,15 +288,18 @@ function getFaviconUrl(domain) {
   return null;
 }
 
-function launchURL() {
-  chrome.runtime.sendMessage({ action: "launch", entry: this.entry }, function(
-    response
-  ) {
-    if (response.error) {
-      return resetWithError(response.error);
+function launchURL(event) {
+  var openInNewTab = event.shiftKey;
+
+  chrome.runtime.sendMessage(
+    { action: "launch", entry: this.entry, openInNewTab: openInNewTab },
+    function(response) {
+      if (response.error) {
+        return resetWithError(response.error);
+      }
+      window.close();
     }
-    window.close();
-  });
+  );
 }
 
 function getLoginData() {
@@ -366,10 +369,17 @@ function keyHandler(e) {
       }
       break;
     case "g":
+    case "G":
       if (e.target.id != "search-field") {
+        var mouseClickEvent = new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          view: e.view,
+          shiftKey: e.shiftKey
+        });
         document.activeElement.parentNode
           .querySelector("button.launch.url")
-          .click();
+          .dispatchEvent(mouseClickEvent);
       }
   }
 }
