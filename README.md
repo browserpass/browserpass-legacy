@@ -136,7 +136,7 @@ When opened, browserpass automatically switches to the filter mode if at least o
 
 **Filter mode** is designed to quickly refine a few search results, for example to choose one of several accounts that you have on a given domain. This is done on client side, the filter is always fuzzy and always works in real time. When browserpass is in the filter mode, you will see a domain name in the input field. To exit filter mode, press <kbd>Backspace</kbd>.
 
-**Search mode** is designed to search password entries on your disk, this is much more expensive operation (especially visible on Windows) that's why it is **not** real time, and instead searches only when <kbd>Enter</kbd> is pressed. The search is fuzzy by default, but can be changed to glob algorithm in the options.
+**Search mode** is designed to search password entries on your disk, this is much more expensive operation (especially visible on Windows) that's why it is **not** real time, and instead searches only when <kbd>Enter</kbd> is pressed. The search is fuzzy by default, but can be changed to glob algorithm in the options. If you want to search everything interactively, just search for `/` or `.` and then use the filter mode to refine the search in real time.
 
 ### Fill (and submit) the login form
 
