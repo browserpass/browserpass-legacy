@@ -122,19 +122,45 @@ If not, repeat the installation instructions for the extension.
 
 ## Usage
 
-Click the lock icon or use <kbd>Ctrl+Shift+L</kbd> to fill & submit your login info for the current site.
+Click the lock icon or use <kbd>Ctrl+Shift+L</kbd> to open browserpass with the entries that match current domain.
 
 - Chrome allows changing the shortcut via chrome://extensions > Keyboard shortcuts.
 - Firefox unfortunately does not allow changing the default shortcut.
 - Firefox supports the keyboard shortcut only since version 53.
 
-Navigate through the list of available credentials with <kbd>Tab</kbd> / <kbd>Shift+Tab</kbd> or with arrow keys.
+### Filter and search modes
+
+Browserpass has two modes for working with password entries: filter and search.
+
+When opened, browserpass automatically switches to the filter mode if at least one matching entries exists.
+
+**Filter mode** is designed to quickly refine a few search results, for example to choose one of several accounts that you have on a given domain. This is done on client side, the filter is always fuzzy and always works in real time. When browserpass is in the filter mode, you will see a domain name in the input field. To exit filter mode, press <kbd>Backspace</kbd>.
+
+**Search mode** is designed to search password entries on your disk, this is much more expensive operation (especially visible on Windows) that's why it is **not** real time, and instead searches only when <kbd>Enter</kbd> is pressed. The search is fuzzy by default, but can be changed to glob algorithm in the options.
+
+### Fill (and submit) the login form
+
+Click or select the entry that you want to submit, and the login form will be filled with the selected credentials. When the focus is in the input field, hitting <kbd>Enter</kbd> will submit the first entry in the list (this is useful in combination with filter mode).
+
+If the login button is found, it will be focused so that you can just hit <kbd>Enter</kbd> to submit the form. If you enable `Automatically submit forms after filling` in the options, the login button will be pressed instead.
+
+### Navigating the entries
+
+Navigate through the list of available credentials with <kbd>Tab</kbd> and <kbd>Shift+Tab</kbd> or with arrow keys.
+
+### Copy to clipboard
 
 Click on the username or password buttons to copy them to clipboard. Keyboard shortcuts are also available, use <kbd>Ctrl+C</kbd> to copy password of the selected entry and <kbd>Shift+C</kbd> to copy the username.
+
+### Open URL
 
 Click on the globe button or use the <kbd>g</kbd> shortcut to navigate to the URL in the current tab, hold <kbd>Shift</kbd> while doing so to open a new tab instead. You can also specify one of the following metadata fields in your pass file to control exactly which URL is navigated to: `url:`, `link:`, `website:`, `web:` or `site:`.
 
 Keep in mind that browserpass can only fill HTTP basic auth credentials _if you open this URL using browserpass_.
+
+### Manual search
+
+To prevent phishing attacks, browserpass prefills the list of passwords with only those entries that match the current domain. If you want search for credentials across the entire password store, exit the filter mode with <kbd>Backspace</kbd> (domain name in the input field will disappear), type the search request and hit <kbd>Enter</kbd> to start the search. Instead of using <kbd>Backspace</kbd>, you can also type your search query while in the filter mode, as soon as there are no matching results left browserpass will automatically switch to the search mode and will await <kbd>Enter</kbd> to initiate the search.
 
 ## Options
 
@@ -145,8 +171,9 @@ Open settings to configure browserpass:
 
 The list of currently available options:
 
-- `Auto-submit the form`: make browserpass automatically submit the login form for you.
-- `Use fuzzy search`: whether the manual search should be fuzzy or not (refining search results is always fuzzy).
+- `Automatically submit forms after filling`: make browserpass automatically submit the login form for you.
+- `Use fuzzy search`: whether the *manual search mode* should be fuzzy or not (filter mode is always fuzzy).
+- `Custom store locations`: allows configuring multiple password store locations and toggle them on the fly. There are no restrictions, you can define subfolders in the password store, gopass mounts or any other folder that has pass entries.
 
 ## Security
 
