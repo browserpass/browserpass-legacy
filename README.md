@@ -162,6 +162,12 @@ Keep in mind that browserpass can only fill HTTP basic auth credentials _if you 
 
 To prevent phishing attacks, browserpass prefills the list of passwords with only those entries that match the current domain. If you want search for credentials across the entire password store, exit the filter mode with <kbd>Backspace</kbd> (domain name in the input field will disappear), type the search request and hit <kbd>Enter</kbd> to start the search. Instead of using <kbd>Backspace</kbd>, you can also type your search query while in the filter mode, as soon as there are no matching results left browserpass will automatically switch to the search mode and will await <kbd>Enter</kbd> to initiate the search.
 
+### Password store location(s)
+
+When deciding where to look for the password store, browserpass uses `PASSWORD_STORE_DIR` environment variable, and if it is not defined, checks the `~/.password-store` folder. However, using the `Custom store locations` setting in the options of the browser extension you can configure a different location for browserpass to look for, or even multiple locations. There are no restrictions, you can define subfolders in the password store, gopass mounts or any other folder that has pass entries.
+
+When you have more than one password store configured and enabled, in order to help you distinguish the password entries from different locations (e.g. between passwords for work and personal GitHub accounts), a green badge next to each password entry will appear indicating its origin (the name of its password store).
+
 ## Options
 
 Open settings to configure browserpass:
@@ -173,7 +179,7 @@ The list of currently available options:
 
 - `Automatically submit forms after filling`: make browserpass automatically submit the login form for you.
 - `Use fuzzy search`: whether the *manual search mode* should be fuzzy or not (filter mode is always fuzzy).
-- `Custom store locations`: allows configuring multiple password store locations and toggle them on the fly. There are no restrictions, you can define subfolders in the password store, gopass mounts or any other folder that has pass entries.
+- `Custom store locations`: allows configuring multiple password store locations and toggle them on the fly.
 
 ## Security
 
