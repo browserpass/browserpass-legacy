@@ -2,10 +2,10 @@
 
 
 [[projects]]
-  branch = "master"
   name = "github.com/gokyle/twofactor"
   packages = ["."]
-  revision = "eaad1884d40f9cabff98a57a524c17afd00c9fe7"
+  revision = "acefe4a3b9fb0d64a1025373cfad5c31d7e90a38"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -26,7 +26,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "378d26f46672a356c46195c28f61bdb4c0a781dd"
+  revision = "ecfd8b563e1320e7282dccf28ad48ec2c68aaebf"
 
 [[projects]]
   branch = "master"
