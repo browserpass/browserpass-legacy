@@ -112,6 +112,14 @@ function onMessage(request, sender, sendResponse) {
             text = response.p;
           } else if (request.what === "username") {
             text = response.u;
+          } else if (request.what === "otp") {
+            if (!response.digits) {
+              sendResponse({status: "ERROR", error:
+                            "Unable to determine the OTP code for this entry."
+                           });
+              return;
+            }
+            text = response.digits;
           }
 
           try {
