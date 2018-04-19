@@ -83,7 +83,7 @@ body {
 }
 
 .otp {
-  background: no-repeat url('icon-otp.svg') center;
+  background: no-repeat url("icon-otp.svg") center;
   background-size: 16px 16px;
 }
 

@@ -76,7 +76,9 @@ function onMessage(request, sender, sendResponse) {
           ) {
             // do not send login data to page if URL changed during search.
             if (tabs[0].url == request.urlDuringSearch) {
-              var autoSubmit = response.hasOwnProperty('autoSubmit') ? response.autoSubmit : getSettings().autoSubmit;
+              var autoSubmit = response.hasOwnProperty("autoSubmit")
+                ? response.autoSubmit
+                : getSettings().autoSubmit;
               fillLoginForm(response, tabs[0], autoSubmit);
             }
           });
@@ -114,9 +116,10 @@ function onMessage(request, sender, sendResponse) {
             text = response.u;
           } else if (request.what === "otp") {
             if (!response.digits) {
-              sendResponse({status: "ERROR", error:
-                            "Unable to determine the OTP code for this entry."
-                           });
+              sendResponse({
+                status: "ERROR",
+                error: "Unable to determine the OTP code for this entry."
+              });
               return;
             }
             text = response.digits;

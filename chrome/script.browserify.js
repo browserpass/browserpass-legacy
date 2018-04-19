@@ -95,9 +95,9 @@ function view() {
             tabindex: -1
           }),
           m("button.copy.otp", {
-              onclick: loginToClipboard.bind({ entry: login, what: "otp" }),
-              title: "Copy OTP code",
-              tabindex: -1
+            onclick: loginToClipboard.bind({ entry: login, what: "otp" }),
+            title: "Copy OTP code",
+            tabindex: -1
           })
         ]);
       });
