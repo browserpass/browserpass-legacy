@@ -144,6 +144,8 @@ Click or select the entry that you want to submit, and the login form will be fi
 
 If the login button is found, it will be focused so that you can just hit <kbd>Enter</kbd> to submit the form. If you enable `Automatically submit forms after filling` in the options, the login button will be pressed instead.
 
+If your password entry has OTP configuration, browserpass will use it at this point to display the code.
+
 ### Navigating the entries
 
 Navigate through the list of available credentials with <kbd>Tab</kbd> and <kbd>Shift+Tab</kbd> or with arrow keys.
@@ -233,6 +235,10 @@ $ gpgconf --kill gpg-agent
 And finally restart your browser.
 
 If you still experience the issue, try starting your browser from terminal. If this helps, the issue is likely due to the absence of `/usr/local/bin/gpg`, follow the steps above to make sure it exists.
+
+### How to configure OTP?
+
+The easiest way to add OTP in your password entries is to use [pass-otp](https://github.com/tadfisher/pass-otp). You don't have to configure anything extra, browserpass will automatically detect if an OTP is configured and show you the code after filling the form.
 
 ## Contributing
 
