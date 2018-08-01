@@ -37,12 +37,12 @@ To build the docker image run the following command in project root:
 docker build -t browserpass-dev .
 ```
 
-To build browserpass (frontend and backend) via docker, run the following from project root:
+To build browserpass (frontend and backend) via docker, run the following from project root (this is the preferred approach):
 ```shell
 docker run --rm -v "$(pwd)":/browserpass browserpass-dev
 ```
 
-If you only want to download dependencies, build front-end or backend code, run one of the following:
+If you only want a specific action, such as to download dependencies or to build front-end or backend code, use one of the following commands:
 ```shell
 docker run --rm -v "$(pwd)":/browserpass browserpass-dev deps
 docker run --rm -v "$(pwd)":/browserpass browserpass-dev js
