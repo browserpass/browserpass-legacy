@@ -140,7 +140,7 @@ When opened, browserpass automatically switches to the filter mode if at least o
 
 ### Fill (and submit) the login form
 
-Click or select the entry that you want to submit, and the login form will be filled with the selected credentials. When the focus is in the input field, hitting <kbd>Enter</kbd> will submit the first entry in the list (this is useful in combination with filter mode).
+Click or select the entry that you want to submit, and the login form will be filled with the selected credentials (injected directly into the DOM, browserpass does not use clipboard for this). When the focus is in the input field, hitting <kbd>Enter</kbd> will submit the first entry in the list (this is useful in combination with filter mode).
 
 If the login button is found, it will be focused so that you can just hit <kbd>Enter</kbd> to submit the form. If you enable `Automatically submit forms after filling` in the options, the login button will be pressed instead.
 
