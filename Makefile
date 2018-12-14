@@ -79,7 +79,7 @@ sign: release
 
 deps:
 	yarn
-	dep ensure
+	dep ensure -vendor-only
 
 tarball: clean deps js
 	rm -rf /tmp/browserpass /tmp/browserpass-src.tar.gz
