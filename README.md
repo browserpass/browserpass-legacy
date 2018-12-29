@@ -1,5 +1,4 @@
-Browserpass
-=======
+# Browserpass
 
 Browserpass is a Chrome & Firefox extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms, as well as copy it to clipboard. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
 
@@ -18,7 +17,6 @@ It uses a [native binary written in Golang](https://github.com/dannyvankooten/br
 - [FAQ](#faq)
 - [Contributing](#contributing)
 - [License](#license)
-
 
 ## Requirements
 
@@ -41,8 +39,8 @@ login: johndoe
 
 In order to install browserpass correctly, you have to install two of its components:
 
-* host application
-* browser extension(s).
+- host application
+- browser extension(s).
 
 ### Installing the host application
 
@@ -78,19 +76,22 @@ Primary key fingerprint: EB4F 9E5A 60D3 2232 BB52  150C 12C8 7A28 FEAC 6B20
 
 1. Extract the package to where you would like to have the binary.
 1. Run `./install.sh` (`.\install.ps1` on Windows) to install the native messaging host. If you want a system-wide installation, run the script with `sudo`. For Windows, system-wide installation can be done by running `.\install.ps1` as Administrator and specifying "yes" at the "Install for all users?" prompt.
-	* If you desire a non-interactive installation on a Unix system, pass the name of the browser to the script (e.g. `./install.sh chrome`)
+   - If you desire a non-interactive installation on a Unix system, pass the name of the browser to the script (e.g. `./install.sh chrome`)
 
 Installing the binary & registering it with your browser through the installation script is required to allow the browser extension to talk to the local binary application.
 
 #### Installing the host application on Windows through WSL
 
 If you already use `pass` under WSL and prefer to have a single copy of your password store, you can use browserpass through WSL as well.
+
 1. Install the Windows host application (see previous section) as well as the Linux host application (under WSL).
 2. Create `%localappdata%\browserpass\browserpass-wsl.bat` with the following contents:
+
 ```
 @echo off
 bash -c ~/.browserpass/browserpass-linux64
 ```
+
 If you installed the Linux host application in a location different from `~/.browserpass`, replace that path in the above script.
 
 3. Change the path in `%localappdata%\browserpass\browserpass-firefox.json` (or `-chrome.json`) to point to `browserpass-wsl.bat`
@@ -182,17 +183,17 @@ Open settings to configure browserpass:
 The list of currently available options:
 
 - `Automatically submit forms after filling`: make browserpass automatically submit the login form for you.
-- `Use fuzzy search`: whether the *manual search mode* should be fuzzy or not (filter mode is always fuzzy).
+- `Use fuzzy search`: whether the _manual search mode_ should be fuzzy or not (filter mode is always fuzzy).
 - `Custom store locations`: allows configuring multiple password store locations and toggle them on the fly.
 
 ## Security
 
 Browserpass aims to protect your passwords and computer from malicious or fraudulent websites.
 
-* To protect against phishing, only passwords matching the origin hostname are suggested or selected without an explicit search term.
-* To minimize attack surface, the website is not allowed to trigger any extension action without user invocation.
-* Only data from the selected password is made available to the website.
-* Given full control of the non-native component of the extension, the attacker can extract passwords stored in the configured repository, but can not obtain files elsewhere on the filesystem or reach code execution.
+- To protect against phishing, only passwords matching the origin hostname are suggested or selected without an explicit search term.
+- To minimize attack surface, the website is not allowed to trigger any extension action without user invocation.
+- Only data from the selected password is made available to the website.
+- Given full control of the non-native component of the extension, the attacker can extract passwords stored in the configured repository, but can not obtain files elsewhere on the filesystem or reach code execution.
 
 ## FAQ
 
