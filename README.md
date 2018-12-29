@@ -48,7 +48,7 @@ The following OS have a browserpass package that can be installed via package ma
 
 - [Arch Linux](https://aur.archlinux.org/packages/browserpass/)
 - [Debian GNU/Linux](https://tracker.debian.org/pkg/browserpass)
-- [NixOS](https://github.com/NixOS/nixpkgs/blob/master/pkgs/tools/security/browserpass/default.nix)
+- [NixOS](https://github.com/NixOS/nixpkgs/blob/master/pkgs/tools/security/browserpass/default.nix) - make sure to read [these instructions](#configuring-browserpass-on-nixos)
 - [Ubuntu](https://launchpad.net/ubuntu/+source/browserpass)
 
 If your OS is not listed above, proceed with the manual installation steps below.
@@ -238,6 +238,42 @@ $ gpgconf --kill gpg-agent
 And finally restart your browser.
 
 If you still experience the issue, try starting your browser from terminal. If this helps, the issue is likely due to the absence of `/usr/local/bin/gpg`, follow the steps above to make sure it exists.
+
+### Configuring Browserpass on NixOS
+
+Browserpass only works with non-`-bin` versions of Firefox on NixOS. Why? These `-bin` versions are pretty much just fetched directly from Mozilla and patched up to work on NixOS. The non-`-bin` versions however are built from sources. If we don't build from sources, we can't get [this patch](https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/networking/browsers/firefox/env_var_for_system_dir.patch) which makes Firefox look at the correct place for the native-messaging-hosts jsons.
+
+So, these are the final instructions on how to install browserpass on NixOS:
+
+- Install the extension like normal
+- On NixOS: Make sure you have this in your `/etc/nixos/configuration.nix`:
+
+  ```nix
+  { pkgs, ... }: {
+    # Note: firefox*-bin versions won't work with browserpass
+    environment.systemPackages = [ pkgs.firefox ];
+    programs.browserpass.enable = true;
+  }
+  ```
+
+  and rebuild your system.
+
+- On non-NixOS: Make sure you have this in your `~/.config/nixpkgs/config.nix`:
+
+  ```nix
+  {
+    firefox.enableBrowserpass = true;
+  }
+  ```
+
+  and reinstall Firefox with `nix-env -iA nixpkgs.firefox` (alternatively `nix-env -iA nixos.firefox` on NixOS)
+
+- Running a browserpass-enabled Firefox without installing it:
+
+  ```bash
+  $(nix-build --no-out-link '<nixpkgs>' -A firefox \
+    --arg config '{ firefox.enableBrowserpass = true; }')/bin/firefox
+  ```
 
 ### How to configure OTP?
 
