@@ -362,7 +362,8 @@ function onExtensionInstalled(details) {
   }
 
   var changelog = {
-    2012: "Breaking change: please update the host app to at least v2.0.12"
+    2012: "Breaking change: please update the host app to at least v2.0.12",
+    2023: "New major version will be released on Sat, 13 April. Plan for maintenance, Browserpass will stop working until you update native host app! Visit github.com/browserpass for more information."
   };
 
   var parseVersion = version => parseInt(version.replace(/\./g, ""));
