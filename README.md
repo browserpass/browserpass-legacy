@@ -1,5 +1,16 @@
 # Browserpass
 
+**IMPORTANT: this repository is archived and not maintained anymore.**
+
+**Browserpass was rewritten from scratch and split in two repositories:**
+
+- **Browser extension: [browserpass-extension](https://github.com/browserpass/browserpass-extension)**
+- **Native host app: [browserpass-native](https://github.com/browserpass/browserpass-native)**
+
+**Follow to the new repositories for installation instructions.**
+
+---
+
 Browserpass is a Chrome & Firefox extension for [zx2c4's pass](https://www.passwordstore.org/), a UNIX based password manager. It retrieves your decrypted passwords for the current domain and allows you to auto-fill login forms, as well as copy it to clipboard. If you have multiple logins for the current site, the extension shows you a list of usernames to choose from.
 
 ![Browserpass in the Chrome menu](https://user-images.githubusercontent.com/1177900/38048732-79007146-32c6-11e8-98d5-557ba3f8b262.gif)
