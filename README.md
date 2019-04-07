@@ -7,7 +7,40 @@
 - **Browser extension: [browserpass-extension](https://github.com/browserpass/browserpass-extension)**
 - **Native host app: [browserpass-native](https://github.com/browserpass/browserpass-native)**
 
-**Follow to the new repositories for installation instructions.**
+**Follow to the new repositories for installation instructions. We highly recommend to read README in both repositories to get acquainted with the new changes.**
+
+### FAQ
+
+**1. Is the new version backwards compatible?**
+
+No, and therefore you need to update both browser extension and native host at the same time. If you installed browser extension from Web stores, it will auto-update, but you must install browserpass native host v3 yourself.
+
+Read [browserpass-native installation section](https://github.com/browserpass/browserpass-native#installation) to see if your OS provides an updated package for Browserpass v3, if not then follow manual installation steps as described in that section.
+
+**2. Can I upgrade now, and not wait for an auto-update to come?**
+
+If you use a Chromium-based browser, go to [browserpass-extension releases](https://github.com/browserpass/browserpass-extension/releases) and download the latest `browserpass-webstore.crx`. Then open `chrome://extensions`, enable "Developer mode" and drag'n'drop the downloaded `crx` file. Finally proceed to [browserpass-native installation section](https://github.com/browserpass/browserpass-native#installation) for how to install a new version of the native host.
+
+If you use Firefox, it can get annoying as you'd have to re-install browser extension after every browser restart. Go to [browserpass-extension releases](https://github.com/browserpass/browserpass-extension/releases) and download the latest `firefox.zip` file, unpack it in a folder, then in Firefox go to `about:debugging#addons` and click on "Load Temporary Add-on" to install the extension. Finally proceed to [browserpass-native installation section](https://github.com/browserpass/browserpass-native#installation) for how to install a new version of the native host.
+
+**3. Can I keep the old version, if I don't have time to upgrade native host app or if my OS hasn't updated the "browserpass" package yet?**
+
+Go to the [latest v2 release](https://github.com/browserpass/browserpass/releases), download `chrome.zip` or `firefox.zip` depending on what browser you use. Unpack the archive in a new directory, and then load this extension in the browser:
+
+In Chromium:
+
+- Go to `chrome://extensions`
+- Enable "Developer mode"
+- Click "Load unpacked" and select the folder with the unpacked contents of `chrome.zip`
+
+In Firefox:
+
+- Go to `about:debugging#addons`
+- Click "Load Temporary Add-on" and select the folder with the unpacked contents of `firefox.zip`
+
+**4. What happened to OTP?**
+
+OTP was not implemented in Browserpass v3, but it might be implemented as a separate extension. For more details, see [Support OTP in Browserpass v3](https://github.com/browserpass/browserpass-extension/issues/76).
 
 ---
 
