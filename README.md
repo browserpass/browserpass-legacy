@@ -21,7 +21,9 @@ Read [browserpass-native installation section](https://github.com/browserpass/br
 
 If you use a Chromium-based browser, go to [browserpass-extension releases](https://github.com/browserpass/browserpass-extension/releases) and download the latest `browserpass-webstore.crx`. Then open `chrome://extensions`, enable "Developer mode" and drag'n'drop the downloaded `crx` file. Finally proceed to [browserpass-native installation section](https://github.com/browserpass/browserpass-native#installation) for how to install a new version of the native host.
 
-If you use Firefox, it can get annoying as you'd have to re-install browser extension after every browser restart. Go to [browserpass-extension releases](https://github.com/browserpass/browserpass-extension/releases) and download the latest `firefox.zip` file, unpack it in a folder, then in Firefox go to `about:debugging#addons` and click on "Load Temporary Add-on" to install the extension. Finally proceed to [browserpass-native installation section](https://github.com/browserpass/browserpass-native#installation) for how to install a new version of the native host.
+If you use Firefox, go to [browserpass-extension releases](https://github.com/browserpass/browserpass-extension/releases) and download the latest `firefox.zip` file, unpack it in a folder, then in Firefox go to `about:debugging#addons` and click on "Load Temporary Add-on" to install the extension. Finally proceed to [browserpass-native installation section](https://github.com/browserpass/browserpass-native#installation) for how to install a new version of the native host.
+
+If you unpack the contents of `firefox.zip` in `/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/browserpass@maximbaz.com/` folder, according to my experiments Firefox will treat it as persistent extension, it will ignore whatever is currently on Web Store and you will not need to load this extension after every Firefox restart.
 
 **3. Can I keep the old version, if I don't have time to upgrade native host app or if my OS hasn't updated the "browserpass" package yet?**
 
@@ -37,6 +39,8 @@ In Firefox:
 
 - Go to `about:debugging#addons`
 - Click "Load Temporary Add-on" and select the folder with the unpacked contents of `firefox.zip`
+
+If you unpack the contents of `firefox.zip` in `/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/browserpass@maximbaz.com/` folder, according to my experiments Firefox will treat it as persistent extension, it will ignore whatever is currently on Web Store and you will not need to load this extension after every Firefox restart.
 
 **4. What happened to OTP?**
 
